@@ -1,0 +1,280 @@
+{
+  "detail": {
+    "contributors": [],
+    "diagramTop": 0,
+    "diagrams": [
+      {
+        "cells": [
+          {
+            "attrs": {
+              "body": {
+                "fill": "transparent",
+                "fillOpacity": 0,
+                "rx": 10,
+                "ry": 10,
+                "stroke": "#333333",
+                "strokeDasharray": "10 5",
+                "strokeWidth": 3
+              },
+              "label": {
+                "refX": "15%",
+                "refY": "12",
+                "text": "Internal",
+                "textAnchor": "bottom",
+                "textVerticalAnchor": "top"
+              }
+            },
+            "data": {
+              "description": "",
+              "hasOpenThreats": false,
+              "isTrustBoundary": true,
+              "name": "Internal",
+              "type": "tm.BoundaryBox"
+            },
+            "id": "95d311ef-98dd-5ef0-9ae8-724005a36df2",
+            "position": {
+              "x": 40,
+              "y": 40
+            },
+            "shape": "trust-boundary-box",
+            "size": {
+              "height": 280,
+              "width": 480
+            },
+            "zIndex": -50
+          },
+          {
+            "attrs": {
+              "body": {
+                "stroke": "#333333",
+                "strokeDasharray": null,
+                "strokeWidth": 1
+              },
+              "text": {
+                "text": "app-box"
+              }
+            },
+            "data": {
+              "description": "",
+              "handlesCardPayment": false,
+              "handlesGoodsOrServices": false,
+              "hasOpenThreats": false,
+              "isTrustBoundary": false,
+              "isWebApplication": false,
+              "name": "app-box",
+              "outOfScope": false,
+              "privilegeLevel": "",
+              "reasonOutOfScope": "",
+              "threats": [],
+              "type": "tm.Process"
+            },
+            "id": "699f9af6-3b29-5c4b-a4ee-4a6493d363e6",
+            "position": {
+              "x": 70,
+              "y": 100
+            },
+            "shape": "process",
+            "size": {
+              "height": 80,
+              "width": 120
+            },
+            "zIndex": 1
+          },
+          {
+            "attrs": {
+              "body": {
+                "stroke": "#333333",
+                "strokeDasharray": null,
+                "strokeWidth": 1
+              },
+              "text": {
+                "text": "AppOne"
+              }
+            },
+            "data": {
+              "description": "",
+              "handlesCardPayment": false,
+              "handlesGoodsOrServices": false,
+              "hasOpenThreats": false,
+              "isTrustBoundary": false,
+              "isWebApplication": false,
+              "name": "AppOne",
+              "outOfScope": false,
+              "privilegeLevel": "",
+              "reasonOutOfScope": "",
+              "threats": [],
+              "type": "tm.Process"
+            },
+            "id": "2f39679f-7e25-55fd-9237-06d73fe30706",
+            "position": {
+              "x": 220,
+              "y": 100
+            },
+            "shape": "process",
+            "size": {
+              "height": 80,
+              "width": 120
+            },
+            "zIndex": 1
+          },
+          {
+            "attrs": {
+              "body": {
+                "stroke": "#333333",
+                "strokeDasharray": null,
+                "strokeWidth": 1
+              },
+              "text": {
+                "text": "AppThree"
+              }
+            },
+            "data": {
+              "description": "",
+              "handlesCardPayment": false,
+              "handlesGoodsOrServices": false,
+              "hasOpenThreats": false,
+              "isTrustBoundary": false,
+              "isWebApplication": false,
+              "name": "AppThree",
+              "outOfScope": false,
+              "privilegeLevel": "",
+              "reasonOutOfScope": "",
+              "threats": [],
+              "type": "tm.Process"
+            },
+            "id": "5c4d3db1-8dba-5aaa-ad50-2837871fde6a",
+            "position": {
+              "x": 370,
+              "y": 100
+            },
+            "shape": "process",
+            "size": {
+              "height": 80,
+              "width": 120
+            },
+            "zIndex": 1
+          },
+          {
+            "attrs": {
+              "body": {
+                "stroke": "#333333",
+                "strokeDasharray": null,
+                "strokeWidth": 1
+              },
+              "text": {
+                "text": "AppTwo"
+              }
+            },
+            "data": {
+              "description": "",
+              "handlesCardPayment": false,
+              "handlesGoodsOrServices": false,
+              "hasOpenThreats": false,
+              "isTrustBoundary": false,
+              "isWebApplication": false,
+              "name": "AppTwo",
+              "outOfScope": false,
+              "privilegeLevel": "",
+              "reasonOutOfScope": "",
+              "threats": [],
+              "type": "tm.Process"
+            },
+            "id": "cf1bb076-fec4-517a-8b7b-e3a36a4338b1",
+            "position": {
+              "x": 70,
+              "y": 210
+            },
+            "shape": "process",
+            "size": {
+              "height": 80,
+              "width": 120
+            },
+            "zIndex": 1
+          },
+          {
+            "attrs": {
+              "line": {
+                "stroke": "#333333",
+                "strokeDasharray": null,
+                "strokeWidth": 1,
+                "targetMarker": {
+                  "name": "block"
+                }
+              }
+            },
+            "connector": "smooth",
+            "data": {
+              "description": "",
+              "hasOpenThreats": false,
+              "isEncrypted": false,
+              "isPublicNetwork": false,
+              "name": "r_f1",
+              "outOfScope": false,
+              "protocol": "",
+              "reasonOutOfScope": "",
+              "threats": [],
+              "type": "tm.Flow"
+            },
+            "id": "0b04c613-1077-5fbf-a03c-ee60093a9e4d",
+            "shape": "flow",
+            "source": {
+              "cell": "2f39679f-7e25-55fd-9237-06d73fe30706"
+            },
+            "target": {
+              "cell": "cf1bb076-fec4-517a-8b7b-e3a36a4338b1"
+            },
+            "zIndex": 10
+          },
+          {
+            "attrs": {
+              "line": {
+                "stroke": "#333333",
+                "strokeDasharray": null,
+                "strokeWidth": 1,
+                "targetMarker": {
+                  "name": "block"
+                }
+              }
+            },
+            "connector": "smooth",
+            "data": {
+              "description": "",
+              "hasOpenThreats": false,
+              "isEncrypted": false,
+              "isPublicNetwork": false,
+              "name": "r_f2",
+              "outOfScope": false,
+              "protocol": "",
+              "reasonOutOfScope": "",
+              "threats": [],
+              "type": "tm.Flow"
+            },
+            "id": "ea6a864d-f966-5d90-ba8d-22aede5eff61",
+            "shape": "flow",
+            "source": {
+              "cell": "cf1bb076-fec4-517a-8b7b-e3a36a4338b1"
+            },
+            "target": {
+              "cell": "5c4d3db1-8dba-5aaa-ad50-2837871fde6a"
+            },
+            "zIndex": 10
+          }
+        ],
+        "diagramType": "STRIDE",
+        "id": "b3b1a53e-fb4d-52bb-9b0e-a004dcb7f162",
+        "thumbnail": "/content/images/thumbnail.stride.jpg",
+        "title": "co-hosted",
+        "version": "2.0.0"
+      }
+    ],
+    "reviewer": "",
+    "threatTop": 0
+  },
+  "summary": {
+    "description": "Generated by archithreat from ArchiMate Open Exchange XML.",
+    "id": 0,
+    "owner": "",
+    "title": "co-hosted"
+  },
+  "version": "2.0.0"
+}

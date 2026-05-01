@@ -11,6 +11,14 @@
     method="post"
   >
     <p>
+      <label for="target">Target (picks zone-rule mapping)</label>
+      <select id="target" name="target">
+        {% for t in targets %}
+          <option value="{{ t }}" {% if t == default_target %}selected{% endif %}>{{ t }}</option>
+        {% endfor %}
+      </select>
+    </p>
+    <p>
       <label for="model-file">ArchiMate Open Exchange XML</label>
       <input id="model-file" name="model" type="file" accept=".xml,application/xml" required>
     </p>

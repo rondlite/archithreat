@@ -43,7 +43,8 @@ def test_version(client) -> None:
     assert r.status_code == 200
     body = r.json()
     assert body["package"] == __version__
-    assert body["available_targets"] == ["drawio-iriusrisk"]
+    assert "drawio-iriusrisk" in body["available_targets"]
+    assert "threatdragon" in body["available_targets"]
 
 
 # ---------- /api/v1/mapping/default ----------
@@ -108,6 +109,33 @@ def test_convert_happy_path(client, lemonade_xml_bytes: bytes) -> None:
     assert "lemonade_shop.drawio" in cd
     assert r.content.startswith(b"<?xml")
     assert b"mxfile" in r.content
+
+
+def test_convert_threatdragon_target(client, lemonade_xml_bytes: bytes) -> None:
+    files = {"model": ("lemonade_shop.xml", lemonade_xml_bytes, "application/xml")}
+    data = {"target": "threatdragon"}
+    r = _post(client, "/api/v1/convert", files=files, data=data)
+    assert r.status_code == 200, r.text
+    assert r.headers["content-type"].startswith("application/json")
+    cd = r.headers["content-disposition"]
+    assert "lemonade_shop.json" in cd
+    assert b'"version": "2.0.0"' in r.content
+    assert b"trust-boundary-box" in r.content
+
+
+def test_convert_unknown_target(client, lemonade_xml_bytes: bytes) -> None:
+    files = {"model": ("m.xml", lemonade_xml_bytes, "application/xml")}
+    r = _post(client, "/api/v1/convert", files=files, data={"target": "no-such"})
+    assert r.status_code == 400
+    body = r.json()
+    assert body["error"]["code"] == "unknown_target"
+
+
+def test_mapping_default_threatdragon(client) -> None:
+    r = _get(client, "/api/v1/mapping/default", params={"target": "threatdragon"})
+    assert r.status_code == 200
+    assert r.headers["content-type"].startswith("text/yaml")
+    assert b"target: threatdragon" in r.content
 
 
 def test_convert_rejects_invalid_xml(client) -> None:

@@ -7,6 +7,16 @@ leaves the user's machine after page load.
 This directory builds into a self-contained `dist/` you can drop behind any
 static host (GitHub Pages, S3, an internal nginx, anything).
 
+## Output target
+
+The Convert tab and the Mapping editor each carry an "Output target" dropdown.
+Pick `IriusRisk (draw.io)` to emit a `.drawio` XML file consumable by
+IriusRisk, or `OWASP Threat Dragon (JSON)` to emit a Threat Dragon v2 `.json`
+model. The selection drives both the Python emitter (via `convert_bytes(..., 
+target=...)`) and the mapping schema used when validating or loading a
+default mapping — the two targets ship distinct mapping schemas, so the
+editor's dropdown should match the schema you intend to author.
+
 ## Stack
 
 - **Vanilla JS** — no React/Vue/Svelte/etc. (spec §6.8)
@@ -66,7 +76,7 @@ dist/
 │   ├── pyodide.asm.wasm
 │   └── …
 └── wheels/
-    └── archithreat-1.1.0-py3-none-any.whl
+    └── archithreat-2.0.0-py3-none-any.whl
 ```
 
 All paths are relative, so the same `dist/` works under any URL prefix

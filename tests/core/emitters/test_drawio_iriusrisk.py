@@ -27,9 +27,8 @@ def _convert(data: bytes) -> bytes:
     return convert_bytes(data)
 
 
-def test_v1_registry_has_one_target() -> None:
-    targets = available_targets()
-    assert targets == [TARGET_ID]
+def test_drawio_in_registry() -> None:
+    assert TARGET_ID in available_targets()
 
 
 def test_emitter_register_unregister_roundtrip() -> None:

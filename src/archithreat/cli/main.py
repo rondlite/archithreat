@@ -15,16 +15,19 @@ from typing import Any
 import click
 
 from .. import __version__
-from ..core.emitters import get_emitter
+from ..core.emitters import available_targets, get_emitter
 from ..core.inventory import inventory_path
 from ..core.mappings import (
     DEFAULT_TARGET,
+    MAPPING_SCHEMAS,
     MappingValidationError,
     default_mapping_text,
     load_default_mapping,
     load_mapping,
 )
 from ..core.parser import ParserError, parse_path
+
+_TARGET_CHOICES = sorted(MAPPING_SCHEMAS.keys())
 
 # Exit codes (per SPEC §5.2)
 EXIT_OK = 0
@@ -56,10 +59,17 @@ def cli(log_level: str) -> None:
 @click.argument("input_path", type=click.Path(exists=False, dir_okay=False, path_type=Path))
 @click.argument("output_path", type=click.Path(dir_okay=False, path_type=Path))
 @click.option(
+    "--target",
+    type=click.Choice(_TARGET_CHOICES),
+    default=DEFAULT_TARGET,
+    show_default=True,
+    help="Output target. Determines emitter + bundled default mapping.",
+)
+@click.option(
     "--mapping",
     "mapping_path",
     type=click.Path(exists=True, dir_okay=False, path_type=Path),
-    help="Path to mapping YAML; falls back to bundled default.",
+    help="Path to mapping YAML; falls back to bundled default for the chosen target.",
 )
 @click.option(
     "--view",
@@ -83,6 +93,7 @@ def cli(log_level: str) -> None:
 def convert(
     input_path: Path,
     output_path: Path,
+    target: str,
     mapping_path: Path | None,
     view_name: str | None,
     unzoned_policy: str,
@@ -96,7 +107,11 @@ def convert(
         sys.exit(EXIT_INPUT_NOT_FOUND)
 
     try:
-        mapping = load_mapping(mapping_path) if mapping_path else load_default_mapping()
+        mapping = (
+            load_mapping(mapping_path, target=target)
+            if mapping_path
+            else load_default_mapping(target=target)
+        )
     except MappingValidationError as exc:
         click.echo(f"Mapping invalid: {len(exc.errors)} error(s)", err=True)
         for e in exc.errors:
@@ -175,15 +190,28 @@ def convert(
 @click.argument("input_path", type=click.Path(exists=True, dir_okay=False, path_type=Path))
 @click.option("--format", "fmt", type=click.Choice(["text", "json", "markdown"]), default="text")
 @click.option(
+    "--target",
+    type=click.Choice(_TARGET_CHOICES),
+    default=DEFAULT_TARGET,
+    show_default=True,
+    help="Target whose default mapping should be used (inventory is target-independent; this only picks the mapping for zone-rule warnings).",
+)
+@click.option(
     "--mapping",
     "mapping_path",
     type=click.Path(exists=True, dir_okay=False, path_type=Path),
     default=None,
 )
-def inventory(input_path: Path, fmt: str, mapping_path: Path | None) -> None:
+def inventory(
+    input_path: Path, fmt: str, target: str, mapping_path: Path | None
+) -> None:
     """Survey the model without producing output."""
     try:
-        mapping = load_mapping(mapping_path) if mapping_path else load_default_mapping()
+        mapping = (
+            load_mapping(mapping_path, target=target)
+            if mapping_path
+            else load_default_mapping(target=target)
+        )
     except MappingValidationError as exc:
         click.echo(f"Mapping invalid: {len(exc.errors)} error(s)", err=True)
         sys.exit(EXIT_MAPPING_INVALID)
@@ -202,10 +230,17 @@ def inventory(input_path: Path, fmt: str, mapping_path: Path | None) -> None:
 
 @cli.command("validate-mapping")
 @click.argument("mapping_path", type=click.Path(exists=True, dir_okay=False, path_type=Path))
-def validate_mapping_cmd(mapping_path: Path) -> None:
+@click.option(
+    "--target",
+    type=click.Choice(_TARGET_CHOICES),
+    default=DEFAULT_TARGET,
+    show_default=True,
+    help="Schema target to validate against.",
+)
+def validate_mapping_cmd(mapping_path: Path, target: str) -> None:
     """Validate a mapping YAML against the schema."""
     try:
-        load_mapping(mapping_path)
+        load_mapping(mapping_path, target=target)
     except MappingValidationError as exc:
         click.echo(f"Invalid: {len(exc.errors)} error(s)", err=True)
         for e in exc.errors:
@@ -215,9 +250,24 @@ def validate_mapping_cmd(mapping_path: Path) -> None:
 
 
 @cli.command("show-defaults")
-def show_defaults() -> None:
-    """Print the bundled default mapping YAML."""
-    click.echo(default_mapping_text(DEFAULT_TARGET), nl=False)
+@click.option(
+    "--target",
+    type=click.Choice(_TARGET_CHOICES),
+    default=DEFAULT_TARGET,
+    show_default=True,
+    help="Which target's default mapping to print.",
+)
+def show_defaults(target: str) -> None:
+    """Print the bundled default mapping YAML for the given target."""
+    click.echo(default_mapping_text(target), nl=False)
+
+
+@cli.command("targets")
+def targets_cmd() -> None:
+    """List the registered output targets."""
+    for t in available_targets():
+        e = get_emitter(t)
+        click.echo(f"{t}\t.{e.output_extension}\t{e.output_media_type}")
 
 
 @cli.command()

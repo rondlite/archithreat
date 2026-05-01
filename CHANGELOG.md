@@ -7,6 +7,46 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.0] - 2026-05-02
+
+### Added (BREAKING — new emitter target + user-facing target selection)
+- **Second emitter target: `threatdragon`** (OWASP Threat Dragon v2 JSON).
+  Maps ArchiMate elements to TD STRIDE stencils:
+  ApplicationComponent → process (with `isWebApplication: true` for
+  `tech_stack=web`); DataObject → store (auto-detects credentials, audit
+  logs, encrypted classifications); BusinessActor / BusinessRole → actor;
+  Grouping / Location → trust-boundary-box. Flows carry `protocol`,
+  `isEncrypted`, `isPublicNetwork` data.
+- **User-facing target selection** (per spec §6.11) ships across all surfaces:
+  - CLI: `archithreat convert ... --target {drawio-iriusrisk|threatdragon}`,
+    same flag on `inventory`, `validate-mapping`, `show-defaults`.
+  - CLI: new `archithreat targets` lists registered targets with extension
+    and media type.
+  - JSON API: `target` form field on `POST /api/v1/convert`,
+    `POST /api/v1/inventory`, `POST /api/v1/mapping/validate`;
+    `?target=<id>` query string on `GET /api/v1/mapping/default`.
+    Unknown target returns `{"error": {"code": "unknown_target"}}` 400.
+  - HTMX UI: target dropdown on convert / inventory / validate-mapping pages.
+  - Browser shell: target dropdown on the Convert tab and inside the
+    Mapping editor.
+- New TD-flavoured demo fixture `examples/pet_shop.xml` exercising
+  TD-idiomatic patterns (credential store, audit log, HTTPS flows,
+  external actor).
+- `tests/fixtures/expected/threatdragon/` golden outputs for all 6
+  fixtures (minimal, co_hosted, external_actor, orphans, lemonade_shop,
+  pet_shop).
+
+### Changed
+- `archithreat.core.emitters.EMITTERS` registry now has 2 entries.
+  Code that depended on the registry having exactly one entry has been
+  updated; if you scripted around `available_targets()` returning a
+  single-element list, that assumption no longer holds.
+
+### Documentation
+- `docs/targets.md` documents both targets with import procedures and
+  per-target stencil mappings.
+- `docs/adding-a-target.md` retroactively validated by this exercise.
+
 ## [1.1.0] - 2026-05-01
 
 ### Changed (BREAKING — review imports into IriusRisk)

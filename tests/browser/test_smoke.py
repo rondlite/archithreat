@@ -131,11 +131,18 @@ def _serve(directory: Path):
 
 
 def test_browser_shell_convert_smoke() -> None:
-    """End-to-end: load page, wait for Pyodide, upload XML, click Convert,
-    assert a download is triggered."""
+    """End-to-end: load page, wait for Pyodide, upload XML, click Convert
+    once per output target, and assert the suggested filename's extension
+    matches the picked target."""
     _require_prereqs()
 
     from playwright.sync_api import sync_playwright
+
+    # (target dropdown value, expected download extension)
+    cases = [
+        ("drawio-iriusrisk", ".drawio"),
+        ("threatdragon", ".json"),
+    ]
 
     with _serve(DIST_DIR) as url, sync_playwright() as pw:
         browser = pw.chromium.launch()
@@ -152,11 +159,14 @@ def test_browser_shell_convert_smoke() -> None:
 
             page.set_input_files("#file-convert", str(FIXTURE))
 
-            with page.expect_download(timeout=60_000) as download_info:
-                page.click("#btn-convert")
-            download = download_info.value
-            assert download.suggested_filename.endswith(".drawio"), (
-                f"unexpected download filename: {download.suggested_filename}"
-            )
+            for target_value, expected_ext in cases:
+                page.select_option("#target", target_value)
+                with page.expect_download(timeout=60_000) as download_info:
+                    page.click("#btn-convert")
+                download = download_info.value
+                assert download.suggested_filename.endswith(expected_ext), (
+                    f"target {target_value!r}: expected suffix {expected_ext}, "
+                    f"got {download.suggested_filename!r}"
+                )
         finally:
             browser.close()

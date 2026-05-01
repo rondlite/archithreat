@@ -16,6 +16,7 @@ import {
   triggerDownload,
   renderResult,
   replaceExtension,
+  getTarget,
 } from './ui.js';
 
 const status = statusPanel();
@@ -86,6 +87,7 @@ async function onConvertSubmit(ev) {
   if (!ready) return;
   const fileInput = $('#file-convert');
   const mappingText = ($('#mapping-text').value || '').trim();
+  const target = getTarget('target');
   const statusEl = $('#convert-status');
   try {
     statusEl.textContent = 'Reading file…';
@@ -96,6 +98,7 @@ async function onConvertSubmit(ev) {
       bytes,
       mapping: mappingText || null,
       sourceName: name,
+      target,
     });
     statusEl.textContent = 'Done.';
     status.set('ready', 'Pyodide ready');
@@ -113,13 +116,14 @@ async function onInventorySubmit(ev) {
   ev.preventDefault();
   if (!ready) return;
   const fileInput = $('#file-inventory');
+  const target = getTarget('target');
   const statusEl = $('#inventory-status');
   try {
     statusEl.textContent = 'Reading file…';
     const { name, bytes } = await readFileBytes(fileInput);
     status.set('busy', `Inventorying ${name}…`);
     statusEl.textContent = 'Running inventory…';
-    const text = await callWorker('inventory', { bytes });
+    const text = await callWorker('inventory', { bytes, target });
     statusEl.textContent = 'Done.';
     status.set('ready', 'Pyodide ready');
     const out = document.getElementById('inventory-result');
@@ -139,10 +143,11 @@ async function onValidateSubmit(ev) {
   ev.preventDefault();
   if (!ready) return;
   const text = $('#validate-text').value || '';
+  const target = getTarget('mapping-target');
   const statusEl = $('#validate-status');
   try {
     statusEl.textContent = 'Validating…';
-    const errors = await callWorker('validateMapping', { text });
+    const errors = await callWorker('validateMapping', { text, target });
     statusEl.textContent = '';
     if (errors.length === 0) {
       renderResult('validate-result', 'Mapping is valid.', 'ok');
@@ -161,6 +166,7 @@ async function onValidateSubmit(ev) {
 
 async function onValidateMappingInline() {
   const text = ($('#mapping-text').value || '').trim();
+  const target = getTarget('mapping-target');
   const out = document.getElementById('mapping-validate-result');
   if (!text) {
     out.textContent = 'Empty: the default mapping will be used.';
@@ -169,7 +175,7 @@ async function onValidateMappingInline() {
     return;
   }
   try {
-    const errors = await callWorker('validateMapping', { text });
+    const errors = await callWorker('validateMapping', { text, target });
     out.classList.remove('is-error', 'is-ok');
     if (errors.length === 0) {
       out.textContent = 'Mapping is valid.';
@@ -185,9 +191,10 @@ async function onValidateMappingInline() {
   }
 }
 
-async function loadDefaultInto(targetId) {
-  const text = await callWorker('defaultMapping', {});
-  const el = document.getElementById(targetId);
+async function loadDefaultInto(elementId, targetSelectId = 'mapping-target') {
+  const target = getTarget(targetSelectId);
+  const text = await callWorker('defaultMapping', { target });
+  const el = document.getElementById(elementId);
   if (el) el.value = text;
 }
 

@@ -9,6 +9,8 @@
 //
 // Message protocol:
 //   in:  { id, method: 'convert'|'inventory'|'validateMapping'|'defaultMapping', payload }
+//        payload.target selects the output target (e.g. 'drawio-iriusrisk',
+//        'threatdragon'); empty/missing falls back to the Python DEFAULT_TARGET.
 //   out: { kind: 'progress'|'ready'|'response'|'error-fatal', ... }
 
 /* global importScripts, loadPyodide */
@@ -53,7 +55,7 @@ async function findWheelUrl() {
   // ./wheels/index.json with the actual filename so this fallback is only
   // hit during local dev when you forgot the index step.
   const candidates = [
-    'archithreat-1.1.0-py3-none-any.whl',
+    'archithreat-2.0.0-py3-none-any.whl',
   ];
   for (const c of candidates) {
     try {
@@ -97,19 +99,30 @@ from archithreat import (
 )
 from archithreat.core.mappings import default_mapping_text
 
-def _do_convert(model_bytes, mapping_text, source_name):
+def _resolve_target(target):
+    return target or DEFAULT_TARGET
+
+def _do_convert(model_bytes, mapping_text, source_name, target):
+    target = _resolve_target(target)
     mapping = mapping_text if mapping_text else None
-    out = convert_bytes(model_bytes, mapping_source=mapping, source_name=source_name or "")
-    em = get_emitter(DEFAULT_TARGET)
+    out = convert_bytes(
+        model_bytes,
+        mapping_source=mapping,
+        target=target,
+        source_name=source_name or "",
+    )
+    em = get_emitter(target)
     return out, em.output_extension, em.output_media_type
 
-def _do_inventory(model_bytes):
-    rep = inventory_bytes(model_bytes)
+def _do_inventory(model_bytes, target):
+    target = _resolve_target(target)
+    rep = inventory_bytes(model_bytes, mapping=load_default_mapping(target=target))
     return rep.to_text()
 
-def _do_validate(text):
+def _do_validate(text, target):
+    target = _resolve_target(target)
     try:
-        errs = validate_mapping(text)
+        errs = validate_mapping(text, target=target)
     except Exception as exc:
         return [{"loc": "", "message": str(exc)}]
     return [
@@ -117,8 +130,9 @@ def _do_validate(text):
         for e in errs
     ]
 
-def _do_default_mapping():
-    return default_mapping_text()
+def _do_default_mapping(target):
+    target = _resolve_target(target)
+    return default_mapping_text(target=target)
 `);
     postReady();
   })().catch((err) => {
@@ -134,7 +148,12 @@ async function handle(method, payload) {
     case 'convert': {
       const fn = pyodide.globals.get('_do_convert');
       try {
-        const tuple = fn(payload.bytes, payload.mapping || '', payload.sourceName || '');
+        const tuple = fn(
+          payload.bytes,
+          payload.mapping || '',
+          payload.sourceName || '',
+          payload.target || '',
+        );
         const arr = tuple.toJs({ create_proxies: false });
         // arr = [bytes, ext, media_type]
         const [data, extension, mediaType] = arr;
@@ -150,7 +169,7 @@ async function handle(method, payload) {
     case 'inventory': {
       const fn = pyodide.globals.get('_do_inventory');
       try {
-        return fn(payload.bytes);
+        return fn(payload.bytes, payload.target || '');
       } finally {
         fn.destroy();
       }
@@ -158,7 +177,7 @@ async function handle(method, payload) {
     case 'validateMapping': {
       const fn = pyodide.globals.get('_do_validate');
       try {
-        const result = fn(payload.text || '');
+        const result = fn(payload.text || '', payload.target || '');
         return result.toJs({ dict_converter: Object.fromEntries });
       } finally {
         fn.destroy();
@@ -167,7 +186,7 @@ async function handle(method, payload) {
     case 'defaultMapping': {
       const fn = pyodide.globals.get('_do_default_mapping');
       try {
-        return fn();
+        return fn(payload.target || '');
       } finally {
         fn.destroy();
       }

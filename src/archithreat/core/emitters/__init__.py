@@ -50,10 +50,12 @@ def available_targets() -> list[str]:
     return sorted(EMITTERS.keys())
 
 
-# Side-effect import: register the v1 emitter at package import time.
+# Side-effect import: register the bundled emitters at package import time.
 from . import drawio_iriusrisk as _drawio_iriusrisk  # noqa: E402
+from . import threatdragon as _threatdragon  # noqa: E402
 
 register(_drawio_iriusrisk.DrawioIriusriskEmitter())
+register(_threatdragon.ThreatDragonEmitter())
 
 
 __all__ = [

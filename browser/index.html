@@ -38,6 +38,13 @@
           the resulting <code>.drawio</code> as a download.
         </p>
         <form id="form-convert">
+          <label for="target" class="file-label">Output target
+            <select id="target" name="target">
+              <option value="drawio-iriusrisk" selected>IriusRisk (draw.io)</option>
+              <option value="threatdragon">OWASP Threat Dragon (JSON)</option>
+            </select>
+          </label>
+
           <label for="file-convert" class="file-label">ArchiMate XML
             <input id="file-convert" name="model" type="file" accept=".xml,application/xml,text/xml" required />
           </label>
@@ -45,8 +52,15 @@
           <details id="mapping-editor">
             <summary>Mapping (advanced — leave collapsed to use the default)</summary>
             <p class="hint">
-              Customize the ArchiMate-to-draw.io mapping. Leave empty to use the bundled default.
+              Customize the ArchiMate-to-target mapping. Leave empty to use the bundled default.
+              The schema differs per output target — pick the matching one before editing.
             </p>
+            <label for="mapping-target" class="file-label">Mapping target
+              <select id="mapping-target" name="mapping-target">
+                <option value="drawio-iriusrisk" selected>IriusRisk (draw.io)</option>
+                <option value="threatdragon">OWASP Threat Dragon (JSON)</option>
+              </select>
+            </label>
             <div class="row">
               <button type="button" id="btn-load-default" class="secondary">Load default</button>
               <button type="button" id="btn-validate-mapping" class="secondary">Validate</button>

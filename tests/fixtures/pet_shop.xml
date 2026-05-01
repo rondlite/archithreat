@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model xmlns="http://www.opengroup.org/xsd/archimate/3.0/"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       identifier="pet-shop-1">
+  <name xml:lang="en">Pet Shop</name>
+  <documentation xml:lang="en">A small pet shop architecture exercising Threat Dragon idioms: processes, stores (with credentials/log markers), an external actor, and trust boundaries.</documentation>
+  <propertyDefinitions>
+    <propertyDefinition identifier="propdef_tech_stack" type="string">
+      <name xml:lang="en">tech_stack</name>
+    </propertyDefinition>
+    <propertyDefinition identifier="propdef_protocol" type="string">
+      <name xml:lang="en">protocol</name>
+    </propertyDefinition>
+    <propertyDefinition identifier="propdef_data_classification" type="string">
+      <name xml:lang="en">data_classification</name>
+    </propertyDefinition>
+  </propertyDefinitions>
+
+  <elements>
+    <element identifier="z_internet" xsi:type="Grouping">
+      <name xml:lang="en">Internet</name>
+    </element>
+    <element identifier="z_app" xsi:type="Grouping">
+      <name xml:lang="en">Pet Shop Backend</name>
+    </element>
+
+    <element identifier="a_storefront" xsi:type="ApplicationComponent">
+      <name xml:lang="en">Storefront</name>
+      <properties>
+        <property propertyDefinitionRef="propdef_tech_stack">
+          <value xml:lang="en">web</value>
+        </property>
+      </properties>
+    </element>
+    <element identifier="a_orders" xsi:type="ApplicationComponent">
+      <name xml:lang="en">Order Service</name>
+    </element>
+    <element identifier="a_auth" xsi:type="ApplicationComponent">
+      <name xml:lang="en">Authentication Service</name>
+    </element>
+
+    <element identifier="d_credentials" xsi:type="DataObject">
+      <name xml:lang="en">User Credentials</name>
+      <properties>
+        <property propertyDefinitionRef="propdef_data_classification">
+          <value xml:lang="en">pii</value>
+        </property>
+      </properties>
+    </element>
+    <element identifier="d_audit" xsi:type="DataObject">
+      <name xml:lang="en">Audit Log</name>
+    </element>
+
+    <element identifier="ba_customer" xsi:type="BusinessActor">
+      <name xml:lang="en">Customer</name>
+    </element>
+  </elements>
+
+  <relationships>
+    <relationship identifier="rc_cust_inet" xsi:type="Composition" source="z_internet" target="ba_customer"/>
+    <relationship identifier="rc_storefront" xsi:type="Composition" source="z_app" target="a_storefront"/>
+    <relationship identifier="rc_orders" xsi:type="Composition" source="z_app" target="a_orders"/>
+    <relationship identifier="rc_auth" xsi:type="Composition" source="z_app" target="a_auth"/>
+    <relationship identifier="rc_creds" xsi:type="Composition" source="z_app" target="d_credentials"/>
+    <relationship identifier="rc_audit" xsi:type="Composition" source="z_app" target="d_audit"/>
+
+    <relationship identifier="rf_cust_storefront" xsi:type="Flow" source="ba_customer" target="a_storefront">
+      <properties>
+        <property propertyDefinitionRef="propdef_protocol">
+          <value xml:lang="en">HTTPS</value>
+        </property>
+      </properties>
+    </relationship>
+    <relationship identifier="rf_storefront_orders" xsi:type="Flow" source="a_storefront" target="a_orders">
+      <properties>
+        <property propertyDefinitionRef="propdef_protocol">
+          <value xml:lang="en">HTTPS</value>
+        </property>
+      </properties>
+    </relationship>
+    <relationship identifier="rf_storefront_auth" xsi:type="Flow" source="a_storefront" target="a_auth">
+      <properties>
+        <property propertyDefinitionRef="propdef_protocol">
+          <value xml:lang="en">HTTPS</value>
+        </property>
+      </properties>
+    </relationship>
+    <relationship identifier="ra_auth_creds" xsi:type="Access" source="a_auth" target="d_credentials" accessType="read"/>
+    <relationship identifier="ra_auth_audit" xsi:type="Access" source="a_auth" target="d_audit" accessType="write"/>
+    <relationship identifier="ra_orders_audit" xsi:type="Access" source="a_orders" target="d_audit" accessType="write"/>
+  </relationships>
+</model>

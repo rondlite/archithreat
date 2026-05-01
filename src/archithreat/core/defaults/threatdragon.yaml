@@ -1,0 +1,213 @@
+# Default mapping for the threatdragon target.
+#
+# Schema reference: OWASP Threat Dragon v2 model format.
+#   https://github.com/OWASP/threat-dragon/tree/main/ThreatDragonModels
+#
+# Stencil mapping:
+#   - ApplicationComponent (and Node, Device, SystemSoftware, Artifact) → process
+#       (TD has no first-class "host" stencil; hosts collapse to processes)
+#   - DataObject              → store
+#   - BusinessActor / Role    → actor (external entity)
+#   - Grouping / Location     → trust-boundary-box (rectangle, dashed)
+#   - Flow / Serving / Access / UsedBy / Triggering → flow
+#
+# Diagrams emit as STRIDE diagramType (TD's most common). LINDDUN / CIA / DIE
+# are configurable per-installation in TD; not yet exposed in archithreat.
+
+version: 1
+target: threatdragon
+
+zone_rules:
+  # Stock visual: dark dashed rectangle around grouped components.
+  - match:
+      archimate_type: Grouping
+    threatdragon:
+      zone_name_property: name
+      stroke_color: "#333333"
+      stroke_dasharray: "10 5"
+      stroke_width: 3
+      rx: 10
+      ry: 10
+  - match:
+      archimate_type: Location
+    threatdragon:
+      zone_name_property: name
+      stroke_color: "#82B366"
+      stroke_dasharray: "10 5"
+      stroke_width: 3
+      rx: 10
+      ry: 10
+
+synthetic_zones:
+  unzoned:
+    name: "Unzoned"
+    stroke_color: "#999999"
+    stroke_dasharray: "5 5"
+  external:
+    name: "External"
+    stroke_color: "#D6B656"
+    stroke_dasharray: "10 5"
+
+component_rules:
+  # ApplicationComponent variants
+  - match:
+      archimate_type: ApplicationComponent
+      property:
+        name: tech_stack
+        equals: web
+    threatdragon:
+      shape: process
+      type_name: tm.Process
+      is_web_application: true
+  - match:
+      archimate_type: ApplicationComponent
+      property:
+        name: tech_stack
+        equals: mobile
+    threatdragon:
+      shape: process
+      type_name: tm.Process
+      is_web_application: false
+  - match:
+      archimate_type: ApplicationComponent
+      name_pattern: '(?i)\bauth(entication|orization)?\b'
+    threatdragon:
+      shape: process
+      type_name: tm.Process
+      provides_authentication: true
+  - match:
+      archimate_type: ApplicationComponent
+    threatdragon:
+      shape: process
+      type_name: tm.Process
+
+  - match:
+      archimate_type: ApplicationService
+    threatdragon:
+      shape: process
+      type_name: tm.Process
+
+  # Technology layer — collapse to process (no host stencil in TD)
+  - match:
+      archimate_type: Node
+    threatdragon:
+      shape: process
+      type_name: tm.Process
+  - match:
+      archimate_type: Device
+    threatdragon:
+      shape: process
+      type_name: tm.Process
+  - match:
+      archimate_type: SystemSoftware
+    threatdragon:
+      shape: process
+      type_name: tm.Process
+  - match:
+      archimate_type: Artifact
+    threatdragon:
+      shape: process
+      type_name: tm.Process
+
+  # Business actors → external entity
+  - match:
+      archimate_type: BusinessActor
+    threatdragon:
+      shape: actor
+      type_name: tm.Actor
+  - match:
+      archimate_type: BusinessRole
+    threatdragon:
+      shape: actor
+      type_name: tm.Actor
+
+  # Data objects → store; encryption/credentials hints from name
+  - match:
+      archimate_type: DataObject
+      name_pattern: '(?i)\b(credentials|secrets|tokens|keys)\b'
+    threatdragon:
+      shape: store
+      type_name: tm.Store
+      stores_credentials: true
+      is_encrypted: true
+  - match:
+      archimate_type: DataObject
+      name_pattern: '(?i)\b(audit|log|logs)\b'
+    threatdragon:
+      shape: store
+      type_name: tm.Store
+      is_a_log: true
+  - match:
+      archimate_type: DataObject
+      property:
+        name: data_classification
+        equals: pii
+    threatdragon:
+      shape: store
+      type_name: tm.Store
+      is_encrypted: true
+  - match:
+      archimate_type: DataObject
+    threatdragon:
+      shape: store
+      type_name: tm.Store
+
+connection_rules:
+  - match:
+      archimate_type: Flow
+      property:
+        name: encryption
+        equals: tls
+    threatdragon:
+      direction: source_to_target
+      is_encrypted: true
+      protocol: ""
+  - match:
+      archimate_type: Flow
+      property:
+        name: protocol
+        regex: '(?i)^(https|tls|mtls|wss|sftp|ftps|ssh)'
+    threatdragon:
+      direction: source_to_target
+      is_encrypted: true
+  - match:
+      archimate_type: Flow
+    threatdragon:
+      direction: source_to_target
+      is_encrypted: false
+  - match:
+      archimate_type: Serving
+    threatdragon:
+      direction: target_to_source
+      is_encrypted: false
+  - match:
+      archimate_type: Access
+    threatdragon:
+      direction: by_access_type
+      is_encrypted: false
+  - match:
+      archimate_type: UsedBy
+    threatdragon:
+      direction: target_to_source
+      is_encrypted: false
+  - match:
+      archimate_type: Triggering
+    threatdragon:
+      direction: source_to_target
+      is_encrypted: false
+
+property_passthrough:
+  components:
+    - protocol
+    - data_classification
+    - patch_authority
+    - tech_stack
+  connections:
+    - protocol
+    - port
+    - authentication
+    - encryption
+
+defaults:
+  unmatched_element: skip_with_warning
+  unmatched_relationship: skip_with_warning

@@ -8,6 +8,7 @@ import pytest
 
 FIXTURES = Path(__file__).parent / "fixtures"
 GOLDEN_DIR = FIXTURES / "expected" / "drawio_iriusrisk"
+GOLDEN_DIR_TD = FIXTURES / "expected" / "threatdragon"
 
 
 def pytest_addoption(parser: pytest.Parser) -> None:
@@ -36,6 +37,12 @@ def golden_dir() -> Path:
 
 
 @pytest.fixture
+def golden_dir_td() -> Path:
+    GOLDEN_DIR_TD.mkdir(parents=True, exist_ok=True)
+    return GOLDEN_DIR_TD
+
+
+@pytest.fixture
 def minimal_xml(fixtures_dir: Path) -> bytes:
     return (fixtures_dir / "minimal.xml").read_bytes()
 
@@ -58,3 +65,8 @@ def orphans_xml(fixtures_dir: Path) -> bytes:
 @pytest.fixture
 def lemonade_xml(fixtures_dir: Path) -> bytes:
     return (fixtures_dir / "lemonade_shop.xml").read_bytes()
+
+
+@pytest.fixture
+def pet_shop_xml(fixtures_dir: Path) -> bytes:
+    return (fixtures_dir / "pet_shop.xml").read_bytes()

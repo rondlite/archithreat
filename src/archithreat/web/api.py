@@ -18,14 +18,29 @@ from ..core.emitters import EMITTERS, available_targets, get_emitter
 from ..core.inventory import inventory_bytes
 from ..core.mappings import (
     DEFAULT_TARGET,
+    MAPPING_SCHEMAS,
     MappingValidationError,
     default_mapping_text,
+    load_default_mapping,
     validate_mapping,
 )
 from ..core.parser import ParserError
 from .limits import enforce_upload_size, run_with_timeout
 
 router = APIRouter()
+
+
+def _resolve_target(value: str | None) -> str:
+    """Validate and resolve the requested target ID."""
+    target = value or DEFAULT_TARGET
+    if target not in MAPPING_SCHEMAS:
+        raise _err(
+            "unknown_target",
+            f"Unknown target {target!r}",
+            details={"available": sorted(MAPPING_SCHEMAS.keys())},
+            status_code=400,
+        )
+    return target
 
 # Embedded fixture for /readyz self-test. Same content as
 # tests/fixtures/minimal.xml. Embedding inline keeps /readyz hermetic and
@@ -96,8 +111,10 @@ async def api_convert(
     view: str | None = Form(default=None),
     unzoned_policy: UnzonedPolicy = Form(default=UnzonedPolicy.warn),
     unrealized_policy: UnrealizedPolicy = Form(default=UnrealizedPolicy.warn),
+    target: str | None = Form(default=None),
 ) -> Response:
-    """Convert an ArchiMate XML model into the v1 target's output bytes."""
+    """Convert an ArchiMate XML model into the chosen target's output bytes."""
+    target_id = _resolve_target(target)
     model_bytes = await enforce_upload_size(model)
     mapping_source: str | bytes | None = None
     if mapping is not None and mapping.filename:
@@ -105,7 +122,7 @@ async def api_convert(
     elif mapping_text:
         mapping_source = mapping_text
 
-    emitter = get_emitter(DEFAULT_TARGET)
+    emitter = get_emitter(target_id)
     stem = _safe_stem(model.filename)
 
     try:
@@ -113,7 +130,7 @@ async def api_convert(
             convert_bytes,
             model_bytes,
             mapping_source=mapping_source,
-            target=DEFAULT_TARGET,
+            target=target_id,
             source_name=stem,
         )
     except ParserError as exc:
@@ -136,11 +153,14 @@ async def api_inventory(
     request: Request,
     model: UploadFile = File(...),
     accept: str | None = Header(default=None),
+    target: str | None = Form(default=None),
 ) -> Response:
     """Run inventory on an uploaded model. JSON by default; markdown via Accept."""
+    target_id = _resolve_target(target)
     model_bytes = await enforce_upload_size(model)
+    mapping = load_default_mapping(target=target_id)
     try:
-        report = await run_with_timeout(inventory_bytes, model_bytes)
+        report = await run_with_timeout(inventory_bytes, model_bytes, mapping)
     except ParserError as exc:
         raise _err("parser_error", str(exc), status_code=400) from exc
 
@@ -153,8 +173,11 @@ async def api_inventory(
 async def api_mapping_validate(
     request: Request,
     mapping: UploadFile | None = File(default=None),
+    target: str | None = Form(default=None),
 ) -> JSONResponse:
     """Validate a mapping document. Accepts text/yaml body or a multipart file."""
+    # Allow target via form field (multipart) or query string (?target=...).
+    target_id = _resolve_target(target or request.query_params.get("target"))
     content_type = (request.headers.get("content-type") or "").lower()
     payload: bytes | str
 
@@ -176,7 +199,7 @@ async def api_mapping_validate(
         payload = body
 
     try:
-        errors = validate_mapping(payload)
+        errors = validate_mapping(payload, target=target_id)
     except Exception as exc:  # pragma: no cover - defensive
         raise _err("validation_error", str(exc), status_code=400) from exc
 
@@ -184,9 +207,10 @@ async def api_mapping_validate(
 
 
 @router.get("/api/v1/mapping/default")
-def api_mapping_default() -> Response:
-    """Return the bundled default mapping as text/yaml."""
-    return Response(content=default_mapping_text(), media_type="text/yaml")
+def api_mapping_default(target: str | None = None) -> Response:
+    """Return the bundled default mapping for the given target as text/yaml."""
+    target_id = _resolve_target(target)
+    return Response(content=default_mapping_text(target_id), media_type="text/yaml")
 
 
 @router.get("/healthz")

@@ -2,7 +2,7 @@
 {% block title %}archithreat — convert{% endblock %}
 {% block content %}
 <section>
-  <h1>Convert ArchiMate to draw.io / IriusRisk</h1>
+  <h1>Convert ArchiMate</h1>
   <form
     hx-post="/ui/convert"
     hx-target="#result-panel"
@@ -11,12 +11,20 @@
     method="post"
   >
     <p>
+      <label for="target">Output target</label>
+      <select id="target" name="target">
+        {% for t in targets %}
+          <option value="{{ t }}" {% if t == default_target %}selected{% endif %}>{{ t }}</option>
+        {% endfor %}
+      </select>
+    </p>
+    <p>
       <label for="model-file">ArchiMate Open Exchange XML</label>
       <input id="model-file" name="model" type="file" accept=".xml,application/xml" required>
     </p>
     <p>
       <label for="mapping-text">Custom mapping YAML (optional)</label>
-      <textarea id="mapping-text" name="mapping_text" rows="6" placeholder="Leave blank to use the bundled default mapping."></textarea>
+      <textarea id="mapping-text" name="mapping_text" rows="6" placeholder="Leave blank to use the bundled default mapping for the chosen target."></textarea>
     </p>
     <p>
       <button type="submit">Convert</button>

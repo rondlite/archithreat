@@ -1,0 +1,244 @@
+{
+  "detail": {
+    "contributors": [],
+    "diagramTop": 0,
+    "diagrams": [
+      {
+        "cells": [
+          {
+            "attrs": {
+              "body": {
+                "fill": "transparent",
+                "fillOpacity": 0,
+                "rx": 10,
+                "ry": 10,
+                "stroke": "#333333",
+                "strokeDasharray": "10 5",
+                "strokeWidth": 3
+              },
+              "label": {
+                "refX": "15%",
+                "refY": "12",
+                "text": "External",
+                "textAnchor": "bottom",
+                "textVerticalAnchor": "top"
+              }
+            },
+            "data": {
+              "description": "",
+              "hasOpenThreats": false,
+              "isTrustBoundary": true,
+              "name": "External",
+              "type": "tm.BoundaryBox"
+            },
+            "id": "39e54c46-8609-57e4-8bf5-77458f51c807",
+            "position": {
+              "x": 40,
+              "y": 40
+            },
+            "shape": "trust-boundary-box",
+            "size": {
+              "height": 170,
+              "width": 180
+            },
+            "zIndex": -50
+          },
+          {
+            "attrs": {
+              "body": {
+                "fill": "transparent",
+                "fillOpacity": 0,
+                "rx": 10,
+                "ry": 10,
+                "stroke": "#333333",
+                "strokeDasharray": "10 5",
+                "strokeWidth": 3
+              },
+              "label": {
+                "refX": "15%",
+                "refY": "12",
+                "text": "Internal",
+                "textAnchor": "bottom",
+                "textVerticalAnchor": "top"
+              }
+            },
+            "data": {
+              "description": "",
+              "hasOpenThreats": false,
+              "isTrustBoundary": true,
+              "name": "Internal",
+              "type": "tm.BoundaryBox"
+            },
+            "id": "95d311ef-98dd-5ef0-9ae8-724005a36df2",
+            "position": {
+              "x": 280,
+              "y": 40
+            },
+            "shape": "trust-boundary-box",
+            "size": {
+              "height": 170,
+              "width": 330
+            },
+            "zIndex": -50
+          },
+          {
+            "attrs": {
+              "body": {
+                "stroke": "#333333",
+                "strokeDasharray": null,
+                "strokeWidth": 1
+              },
+              "text": {
+                "text": "Customer"
+              }
+            },
+            "data": {
+              "description": "",
+              "hasOpenThreats": false,
+              "isTrustBoundary": false,
+              "name": "Customer",
+              "outOfScope": false,
+              "providesAuthentication": false,
+              "reasonOutOfScope": "",
+              "threats": [],
+              "type": "tm.Actor"
+            },
+            "id": "b7fca226-a267-58a8-9f14-e2a00d1b1767",
+            "position": {
+              "x": 70,
+              "y": 100
+            },
+            "shape": "actor",
+            "size": {
+              "height": 80,
+              "width": 120
+            },
+            "zIndex": 1
+          },
+          {
+            "attrs": {
+              "body": {
+                "stroke": "#333333",
+                "strokeDasharray": null,
+                "strokeWidth": 1
+              },
+              "text": {
+                "text": "API"
+              }
+            },
+            "data": {
+              "description": "",
+              "handlesCardPayment": false,
+              "handlesGoodsOrServices": false,
+              "hasOpenThreats": false,
+              "isTrustBoundary": false,
+              "isWebApplication": false,
+              "name": "API",
+              "outOfScope": false,
+              "privilegeLevel": "",
+              "reasonOutOfScope": "",
+              "threats": [],
+              "type": "tm.Process"
+            },
+            "id": "de1fc435-48c6-5896-a53d-5b03050e1392",
+            "position": {
+              "x": 310,
+              "y": 100
+            },
+            "shape": "process",
+            "size": {
+              "height": 80,
+              "width": 120
+            },
+            "zIndex": 1
+          },
+          {
+            "attrs": {
+              "body": {
+                "stroke": "#333333",
+                "strokeDasharray": null,
+                "strokeWidth": 1
+              },
+              "text": {
+                "text": "backend-host"
+              }
+            },
+            "data": {
+              "description": "",
+              "handlesCardPayment": false,
+              "handlesGoodsOrServices": false,
+              "hasOpenThreats": false,
+              "isTrustBoundary": false,
+              "isWebApplication": false,
+              "name": "backend-host",
+              "outOfScope": false,
+              "privilegeLevel": "",
+              "reasonOutOfScope": "",
+              "threats": [],
+              "type": "tm.Process"
+            },
+            "id": "1f18ff46-67e7-5cc8-abde-cd9cdb82a315",
+            "position": {
+              "x": 460,
+              "y": 100
+            },
+            "shape": "process",
+            "size": {
+              "height": 80,
+              "width": 120
+            },
+            "zIndex": 1
+          },
+          {
+            "attrs": {
+              "line": {
+                "stroke": "#333333",
+                "strokeDasharray": null,
+                "strokeWidth": 1,
+                "targetMarker": {
+                  "name": "block"
+                }
+              }
+            },
+            "connector": "smooth",
+            "data": {
+              "description": "",
+              "hasOpenThreats": false,
+              "isEncrypted": false,
+              "isPublicNetwork": false,
+              "name": "r_s1",
+              "outOfScope": false,
+              "protocol": "",
+              "reasonOutOfScope": "",
+              "threats": [],
+              "type": "tm.Flow"
+            },
+            "id": "17b7274b-0ff1-5eb1-9f99-ac89ec3e2c68",
+            "shape": "flow",
+            "source": {
+              "cell": "b7fca226-a267-58a8-9f14-e2a00d1b1767"
+            },
+            "target": {
+              "cell": "de1fc435-48c6-5896-a53d-5b03050e1392"
+            },
+            "zIndex": 10
+          }
+        ],
+        "diagramType": "STRIDE",
+        "id": "f53ad266-762e-5184-9693-a2f86953111e",
+        "thumbnail": "/content/images/thumbnail.stride.jpg",
+        "title": "external-actor",
+        "version": "2.0.0"
+      }
+    ],
+    "reviewer": "",
+    "threatTop": 0
+  },
+  "summary": {
+    "description": "Generated by archithreat from ArchiMate Open Exchange XML.",
+    "id": 0,
+    "owner": "",
+    "title": "external-actor"
+  },
+  "version": "2.0.0"
+}
