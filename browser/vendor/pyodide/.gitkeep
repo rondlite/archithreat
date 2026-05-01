@@ -1,0 +1,2 @@
+# Placeholder. The Pyodide runtime is fetched at build setup time
+# (`npm run vendor:pyodide`) and is not committed to the repository.

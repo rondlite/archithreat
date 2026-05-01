@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}archithreat{% endblock %}</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <script src="/static/htmx.min.js" defer></script>
+</head>
+<body>
+  <header>
+    <nav aria-label="Primary">
+      <a href="/" class="brand">archithreat</a>
+      <ul>
+        <li><a href="/convert">Convert</a></li>
+        <li><a href="/inventory">Inventory</a></li>
+        <li><a href="/validate-mapping">Validate mapping</a></li>
+      </ul>
+    </nav>
+  </header>
+  <main>
+    {% block content %}{% endblock %}
+
+    <aside class="privacy-panel" aria-label="Data handling">
+      <h2>What this does to your data</h2>
+      <p>
+        This server processes your model entirely in memory. No part of your
+        upload, mapping, or output is written to disk or sent to any third
+        party. The conversion runs inside this process and the result is
+        returned to your browser.
+      </p>
+      <p>
+        Read more:
+        <a href="{{ privacy_url }}" rel="noopener">{{ privacy_url }}</a>
+      </p>
+    </aside>
+  </main>
+  <footer>
+    <small>archithreat v{{ version }} &middot; self-hosted, stateless</small>
+  </footer>
+</body>
+</html>

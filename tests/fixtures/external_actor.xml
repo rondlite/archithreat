@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model xmlns="http://www.opengroup.org/xsd/archimate/3.0/"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       identifier="external-actor-1">
+  <name xml:lang="en">external-actor</name>
+  <elements>
+    <element identifier="g_internal" xsi:type="Grouping">
+      <name xml:lang="en">Internal</name>
+    </element>
+    <element identifier="n_host" xsi:type="Node">
+      <name xml:lang="en">backend-host</name>
+    </element>
+    <element identifier="a_api" xsi:type="ApplicationComponent">
+      <name xml:lang="en">API</name>
+    </element>
+    <element identifier="ba_customer" xsi:type="BusinessActor">
+      <name xml:lang="en">Customer</name>
+    </element>
+  </elements>
+  <relationships>
+    <relationship identifier="r_c1" xsi:type="Composition" source="g_internal" target="n_host"/>
+    <relationship identifier="r_r1" xsi:type="Realization" source="a_api" target="n_host"/>
+    <relationship identifier="r_s1" xsi:type="Serving" source="a_api" target="ba_customer"/>
+  </relationships>
+</model>

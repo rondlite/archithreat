@@ -1,0 +1,145 @@
+# Default mapping for the drawio-iriusrisk target.
+#
+# Style strings below are PLACEHOLDERS. They follow the mxCell style grammar
+# but the IriusRisk shape library identifiers (`shape=mxgraph.iriusrisk.*`)
+# need to be confirmed against IriusRisk's reference diagram or vendor catalog
+# before relying on them for production round-trip into IriusRisk's editor.
+# Tracked in SPEC §10.1. Output is structurally valid draw.io regardless.
+version: 1
+target: drawio-iriusrisk
+
+zone_rules:
+  - match:
+      archimate_type: Grouping
+      property:
+        name: zone_type
+        equals: logical
+    iriusrisk:
+      zone_name_property: name
+      style: "shape=mxgraph.iriusrisk.trust_zone;html=1;whiteSpace=wrap;fillColor=#dae8fc;strokeColor=#6c8ebf;verticalAlign=top;fontSize=14;"  # TODO: confirm IriusRisk style
+  - match:
+      archimate_type: Grouping
+    iriusrisk:
+      zone_name_property: name
+      style: "shape=mxgraph.iriusrisk.trust_zone;html=1;whiteSpace=wrap;fillColor=#dae8fc;strokeColor=#6c8ebf;verticalAlign=top;fontSize=14;"  # TODO: confirm IriusRisk style
+  - match:
+      archimate_type: Location
+    iriusrisk:
+      zone_name_property: name
+      style: "shape=mxgraph.iriusrisk.trust_zone;html=1;whiteSpace=wrap;fillColor=#d5e8d4;strokeColor=#82b366;verticalAlign=top;fontSize=14;"  # TODO: confirm IriusRisk style
+
+synthetic_zones:
+  unzoned:
+    name: "Unzoned"
+    style: "shape=mxgraph.iriusrisk.trust_zone;html=1;whiteSpace=wrap;fillColor=#f5f5f5;strokeColor=#666666;dashed=1;verticalAlign=top;fontSize=14;"  # TODO
+  external:
+    name: "External"
+    style: "shape=mxgraph.iriusrisk.trust_zone;html=1;whiteSpace=wrap;fillColor=#fff2cc;strokeColor=#d6b656;verticalAlign=top;fontSize=14;"  # TODO
+
+component_rules:
+  - match:
+      archimate_type: ApplicationComponent
+      property:
+        name: tech_stack
+        equals: web
+    iriusrisk:
+      component_type: web_application
+      style: "shape=mxgraph.iriusrisk.web_application;html=1;whiteSpace=wrap;fillColor=#ffffff;strokeColor=#000000;"  # TODO
+  - match:
+      archimate_type: ApplicationComponent
+      property:
+        name: tech_stack
+        equals: mobile
+    iriusrisk:
+      component_type: mobile_application
+      style: "shape=mxgraph.iriusrisk.mobile_application;html=1;whiteSpace=wrap;fillColor=#ffffff;strokeColor=#000000;"  # TODO
+  - match:
+      archimate_type: ApplicationComponent
+    iriusrisk:
+      component_type: generic_application
+      style: "shape=mxgraph.iriusrisk.generic_application;html=1;whiteSpace=wrap;fillColor=#ffffff;strokeColor=#000000;"  # TODO
+  - match:
+      archimate_type: ApplicationService
+    iriusrisk:
+      component_type: service
+      style: "shape=mxgraph.iriusrisk.service;html=1;whiteSpace=wrap;fillColor=#ffffff;strokeColor=#000000;"  # TODO
+  - match:
+      archimate_type: Node
+    iriusrisk:
+      component_type: host
+      style: "shape=mxgraph.iriusrisk.host;html=1;whiteSpace=wrap;fillColor=#e1d5e7;strokeColor=#9673a6;verticalAlign=top;fontSize=12;"  # TODO
+      is_container: true
+  - match:
+      archimate_type: Device
+    iriusrisk:
+      component_type: device
+      style: "shape=mxgraph.iriusrisk.device;html=1;whiteSpace=wrap;fillColor=#e1d5e7;strokeColor=#9673a6;verticalAlign=top;fontSize=12;"  # TODO
+      is_container: true
+  - match:
+      archimate_type: SystemSoftware
+    iriusrisk:
+      component_type: system_software
+      style: "shape=mxgraph.iriusrisk.system_software;html=1;whiteSpace=wrap;fillColor=#ffffff;strokeColor=#000000;"  # TODO
+  - match:
+      archimate_type: BusinessActor
+    iriusrisk:
+      component_type: actor
+      style: "shape=mxgraph.iriusrisk.actor;html=1;whiteSpace=wrap;fillColor=#fff2cc;strokeColor=#d6b656;"  # TODO
+  - match:
+      archimate_type: BusinessRole
+    iriusrisk:
+      component_type: actor
+      style: "shape=mxgraph.iriusrisk.actor;html=1;whiteSpace=wrap;fillColor=#fff2cc;strokeColor=#d6b656;"  # TODO
+  - match:
+      archimate_type: DataObject
+    iriusrisk:
+      component_type: data_store
+      style: "shape=mxgraph.iriusrisk.data_store;html=1;whiteSpace=wrap;fillColor=#f8cecc;strokeColor=#b85450;"  # TODO
+  - match:
+      archimate_type: Artifact
+    iriusrisk:
+      component_type: artifact
+      style: "shape=mxgraph.iriusrisk.artifact;html=1;whiteSpace=wrap;fillColor=#ffffff;strokeColor=#000000;"  # TODO
+
+connection_rules:
+  - match:
+      archimate_type: Flow
+    iriusrisk:
+      style: "edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=classic;"
+      direction: source_to_target
+  - match:
+      archimate_type: Serving
+    iriusrisk:
+      style: "edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=classic;"
+      direction: target_to_source
+  - match:
+      archimate_type: Access
+    iriusrisk:
+      style: "edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;dashed=1;endArrow=open;"
+      direction: by_access_type
+  - match:
+      archimate_type: UsedBy
+    iriusrisk:
+      style: "edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=classic;"
+      direction: target_to_source
+  - match:
+      archimate_type: Triggering
+    iriusrisk:
+      style: "edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=classic;"
+      direction: source_to_target
+
+property_passthrough:
+  components:
+    - protocol
+    - data_classification
+    - patch_authority
+    - tech_stack
+  connections:
+    - protocol
+    - port
+    - authentication
+    - encryption
+
+defaults:
+  unmatched_element: skip_with_warning
+  unmatched_relationship: skip_with_warning

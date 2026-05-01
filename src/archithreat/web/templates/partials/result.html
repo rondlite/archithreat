@@ -1,0 +1,23 @@
+<section id="result-panel" class="result-panel {% if ok %}ok{% else %}err{% endif %}" aria-live="polite">
+  {% if kind == "convert" and ok %}
+    <h2>Conversion complete</h2>
+    <p>Output size: {{ size }} bytes.</p>
+    <p>
+      <a href="{{ download_url }}" download="{{ filename }}">Download {{ filename }}</a>
+    </p>
+  {% elif kind == "inventory" and ok %}
+    <h2>Inventory report</h2>
+    <pre>{{ report_text }}</pre>
+  {% elif kind == "validate" and ok %}
+    <h2>Mapping is valid</h2>
+    <p>No errors detected.</p>
+  {% elif kind == "validate" and not ok and errors is defined %}
+    <h2>Mapping has errors</h2>
+    <ul>
+      {% for e in errors %}<li><code>{{ e.loc|default('') }}</code>: {{ e.msg|default(e) }}</li>{% endfor %}
+    </ul>
+  {% else %}
+    <h2>Error</h2>
+    <p>{{ error_message|default('Unknown error.') }}</p>
+  {% endif %}
+</section>

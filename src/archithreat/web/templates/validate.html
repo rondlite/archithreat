@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}archithreat — validate mapping{% endblock %}
+{% block content %}
+<section>
+  <h1>Validate a mapping YAML</h1>
+  <form
+    hx-post="/ui/validate-mapping"
+    hx-target="#result-panel"
+    hx-encoding="multipart/form-data"
+    enctype="multipart/form-data"
+    method="post"
+  >
+    <p>
+      <label for="mapping-file">Mapping file</label>
+      <input id="mapping-file" name="mapping" type="file" accept=".yaml,.yml,text/yaml">
+    </p>
+    <p>
+      <label for="mapping-text">Or paste mapping YAML</label>
+      <textarea id="mapping-text" name="mapping_text" rows="10"></textarea>
+    </p>
+    <p>
+      <button type="submit">Validate</button>
+    </p>
+  </form>
+  <section id="result-panel" aria-live="polite" class="result-panel"></section>
+</section>
+{% endblock %}

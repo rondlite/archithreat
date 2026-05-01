@@ -1,0 +1,29 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<mxfile host="archithreat" version="1.0">
+  <diagram id="id_4878e713b6bad934" name="external-actor">
+    <mxGraphModel dx="1422" dy="757" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        <mxCell id="__external__" value="External" style="" parent="1" vertex="1">
+          <mxGeometry x="40" y="40" width="280" height="200" as="geometry"/>
+        </mxCell>
+        <mxCell id="ba_customer" value="Customer" style="shape=mxgraph.iriusrisk.actor;html=1;whiteSpace=wrap;fillColor=#fff2cc;strokeColor=#d6b656;" parent="__external__" vertex="1">
+          <mxGeometry x="40" y="70" width="160" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="g_internal" value="Internal" style="shape=mxgraph.iriusrisk.trust_zone;html=1;whiteSpace=wrap;fillColor=#dae8fc;strokeColor=#6c8ebf;verticalAlign=top;fontSize=14;" parent="1" vertex="1">
+          <mxGeometry x="380" y="40" width="280" height="260" as="geometry"/>
+        </mxCell>
+        <mxCell id="n_host" value="backend-host" style="shape=mxgraph.iriusrisk.host;html=1;whiteSpace=wrap;fillColor=#e1d5e7;strokeColor=#9673a6;verticalAlign=top;fontSize=12;" parent="g_internal" vertex="1">
+          <mxGeometry x="40" y="70" width="200" height="130" as="geometry"/>
+        </mxCell>
+        <mxCell id="a_api" value="API" style="shape=mxgraph.iriusrisk.generic_application;html=1;whiteSpace=wrap;fillColor=#ffffff;strokeColor=#000000;" parent="n_host" vertex="1">
+          <mxGeometry x="20" y="50" width="160" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="r_s1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=classic;" parent="1" edge="1" source="ba_customer" target="a_api">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

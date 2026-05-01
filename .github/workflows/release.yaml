@@ -1,0 +1,144 @@
+name: release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  # -------------------------------------------------------------------------
+  # 1. Build wheel + sdist, publish to PyPI via trusted publishing (OIDC).
+  # -------------------------------------------------------------------------
+  build-and-publish-wheel:
+    name: build & publish wheel
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write   # for action-gh-release
+      id-token: write   # for PyPI trusted publishing
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Build wheel + sdist
+        run: |
+          python -m pip install --upgrade pip
+          pip install "build>=1.2"
+          python -m build
+
+      - name: Publish to PyPI (trusted publishing)
+        # No password / token required — the project is configured as a
+        # PyPI Trusted Publisher (OIDC). See:
+        # https://docs.pypi.org/trusted-publishers/
+        uses: pypa/gh-action-pypi-publish@release/v1
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          generate_release_notes: true
+          files: |
+            dist/*.whl
+            dist/*.tar.gz
+
+  # -------------------------------------------------------------------------
+  # 2. Build the Docker image and push to GHCR.
+  #    Push only on tag events (build-only verification on other triggers).
+  # -------------------------------------------------------------------------
+  build-and-push-image:
+    name: build & push image
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GHCR
+        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile
+          push: ${{ github.event_name == 'push' && startsWith(github.ref, 'refs/tags/') }}
+          tags: |
+            ghcr.io/rondlite/archithreat:${{ github.ref_name }}
+            ghcr.io/rondlite/archithreat:latest
+          build-args: |
+            VERSION=${{ github.ref_name }}
+            REVISION=${{ github.sha }}
+          labels: |
+            org.opencontainers.image.source=https://github.com/rondlite/archithreat
+            org.opencontainers.image.version=${{ github.ref_name }}
+            org.opencontainers.image.revision=${{ github.sha }}
+            org.opencontainers.image.licenses=Apache-2.0
+            org.opencontainers.image.title=archithreat
+            org.opencontainers.image.description=ArchiMate to threat-model converter
+
+  # -------------------------------------------------------------------------
+  # 3. Build the static browser bundle. Uploaded for pages.yaml to consume.
+  # -------------------------------------------------------------------------
+  build-browser-bundle:
+    name: build browser bundle
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+          cache-dependency-path: browser/package-lock.json
+
+      - name: Install python build tooling
+        run: |
+          python -m pip install --upgrade pip
+          pip install "build>=1.2"
+
+      - name: npm install
+        working-directory: browser
+        run: npm install
+
+      - name: Vendor Pyodide
+        working-directory: browser
+        run: npm run vendor:pyodide
+
+      - name: Build core wheel into browser/dist/wheels/
+        working-directory: browser
+        run: npm run build:wheel
+
+      - name: Build browser bundle
+        working-directory: browser
+        run: npm run build
+
+      - name: Upload bundle artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: browser-dist
+          path: browser/dist/
+          if-no-files-found: error

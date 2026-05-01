@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model xmlns="http://www.opengroup.org/xsd/archimate/3.0/"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       identifier="orphans-1">
+  <name xml:lang="en">orphans</name>
+  <documentation xml:lang="en">Components without realization, elements outside any zone.</documentation>
+  <elements>
+    <element identifier="a_orphan" xsi:type="ApplicationComponent">
+      <name xml:lang="en">OrphanApp</name>
+    </element>
+    <element identifier="n_lonely" xsi:type="Node">
+      <name xml:lang="en">lonely-host</name>
+    </element>
+  </elements>
+  <relationships/>
+</model>

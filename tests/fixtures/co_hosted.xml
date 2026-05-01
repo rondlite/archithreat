@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model xmlns="http://www.opengroup.org/xsd/archimate/3.0/"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       identifier="co-hosted-1">
+  <name xml:lang="en">co-hosted</name>
+  <elements>
+    <element identifier="g_internal" xsi:type="Grouping">
+      <name xml:lang="en">Internal</name>
+    </element>
+    <element identifier="n_box" xsi:type="Node">
+      <name xml:lang="en">app-box</name>
+    </element>
+    <element identifier="a_one" xsi:type="ApplicationComponent">
+      <name xml:lang="en">AppOne</name>
+    </element>
+    <element identifier="a_two" xsi:type="ApplicationComponent">
+      <name xml:lang="en">AppTwo</name>
+    </element>
+    <element identifier="a_three" xsi:type="ApplicationComponent">
+      <name xml:lang="en">AppThree</name>
+    </element>
+  </elements>
+  <relationships>
+    <relationship identifier="r_c1" xsi:type="Composition" source="g_internal" target="n_box"/>
+    <relationship identifier="r_r1" xsi:type="Realization" source="a_one" target="n_box"/>
+    <relationship identifier="r_r2" xsi:type="Realization" source="a_two" target="n_box"/>
+    <relationship identifier="r_r3" xsi:type="Realization" source="a_three" target="n_box"/>
+    <relationship identifier="r_f1" xsi:type="Flow" source="a_one" target="a_two"/>
+    <relationship identifier="r_f2" xsi:type="Flow" source="a_two" target="a_three"/>
+  </relationships>
+</model>

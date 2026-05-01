@@ -1,0 +1,20 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<mxfile host="archithreat" version="1.0">
+  <diagram id="id_121666d677cff09a" name="orphans">
+    <mxGraphModel dx="1422" dy="757" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        <mxCell id="__unzoned__" value="Unzoned" style="" parent="1" vertex="1">
+          <mxGeometry x="40" y="40" width="460" height="200" as="geometry"/>
+        </mxCell>
+        <mxCell id="n_lonely" value="lonely-host" style="shape=mxgraph.iriusrisk.host;html=1;whiteSpace=wrap;fillColor=#e1d5e7;strokeColor=#9673a6;verticalAlign=top;fontSize=12;" parent="__unzoned__" vertex="1">
+          <mxGeometry x="40" y="70" width="160" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="a_orphan" value="OrphanApp" style="shape=mxgraph.iriusrisk.generic_application;html=1;whiteSpace=wrap;fillColor=#ffffff;strokeColor=#000000;" parent="__unzoned__" vertex="1">
+          <mxGeometry x="220" y="70" width="160" height="60" as="geometry"/>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

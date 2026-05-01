@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>archithreat — ArchiMate to threat model, in your browser</title>
+    <meta
+      name="description"
+      content="Convert ArchiMate 3.x architecture models to IriusRisk-compatible draw.io diagrams entirely in your browser. No upload, no backend."
+    />
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <header class="site-header" role="banner">
+      <h1>archithreat</h1>
+      <p class="tagline">ArchiMate 3.x → IriusRisk-compatible draw.io. Runs in your browser.</p>
+    </header>
+
+    <section class="status-panel" aria-live="polite" aria-atomic="true">
+      <div class="status-row">
+        <span class="status-dot" id="status-dot" data-state="boot" aria-hidden="true"></span>
+        <span id="status-text">Loading runtime…</span>
+      </div>
+      <progress id="status-progress" max="100" value="0"></progress>
+    </section>
+
+    <nav class="tabs" role="tablist" aria-label="Operations">
+      <button id="tab-convert" role="tab" aria-selected="true" aria-controls="panel-convert" class="tab is-active">Convert</button>
+      <button id="tab-inventory" role="tab" aria-selected="false" aria-controls="panel-inventory" class="tab">Inventory</button>
+      <button id="tab-validate" role="tab" aria-selected="false" aria-controls="panel-validate" class="tab">Validate mapping</button>
+    </nav>
+
+    <main>
+      <section id="panel-convert" role="tabpanel" aria-labelledby="tab-convert" class="panel is-active">
+        <h2>Convert</h2>
+        <p class="hint">
+          Pick an ArchiMate Open Exchange XML file. The converter runs in your browser and offers
+          the resulting <code>.drawio</code> as a download.
+        </p>
+        <form id="form-convert">
+          <label for="file-convert" class="file-label">ArchiMate XML
+            <input id="file-convert" name="model" type="file" accept=".xml,application/xml,text/xml" required />
+          </label>
+
+          <details id="mapping-editor">
+            <summary>Mapping (advanced — leave collapsed to use the default)</summary>
+            <p class="hint">
+              Customize the ArchiMate-to-draw.io mapping. Leave empty to use the bundled default.
+            </p>
+            <div class="row">
+              <button type="button" id="btn-load-default" class="secondary">Load default</button>
+              <button type="button" id="btn-validate-mapping" class="secondary">Validate</button>
+            </div>
+            <label for="mapping-text" class="visually-hidden">Mapping YAML</label>
+            <textarea
+              id="mapping-text"
+              name="mapping"
+              rows="14"
+              spellcheck="false"
+              autocomplete="off"
+              autocapitalize="off"
+              wrap="off"
+              placeholder="# YAML mapping (optional). Click 'Load default' to start from the shipped mapping."
+            ></textarea>
+            <div id="mapping-validate-result" class="result-box" aria-live="polite"></div>
+          </details>
+
+          <div class="row">
+            <button type="submit" id="btn-convert" class="primary" disabled>Convert</button>
+            <span id="convert-status" class="muted"></span>
+          </div>
+        </form>
+        <div id="convert-result" class="result-box" aria-live="polite"></div>
+      </section>
+
+      <section id="panel-inventory" role="tabpanel" aria-labelledby="tab-inventory" class="panel" hidden>
+        <h2>Inventory</h2>
+        <p class="hint">
+          Survey the model without producing output. Counts elements by type and layer, surfaces
+          orphans and skipped cases.
+        </p>
+        <form id="form-inventory">
+          <label for="file-inventory" class="file-label">ArchiMate XML
+            <input id="file-inventory" name="model" type="file" accept=".xml,application/xml,text/xml" required />
+          </label>
+          <div class="row">
+            <button type="submit" id="btn-inventory" class="primary" disabled>Run inventory</button>
+            <span id="inventory-status" class="muted"></span>
+          </div>
+        </form>
+        <pre id="inventory-result" class="result-box report" aria-live="polite"></pre>
+      </section>
+
+      <section id="panel-validate" role="tabpanel" aria-labelledby="tab-validate" class="panel" hidden>
+        <h2>Validate mapping</h2>
+        <p class="hint">
+          Check a mapping YAML against the schema for the v1 target.
+        </p>
+        <form id="form-validate">
+          <label for="validate-text">Mapping YAML
+            <textarea
+              id="validate-text"
+              rows="14"
+              spellcheck="false"
+              autocomplete="off"
+              autocapitalize="off"
+              wrap="off"
+              placeholder="# Paste a mapping YAML here, or click 'Load default'."
+            ></textarea>
+          </label>
+          <div class="row">
+            <button type="button" id="btn-validate-load-default" class="secondary">Load default</button>
+            <button type="submit" id="btn-validate-run" class="primary" disabled>Validate</button>
+            <span id="validate-status" class="muted"></span>
+          </div>
+        </form>
+        <div id="validate-result" class="result-box" aria-live="polite"></div>
+      </section>
+    </main>
+
+    <aside class="privacy-panel" role="complementary" aria-label="Privacy">
+      <h2>Nothing leaves your browser</h2>
+      <p>
+        The conversion runs locally in a Web Worker after the page loads. No model data is sent to
+        any server. Verify in DevTools → Network: after the initial page load you will see no
+        further requests.
+      </p>
+    </aside>
+
+    <footer class="site-footer">
+      <p>
+        archithreat · Apache-2.0 ·
+        <a href="https://github.com/rondlite/archithreat">source</a>
+      </p>
+    </footer>
+
+    <script type="module" src="./main.js"></script>
+  </body>
+</html>

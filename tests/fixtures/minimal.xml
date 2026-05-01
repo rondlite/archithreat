@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model xmlns="http://www.opengroup.org/xsd/archimate/3.0/"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       identifier="minimal-1">
+  <name xml:lang="en">minimal</name>
+  <documentation xml:lang="en">Single zone, single host, single application component, single realization.</documentation>
+  <elements>
+    <element identifier="g_dmz" xsi:type="Grouping">
+      <name xml:lang="en">DMZ</name>
+    </element>
+    <element identifier="n_web" xsi:type="Node">
+      <name xml:lang="en">web-host</name>
+    </element>
+    <element identifier="a_app" xsi:type="ApplicationComponent">
+      <name xml:lang="en">App</name>
+    </element>
+  </elements>
+  <relationships>
+    <relationship identifier="r_compose" xsi:type="Composition" source="g_dmz" target="n_web"/>
+    <relationship identifier="r_realize" xsi:type="Realization" source="a_app" target="n_web"/>
+  </relationships>
+</model>

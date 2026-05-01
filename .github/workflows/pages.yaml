@@ -1,0 +1,76 @@
+name: pages
+
+on:
+  release:
+    types: [published]
+  workflow_run:
+    workflows: ["release"]
+    types: [completed]
+  workflow_dispatch:
+
+# Only one Pages deploy at a time; do not cancel an in-flight publish.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build-and-deploy:
+    name: build & deploy browser bundle to Pages
+    runs-on: ubuntu-latest
+    # Skip if this was triggered by a failed release workflow run.
+    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+          cache-dependency-path: browser/package-lock.json
+
+      - name: Install python build tooling
+        run: |
+          python -m pip install --upgrade pip
+          pip install "build>=1.2"
+
+      - name: npm install
+        working-directory: browser
+        run: npm install
+
+      - name: Vendor Pyodide
+        working-directory: browser
+        run: npm run vendor:pyodide
+
+      - name: Build core wheel into browser/dist/wheels/
+        working-directory: browser
+        run: npm run build:wheel
+
+      - name: Build browser bundle
+        working-directory: browser
+        run: npm run build
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: browser/dist
+
+      - name: Deploy to GitHub Pages
+        id: deploy
+        uses: actions/deploy-pages@v4

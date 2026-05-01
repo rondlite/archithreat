@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}archithreat — convert{% endblock %}
+{% block content %}
+<section>
+  <h1>Convert ArchiMate to draw.io / IriusRisk</h1>
+  <form
+    hx-post="/ui/convert"
+    hx-target="#result-panel"
+    hx-encoding="multipart/form-data"
+    enctype="multipart/form-data"
+    method="post"
+  >
+    <p>
+      <label for="model-file">ArchiMate Open Exchange XML</label>
+      <input id="model-file" name="model" type="file" accept=".xml,application/xml" required>
+    </p>
+    <p>
+      <label for="mapping-text">Custom mapping YAML (optional)</label>
+      <textarea id="mapping-text" name="mapping_text" rows="6" placeholder="Leave blank to use the bundled default mapping."></textarea>
+    </p>
+    <p>
+      <button type="submit">Convert</button>
+    </p>
+  </form>
+  <section id="result-panel" aria-live="polite" class="result-panel"></section>
+</section>
+{% endblock %}

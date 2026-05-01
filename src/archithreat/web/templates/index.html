@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}archithreat — home{% endblock %}
+{% block content %}
+<section>
+  <h1>archithreat</h1>
+  <p>
+    Convert ArchiMate 3.x architecture models into threat-modeling artifacts.
+    This self-hosted instance runs inside your own trust zone.
+  </p>
+  <ul class="action-list">
+    <li><a href="/convert">Convert a model</a> &mdash; produce a draw.io / IriusRisk file.</li>
+    <li><a href="/inventory">Inventory a model</a> &mdash; survey contents without converting.</li>
+    <li><a href="/validate-mapping">Validate a mapping</a> &mdash; check a custom mapping YAML.</li>
+  </ul>
+</section>
+{% endblock %}

@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}archithreat — inventory{% endblock %}
+{% block content %}
+<section>
+  <h1>Inventory an ArchiMate model</h1>
+  <form
+    hx-post="/ui/inventory"
+    hx-target="#result-panel"
+    hx-encoding="multipart/form-data"
+    enctype="multipart/form-data"
+    method="post"
+  >
+    <p>
+      <label for="model-file">ArchiMate Open Exchange XML</label>
+      <input id="model-file" name="model" type="file" accept=".xml,application/xml" required>
+    </p>
+    <p>
+      <button type="submit">Run inventory</button>
+    </p>
+  </form>
+  <section id="result-panel" aria-live="polite" class="result-panel"></section>
+</section>
+{% endblock %}
