@@ -7,6 +7,43 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-05-01
+
+### Changed (BREAKING — review imports into IriusRisk)
+- Default mapping rebuilt from IriusRisk's public Community shape libraries
+  (https://github.com/iriusrisk/Community/tree/master/ShapeLibraries):
+  - Trust zones grew from 4 to 6 (added Public, Public Cloud, Third Party / SaaS
+    UUIDs from `Trust_zone_IriusRisk.xml`).
+  - Component rules grew from 18 to 140, with name-pattern dispatch covering
+    AWS (S3, EC2, Lambda, RDS, DynamoDB, CloudFront, API Gateway, Cognito,
+    SQS/SNS, IAM, Kinesis, ECS/EKS/Fargate, ElastiCache, MSK), Azure (Blob,
+    Cosmos, Functions, Key Vault, SQL, AD, AKS, Redis, VM), GCP (Compute
+    Engine, Storage, BigQuery, GKE, Functions, Pub/Sub, IAM), databases
+    (Postgres, MySQL, MariaDB, MS SQL, Mongo, SQLite, Redis, Oracle,
+    Cassandra, CouchDB, IBM Db2, Neo4j, Hazelcast, Informix, Riak),
+    identity (OAuth2 AS/RS/client, OIDC IdP/RP, SAML IdP/SP, Kerberos, LDAP,
+    Active Directory), web servers (NGINX, Apache HTTP, Tomcat, IIS, FTP,
+    SSH, IBM WebSphere), network (LB, Firewall, Proxy, Router, DNS, VPN,
+    CDN, ISP), containers (Docker + Kubernetes), messaging (Kafka, MQTT),
+    SaaS (WordPress, Drupal, Joomla, CMS, CRM, ERP, SIEM, IDS, IPS, EDR,
+    XDR, DLP, Antivirus), payment, browser / mobile / Android / iOS, IoT.
+- Component refs switched from `CD-V2-*` (custom IriusRisk variant prefix)
+  to canonical Community library refs (e.g. `web-ui`, `postgresql`,
+  `CD-NGINX`). The `CD-V2-*` prefix is not present in IriusRisk's public
+  shape libraries; if your installation requires it, copy the bundled
+  default and override the refs.
+- DataObject default is now `other-database` (verified canonical fallback)
+  instead of `CD-V2-POSTGRESQL`. DataObjects with name patterns matching
+  postgres/mysql/mongo/etc. resolve to specific database refs.
+- BusinessActor / BusinessRole default is now `CD-BROWSER` (closest stock
+  Community shape; no first-class human-actor shape exists in the public
+  library).
+
+### Fixed
+- YAML double-quoted strings interpret `\b` as backspace, silently breaking
+  every regex word-boundary in `name_pattern` values. All patterns now use
+  YAML single quotes so regex metacharacters pass through verbatim.
+
 ## [1.0.4] - 2026-05-01
 
 ### Fixed

@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-__version__ = "1.0.4"
+__version__ = "1.1.0"
 
 from .core.emitters import EMITTERS, available_targets, get_emitter
 from .core.inventory import InventoryReport, inventory_bytes, inventory_path

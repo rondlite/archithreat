@@ -74,7 +74,7 @@ def test_apply_mapping_attaches_styles(lemonade_xml: bytes) -> None:
     spec = storefront.target_data.get("iriusrisk")
     assert isinstance(spec, dict)
     # storefront has tech_stack=web, so it should hit the Web UI rule first
-    assert spec["component_type"] == "CD-V2-WEB-UI"
+    assert spec["component_type"] == "web-ui"
 
 
 def test_first_match_wins() -> None:

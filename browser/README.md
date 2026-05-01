@@ -66,7 +66,7 @@ dist/
 │   ├── pyodide.asm.wasm
 │   └── …
 └── wheels/
-    └── archithreat-1.0.4-py3-none-any.whl
+    └── archithreat-1.1.0-py3-none-any.whl
 ```
 
 All paths are relative, so the same `dist/` works under any URL prefix
