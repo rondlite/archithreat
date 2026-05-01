@@ -60,9 +60,8 @@ Issues = "https://github.com/rondlite/archithreat/issues"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/archithreat"]
-
-[tool.hatch.build.targets.wheel.force-include]
-"src/archithreat/core/defaults" = "archithreat/core/defaults"
+# Default mapping YAML is bundled via the package directory (hatchling
+# auto-includes data files inside discovered packages).
 
 [tool.ruff]
 line-length = 100
