@@ -5,13 +5,13 @@
       <root>
         <mxCell id="0"/>
         <mxCell id="1" parent="0"/>
-        <mxCell id="g_dmz" value="DMZ" style="shape=mxgraph.iriusrisk.trust_zone;html=1;whiteSpace=wrap;fillColor=#dae8fc;strokeColor=#6c8ebf;verticalAlign=top;fontSize=14;" parent="1" vertex="1">
+        <mxCell id="g_dmz" value="DMZ" style="ir.ref=2ab4effa-40b7-4cd2-ba81-8247d29a6f2d;rounded=1;whiteSpace=wrap;recursiveResize=0;html=1;verticalAlign=top;align=left;dashed=1;strokeWidth=1;arcSize=3;absoluteArcSize=1;spacingTop=1;spacingLeft=32;strokeColor=#7575EB;fillColor=#F0F0FF;fillOpacity=30;fontColor=#5651E0;connectable=0;container=1;source=iriusrisk;ir.type=TRUSTZONE;" parent="1" vertex="1">
           <mxGeometry x="40" y="40" width="280" height="260" as="geometry"/>
         </mxCell>
-        <mxCell id="n_web" value="web-host" style="shape=mxgraph.iriusrisk.host;html=1;whiteSpace=wrap;fillColor=#e1d5e7;strokeColor=#9673a6;verticalAlign=top;fontSize=12;" parent="g_dmz" vertex="1">
+        <mxCell id="n_web" value="web-host" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#999999;strokeWidth=1;dashed=0;verticalAlign=top;fontSize=12;fontColor=#333333;connectable=0;container=1;collapsible=0;recursiveResize=0;" parent="g_dmz" vertex="1">
           <mxGeometry x="40" y="70" width="200" height="130" as="geometry"/>
         </mxCell>
-        <mxCell id="a_app" value="App" style="shape=mxgraph.iriusrisk.generic_application;html=1;whiteSpace=wrap;fillColor=#ffffff;strokeColor=#000000;" parent="n_web" vertex="1">
+        <mxCell id="a_app" value="App" style="rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-WEB-SERVICE;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=1;strokeWidth=1;" parent="n_web" vertex="1">
           <mxGeometry x="20" y="50" width="160" height="60" as="geometry"/>
         </mxCell>
       </root>

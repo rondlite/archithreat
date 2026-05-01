@@ -105,6 +105,9 @@
     <element identifier="a_paygw" xsi:type="ApplicationComponent">
       <name xml:lang="en">Stripe Gateway</name>
     </element>
+    <element identifier="a_postgres" xsi:type="ApplicationComponent">
+      <name xml:lang="en">PostgreSQL</name>
+    </element>
 
     <!-- Data -->
     <element identifier="d_orders" xsi:type="DataObject">
@@ -136,6 +139,9 @@
     <relationship identifier="rc_tablet_shop" xsi:type="Composition" source="z_shop" target="n_tablet"/>
     <relationship identifier="rc_paygw_pay" xsi:type="Composition" source="z_payments" target="n_paygw"/>
     <relationship identifier="rc_cust_inet" xsi:type="Composition" source="z_internet" target="ba_customer"/>
+    <!-- DataObjects live in the Internal Network zone -->
+    <relationship identifier="rc_orders_int" xsi:type="Composition" source="z_internal" target="d_orders"/>
+    <relationship identifier="rc_inventory_int" xsi:type="Composition" source="z_internal" target="d_inventory"/>
 
     <!-- Realizations -->
     <relationship identifier="rr_storefront" xsi:type="Realization" source="a_storefront" target="n_webserver"/>
@@ -143,10 +149,25 @@
     <relationship identifier="rr_inventory" xsi:type="Realization" source="a_inventory" target="n_appserver"/>
     <relationship identifier="rr_kitchenui" xsi:type="Realization" source="a_kitchenui" target="n_tablet"/>
     <relationship identifier="rr_paygw" xsi:type="Realization" source="a_paygw" target="n_paygw"/>
+    <relationship identifier="rr_postgres" xsi:type="Realization" source="a_postgres" target="n_dbserver"/>
 
-    <!-- Data hosting -->
-    <relationship identifier="ra_orders_db" xsi:type="Access" source="a_orderapi" target="d_orders" accessType="write"/>
-    <relationship identifier="ra_inv_db" xsi:type="Access" source="a_inventory" target="d_inventory" accessType="write"/>
+    <!-- Data access (now via Postgres) -->
+    <relationship identifier="ra_orders_db" xsi:type="Access" source="a_postgres" target="d_orders" accessType="write"/>
+    <relationship identifier="ra_inv_db" xsi:type="Access" source="a_postgres" target="d_inventory" accessType="write"/>
+    <relationship identifier="rf_order_pg" xsi:type="Flow" source="a_orderapi" target="a_postgres">
+      <properties>
+        <property propertyDefinitionRef="propdef_protocol">
+          <value xml:lang="en">PostgreSQL</value>
+        </property>
+      </properties>
+    </relationship>
+    <relationship identifier="rf_inv_pg" xsi:type="Flow" source="a_inventory" target="a_postgres">
+      <properties>
+        <property propertyDefinitionRef="propdef_protocol">
+          <value xml:lang="en">PostgreSQL</value>
+        </property>
+      </properties>
+    </relationship>
 
     <!-- Flows -->
     <relationship identifier="rf_cust_storefront" xsi:type="Flow" source="ba_customer" target="a_storefront">

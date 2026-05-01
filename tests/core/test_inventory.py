@@ -10,11 +10,11 @@ from archithreat.core.inventory import inventory_bytes
 def test_lemonade_inventory(lemonade_xml: bytes) -> None:
     report = inventory_bytes(lemonade_xml)
     assert report.model_name == "Lemonade Shop"
-    assert report.counts_by_type["ApplicationComponent"] == 5
+    assert report.counts_by_type["ApplicationComponent"] == 6
     assert report.counts_by_type["Node"] == 4
     # Realization coverage
-    assert report.realization_coverage["application_components_total"] == 5
-    assert report.realization_coverage["with_node_realization"] == 5
+    assert report.realization_coverage["application_components_total"] == 6
+    assert report.realization_coverage["with_node_realization"] == 6
     assert report.realization_coverage["orphans"] == 0
     # External actors
     assert report.external_actor_count >= 1

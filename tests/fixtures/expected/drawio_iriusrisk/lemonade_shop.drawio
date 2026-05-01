@@ -5,107 +5,117 @@
       <root>
         <mxCell id="0"/>
         <mxCell id="1" parent="0"/>
-        <mxCell id="z_dmz" value="DMZ" style="shape=mxgraph.iriusrisk.trust_zone;html=1;whiteSpace=wrap;fillColor=#dae8fc;strokeColor=#6c8ebf;verticalAlign=top;fontSize=14;" parent="1" vertex="1">
+        <mxCell id="z_dmz" value="DMZ" style="ir.ref=2ab4effa-40b7-4cd2-ba81-8247d29a6f2d;rounded=1;whiteSpace=wrap;recursiveResize=0;html=1;verticalAlign=top;align=left;dashed=1;strokeWidth=1;arcSize=3;absoluteArcSize=1;spacingTop=1;spacingLeft=32;strokeColor=#7575EB;fillColor=#F0F0FF;fillOpacity=30;fontColor=#5651E0;connectable=0;container=1;source=iriusrisk;ir.type=TRUSTZONE;" parent="1" vertex="1">
           <mxGeometry x="40" y="40" width="280" height="260" as="geometry"/>
         </mxCell>
-        <mxCell id="n_webserver" value="web-server-1" style="shape=mxgraph.iriusrisk.host;html=1;whiteSpace=wrap;fillColor=#e1d5e7;strokeColor=#9673a6;verticalAlign=top;fontSize=12;" parent="z_dmz" vertex="1">
+        <mxCell id="n_webserver" value="web-server-1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#999999;strokeWidth=1;dashed=0;verticalAlign=top;fontSize=12;fontColor=#333333;connectable=0;container=1;collapsible=0;recursiveResize=0;" parent="z_dmz" vertex="1">
           <mxGeometry x="40" y="70" width="200" height="130" as="geometry"/>
         </mxCell>
         <UserObject id="a_storefront" label="Storefront" tech_stack="web">
-          <mxCell style="shape=mxgraph.iriusrisk.web_application;html=1;whiteSpace=wrap;fillColor=#ffffff;strokeColor=#000000;" parent="n_webserver" vertex="1">
+          <mxCell style="rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-WEB-UI;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=1;strokeWidth=1;" parent="n_webserver" vertex="1">
             <mxGeometry x="20" y="50" width="160" height="60" as="geometry"/>
           </mxCell>
         </UserObject>
-        <mxCell id="__external__" value="External" style="" parent="1" vertex="1">
-          <mxGeometry x="380" y="40" width="280" height="200" as="geometry"/>
+        <mxCell id="z_internal" value="Internal Network" style="ir.ref=2ab4effa-40b7-4cd2-ba81-8247d29a6f2d;rounded=1;whiteSpace=wrap;recursiveResize=0;html=1;verticalAlign=top;align=left;dashed=1;strokeWidth=1;arcSize=3;absoluteArcSize=1;spacingTop=1;spacingLeft=32;strokeColor=#7575EB;fillColor=#F0F0FF;fillOpacity=30;fontColor=#5651E0;connectable=0;container=1;source=iriusrisk;ir.type=TRUSTZONE;" parent="1" vertex="1">
+          <mxGeometry x="380" y="40" width="460" height="490" as="geometry"/>
         </mxCell>
-        <mxCell id="ba_kitchen" value="Kitchen Staff" style="shape=mxgraph.iriusrisk.actor;html=1;whiteSpace=wrap;fillColor=#fff2cc;strokeColor=#d6b656;" parent="__external__" vertex="1">
-          <mxGeometry x="40" y="70" width="160" height="60" as="geometry"/>
-        </mxCell>
-        <mxCell id="z_internal" value="Internal Network" style="shape=mxgraph.iriusrisk.trust_zone;html=1;whiteSpace=wrap;fillColor=#dae8fc;strokeColor=#6c8ebf;verticalAlign=top;fontSize=14;" parent="1" vertex="1">
-          <mxGeometry x="720" y="40" width="460" height="340" as="geometry"/>
-        </mxCell>
-        <mxCell id="n_appserver" value="app-server-1" style="shape=mxgraph.iriusrisk.host;html=1;whiteSpace=wrap;fillColor=#e1d5e7;strokeColor=#9673a6;verticalAlign=top;fontSize=12;" parent="z_internal" vertex="1">
+        <mxCell id="n_appserver" value="app-server-1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#999999;strokeWidth=1;dashed=0;verticalAlign=top;fontSize=12;fontColor=#333333;connectable=0;container=1;collapsible=0;recursiveResize=0;" parent="z_internal" vertex="1">
           <mxGeometry x="40" y="70" width="380" height="130" as="geometry"/>
         </mxCell>
-        <mxCell id="a_inventory" value="Inventory Service" style="shape=mxgraph.iriusrisk.generic_application;html=1;whiteSpace=wrap;fillColor=#ffffff;strokeColor=#000000;" parent="n_appserver" vertex="1">
+        <mxCell id="a_inventory" value="Inventory Service" style="rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-WEB-SERVICE;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=1;strokeWidth=1;" parent="n_appserver" vertex="1">
           <mxGeometry x="20" y="50" width="160" height="60" as="geometry"/>
         </mxCell>
-        <mxCell id="a_orderapi" value="Order API" style="shape=mxgraph.iriusrisk.generic_application;html=1;whiteSpace=wrap;fillColor=#ffffff;strokeColor=#000000;" parent="n_appserver" vertex="1">
+        <mxCell id="a_orderapi" value="Order API" style="rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-WEB-SERVICE;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=1;strokeWidth=1;" parent="n_appserver" vertex="1">
           <mxGeometry x="200" y="50" width="160" height="60" as="geometry"/>
         </mxCell>
-        <mxCell id="n_dbserver" value="db-server-1" style="shape=mxgraph.iriusrisk.host;html=1;whiteSpace=wrap;fillColor=#e1d5e7;strokeColor=#9673a6;verticalAlign=top;fontSize=12;" parent="z_internal" vertex="1">
-          <mxGeometry x="40" y="220" width="160" height="60" as="geometry"/>
+        <mxCell id="n_dbserver" value="db-server-1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#999999;strokeWidth=1;dashed=0;verticalAlign=top;fontSize=12;fontColor=#333333;connectable=0;container=1;collapsible=0;recursiveResize=0;" parent="z_internal" vertex="1">
+          <mxGeometry x="40" y="220" width="200" height="130" as="geometry"/>
         </mxCell>
-        <mxCell id="z_internet" value="Internet" style="shape=mxgraph.iriusrisk.trust_zone;html=1;whiteSpace=wrap;fillColor=#dae8fc;strokeColor=#6c8ebf;verticalAlign=top;fontSize=14;" parent="1" vertex="1">
-          <mxGeometry x="1240" y="40" width="280" height="200" as="geometry"/>
-        </mxCell>
-        <mxCell id="ba_customer" value="Customer" style="shape=mxgraph.iriusrisk.actor;html=1;whiteSpace=wrap;fillColor=#fff2cc;strokeColor=#d6b656;" parent="z_internet" vertex="1">
-          <mxGeometry x="40" y="70" width="160" height="60" as="geometry"/>
-        </mxCell>
-        <mxCell id="z_payments" value="Payment Provider" style="shape=mxgraph.iriusrisk.trust_zone;html=1;whiteSpace=wrap;fillColor=#dae8fc;strokeColor=#6c8ebf;verticalAlign=top;fontSize=14;" parent="1" vertex="1">
-          <mxGeometry x="1580" y="40" width="280" height="260" as="geometry"/>
-        </mxCell>
-        <mxCell id="n_paygw" value="payment-gateway-host" style="shape=mxgraph.iriusrisk.host;html=1;whiteSpace=wrap;fillColor=#e1d5e7;strokeColor=#9673a6;verticalAlign=top;fontSize=12;" parent="z_payments" vertex="1">
-          <mxGeometry x="40" y="70" width="200" height="130" as="geometry"/>
-        </mxCell>
-        <mxCell id="a_paygw" value="Stripe Gateway" style="shape=mxgraph.iriusrisk.generic_application;html=1;whiteSpace=wrap;fillColor=#ffffff;strokeColor=#000000;" parent="n_paygw" vertex="1">
+        <mxCell id="a_postgres" value="PostgreSQL" style="rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-POSTGRESQL;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=1;strokeWidth=1;" parent="n_dbserver" vertex="1">
           <mxGeometry x="20" y="50" width="160" height="60" as="geometry"/>
         </mxCell>
-        <mxCell id="z_shop" value="Shop Floor" style="shape=mxgraph.iriusrisk.trust_zone;html=1;whiteSpace=wrap;fillColor=#dae8fc;strokeColor=#6c8ebf;verticalAlign=top;fontSize=14;" parent="1" vertex="1">
+        <mxCell id="d_inventory" value="Inventory DB" style="rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-POSTGRESQL;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=1;strokeWidth=1;" parent="z_internal" vertex="1">
+          <mxGeometry x="40" y="370" width="160" height="60" as="geometry"/>
+        </mxCell>
+        <UserObject id="d_orders" label="Orders DB" data_classification="internal">
+          <mxCell style="rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-POSTGRESQL;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=1;strokeWidth=1;" parent="z_internal" vertex="1">
+            <mxGeometry x="220" y="370" width="160" height="60" as="geometry"/>
+          </mxCell>
+        </UserObject>
+        <mxCell id="z_internet" value="Internet" style="ir.ref=f0ba7722-39b6-4c81-8290-a30a248bb8d9;rounded=1;whiteSpace=wrap;recursiveResize=0;html=1;verticalAlign=top;align=left;dashed=1;strokeWidth=1;arcSize=3;absoluteArcSize=1;spacingTop=1;spacingLeft=32;strokeColor=#7575EB;fillColor=#F0F0FF;fillOpacity=30;fontColor=#5651E0;connectable=0;container=1;source=iriusrisk;ir.type=TRUSTZONE;" parent="1" vertex="1">
+          <mxGeometry x="900" y="40" width="280" height="200" as="geometry"/>
+        </mxCell>
+        <mxCell id="ba_customer" value="Customer" style="rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-BROWSER;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=1;strokeWidth=1;" parent="z_internet" vertex="1">
+          <mxGeometry x="40" y="70" width="160" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="__external__" value="Internet" style="" parent="1" vertex="1">
+          <mxGeometry x="1240" y="40" width="280" height="200" as="geometry"/>
+        </mxCell>
+        <mxCell id="ba_kitchen" value="Kitchen Staff" style="rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-BROWSER;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=1;strokeWidth=1;" parent="__external__" vertex="1">
+          <mxGeometry x="40" y="70" width="160" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="z_payments" value="Payment Provider" style="ir.ref=2ab4effa-40b7-4cd2-ba81-8247d29a6f2d;rounded=1;whiteSpace=wrap;recursiveResize=0;html=1;verticalAlign=top;align=left;dashed=1;strokeWidth=1;arcSize=3;absoluteArcSize=1;spacingTop=1;spacingLeft=32;strokeColor=#7575EB;fillColor=#F0F0FF;fillOpacity=30;fontColor=#5651E0;connectable=0;container=1;source=iriusrisk;ir.type=TRUSTZONE;" parent="1" vertex="1">
+          <mxGeometry x="1580" y="40" width="280" height="260" as="geometry"/>
+        </mxCell>
+        <mxCell id="n_paygw" value="payment-gateway-host" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#999999;strokeWidth=1;dashed=0;verticalAlign=top;fontSize=12;fontColor=#333333;connectable=0;container=1;collapsible=0;recursiveResize=0;" parent="z_payments" vertex="1">
+          <mxGeometry x="40" y="70" width="200" height="130" as="geometry"/>
+        </mxCell>
+        <mxCell id="a_paygw" value="Stripe Gateway" style="rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-WEB-SERVICE;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=1;strokeWidth=1;" parent="n_paygw" vertex="1">
+          <mxGeometry x="20" y="50" width="160" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="z_shop" value="Shop Floor" style="ir.ref=2ab4effa-40b7-4cd2-ba81-8247d29a6f2d;rounded=1;whiteSpace=wrap;recursiveResize=0;html=1;verticalAlign=top;align=left;dashed=1;strokeWidth=1;arcSize=3;absoluteArcSize=1;spacingTop=1;spacingLeft=32;strokeColor=#7575EB;fillColor=#F0F0FF;fillOpacity=30;fontColor=#5651E0;connectable=0;container=1;source=iriusrisk;ir.type=TRUSTZONE;" parent="1" vertex="1">
           <mxGeometry x="1920" y="40" width="280" height="260" as="geometry"/>
         </mxCell>
-        <mxCell id="n_tablet" value="kitchen-tablet" style="shape=mxgraph.iriusrisk.device;html=1;whiteSpace=wrap;fillColor=#e1d5e7;strokeColor=#9673a6;verticalAlign=top;fontSize=12;" parent="z_shop" vertex="1">
+        <mxCell id="n_tablet" value="kitchen-tablet" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#999999;strokeWidth=1;dashed=0;verticalAlign=top;fontSize=12;fontColor=#333333;connectable=0;container=1;collapsible=0;recursiveResize=0;" parent="z_shop" vertex="1">
           <mxGeometry x="40" y="70" width="200" height="130" as="geometry"/>
         </mxCell>
         <UserObject id="a_kitchenui" label="Kitchen Display" tech_stack="mobile">
-          <mxCell style="shape=mxgraph.iriusrisk.mobile_application;html=1;whiteSpace=wrap;fillColor=#ffffff;strokeColor=#000000;" parent="n_tablet" vertex="1">
+          <mxCell style="rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-MOBILE-UI;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=1;strokeWidth=1;" parent="n_tablet" vertex="1">
             <mxGeometry x="20" y="50" width="160" height="60" as="geometry"/>
           </mxCell>
         </UserObject>
-        <mxCell id="__unzoned__" value="Unzoned" style="" parent="1" vertex="1">
-          <mxGeometry x="2260" y="40" width="460" height="200" as="geometry"/>
+        <mxCell id="ra_orders_db" value="" style="edgeStyle=none;curved=1;html=1;strokeColor=#BFBFBF;strokeWidth=2;endArrow=open;endFill=0;endSize=4;dashed=1;" parent="1" edge="1" source="a_postgres" target="d_orders">
+          <mxGeometry relative="1" as="geometry"/>
         </mxCell>
-        <mxCell id="d_inventory" value="Inventory DB" style="shape=mxgraph.iriusrisk.data_store;html=1;whiteSpace=wrap;fillColor=#f8cecc;strokeColor=#b85450;" parent="__unzoned__" vertex="1">
-          <mxGeometry x="40" y="70" width="160" height="60" as="geometry"/>
+        <mxCell id="ra_inv_db" value="" style="edgeStyle=none;curved=1;html=1;strokeColor=#BFBFBF;strokeWidth=2;endArrow=open;endFill=0;endSize=4;dashed=1;" parent="1" edge="1" source="a_postgres" target="d_inventory">
+          <mxGeometry relative="1" as="geometry"/>
         </mxCell>
-        <UserObject id="d_orders" label="Orders DB" data_classification="internal">
-          <mxCell style="shape=mxgraph.iriusrisk.data_store;html=1;whiteSpace=wrap;fillColor=#f8cecc;strokeColor=#b85450;" parent="__unzoned__" vertex="1">
-            <mxGeometry x="220" y="70" width="160" height="60" as="geometry"/>
+        <UserObject id="rf_order_pg" label="PostgreSQL" protocol="PostgreSQL">
+          <mxCell style="edgeStyle=none;curved=1;html=1;strokeColor=#BFBFBF;strokeWidth=2;endArrow=open;endFill=0;endSize=4;" parent="1" edge="1" source="a_orderapi" target="a_postgres">
+            <mxGeometry relative="1" as="geometry"/>
           </mxCell>
         </UserObject>
-        <mxCell id="ra_orders_db" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;dashed=1;endArrow=open;" parent="1" edge="1" source="a_orderapi" target="d_orders">
-          <mxGeometry relative="1" as="geometry"/>
-        </mxCell>
-        <mxCell id="ra_inv_db" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;dashed=1;endArrow=open;" parent="1" edge="1" source="a_inventory" target="d_inventory">
-          <mxGeometry relative="1" as="geometry"/>
-        </mxCell>
+        <UserObject id="rf_inv_pg" label="PostgreSQL" protocol="PostgreSQL">
+          <mxCell style="edgeStyle=none;curved=1;html=1;strokeColor=#BFBFBF;strokeWidth=2;endArrow=open;endFill=0;endSize=4;" parent="1" edge="1" source="a_inventory" target="a_postgres">
+            <mxGeometry relative="1" as="geometry"/>
+          </mxCell>
+        </UserObject>
         <UserObject id="rf_cust_storefront" label="HTTPS" protocol="HTTPS">
-          <mxCell style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=classic;" parent="1" edge="1" source="ba_customer" target="a_storefront">
+          <mxCell style="edgeStyle=none;curved=1;html=1;strokeColor=#BFBFBF;strokeWidth=2;endArrow=open;endFill=0;endSize=4;" parent="1" edge="1" source="ba_customer" target="a_storefront">
             <mxGeometry relative="1" as="geometry"/>
           </mxCell>
         </UserObject>
         <UserObject id="rf_storefront_order" label="HTTPS" protocol="HTTPS">
-          <mxCell style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=classic;" parent="1" edge="1" source="a_storefront" target="a_orderapi">
+          <mxCell style="edgeStyle=none;curved=1;html=1;strokeColor=#BFBFBF;strokeWidth=2;endArrow=open;endFill=0;endSize=4;" parent="1" edge="1" source="a_storefront" target="a_orderapi">
             <mxGeometry relative="1" as="geometry"/>
           </mxCell>
         </UserObject>
         <UserObject id="rf_order_inv" label="gRPC" protocol="gRPC">
-          <mxCell style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=classic;" parent="1" edge="1" source="a_orderapi" target="a_inventory">
+          <mxCell style="edgeStyle=none;curved=1;html=1;strokeColor=#BFBFBF;strokeWidth=2;endArrow=open;endFill=0;endSize=4;" parent="1" edge="1" source="a_orderapi" target="a_inventory">
             <mxGeometry relative="1" as="geometry"/>
           </mxCell>
         </UserObject>
         <UserObject id="rf_order_pay" label="HTTPS" protocol="HTTPS">
-          <mxCell style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=classic;" parent="1" edge="1" source="a_orderapi" target="a_paygw">
+          <mxCell style="edgeStyle=none;curved=1;html=1;strokeColor=#BFBFBF;strokeWidth=2;endArrow=open;endFill=0;endSize=4;" parent="1" edge="1" source="a_orderapi" target="a_paygw">
             <mxGeometry relative="1" as="geometry"/>
           </mxCell>
         </UserObject>
         <UserObject id="rf_order_kitchen" label="WebSocket" protocol="WebSocket">
-          <mxCell style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=classic;" parent="1" edge="1" source="a_orderapi" target="a_kitchenui">
+          <mxCell style="edgeStyle=none;curved=1;html=1;strokeColor=#BFBFBF;strokeWidth=2;endArrow=open;endFill=0;endSize=4;" parent="1" edge="1" source="a_orderapi" target="a_kitchenui">
             <mxGeometry relative="1" as="geometry"/>
           </mxCell>
         </UserObject>
-        <mxCell id="rs_kitchen_staff" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=classic;" parent="1" edge="1" source="ba_kitchen" target="a_kitchenui">
+        <mxCell id="rs_kitchen_staff" value="" style="edgeStyle=none;curved=1;html=1;strokeColor=#BFBFBF;strokeWidth=2;endArrow=open;endFill=0;endSize=4;" parent="1" edge="1" source="ba_kitchen" target="a_kitchenui">
           <mxGeometry relative="1" as="geometry"/>
         </mxCell>
       </root>

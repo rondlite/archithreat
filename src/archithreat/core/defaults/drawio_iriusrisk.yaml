@@ -1,131 +1,308 @@
 # Default mapping for the drawio-iriusrisk target.
 #
-# Style strings below are PLACEHOLDERS. They follow the mxCell style grammar
-# but the IriusRisk shape library identifiers (`shape=mxgraph.iriusrisk.*`)
-# need to be confirmed against IriusRisk's reference diagram or vendor catalog
-# before relying on them for production round-trip into IriusRisk's editor.
-# Tracked in SPEC §10.1. Output is structurally valid draw.io regardless.
+# Style strings are derived from real IriusRisk template exports.
+#
+# VERIFIED (extracted from IriusRisk template exports):
+#   - Trust zone UUIDs:
+#       f0ba7722-39b6-4c81-8290-a30a248bb8d9  Internet
+#       2ab4effa-40b7-4cd2-ba81-8247d29a6f2d  Private Secured
+#       531315a7-41a2-40ed-ab87-22c3a4c3c7ff  Trusted Partner
+#       861f1db2-545b-4908-8d00-252b171892ea  Untrusted Third-Party SaaS
+#   - Component-library refs (all CD-V2-*):
+#       WEB-UI, WEB-SERVICE, MOBILE-UI, BROWSER, WEB-CLIENT,
+#       POSTGRESQL, MYSQL, MICROSOFT-SQL-SERVER, MONGODB-NOSQL, SQLITE,
+#       REDIS-SERVER, NGINX-SERVER, NGINX-INGRESS,
+#       OPENSHIFT-CLUSTER, OPENSHIFT-CONTROL-PLANE, OPENSHIFT-GATEWAY-API,
+#       OPENSHIFT-POD
+#   - Component visual: stroke=#20C9E3 fill=#E3FCFC font=#0084AD
+#   - Edge visual: edgeStyle=none;curved=1;strokeColor=#BFBFBF;strokeWidth=2;
+#                  endArrow=open;endFill=0;endSize=4
+#
+# APPROXIMATIONS (no direct template evidence — review before relying on):
+#   - DataObject default → CD-V2-POSTGRESQL: semantic mismatch (not all data is
+#       Postgres). Modeller should name DataObjects to match a database
+#       pattern (postgres/mysql/mongo/sqlite/redis/mssql) so the rules above
+#       fire instead, or override per-installation.
+#   - BusinessActor / BusinessRole → CD-V2-BROWSER: closest stock shape; a
+#       browser is not a human actor. If your IriusRisk library has a
+#       human-actor shape, override here.
+#   - ApplicationService / SystemSoftware → CD-V2-WEB-SERVICE: generic
+#       fallback; replace if a more specific ref applies in your library.
+#   - Node / Device: no first-class IriusRisk host shape, so they render as
+#       a plain visual container. Apps still nest inside per spec §6.3.
+#
+# IriusRisk re-renders icons from ir.componentDefinition.ref so we omit the
+# embedded SVG (image=data:image/svg+xml,...) — IriusRisk hydrates the icon
+# from the library on import.
+#
+# Edges DO NOT carry ir.assets / ir.tags by default. These are user-added in
+# IriusRisk's editor after import. v1.1 will template them from
+# per-relationship properties (protocol, port, encryption, authentication).
+
 version: 1
 target: drawio-iriusrisk
 
 zone_rules:
+  # External / Internet-facing zone.
   - match:
       archimate_type: Grouping
-      property:
-        name: zone_type
-        equals: logical
+      name_pattern: "(?i)\\b(internet|public|untrusted|external)\\b"
     iriusrisk:
       zone_name_property: name
-      style: "shape=mxgraph.iriusrisk.trust_zone;html=1;whiteSpace=wrap;fillColor=#dae8fc;strokeColor=#6c8ebf;verticalAlign=top;fontSize=14;"  # TODO: confirm IriusRisk style
+      style: "ir.ref=f0ba7722-39b6-4c81-8290-a30a248bb8d9;rounded=1;whiteSpace=wrap;recursiveResize=0;html=1;verticalAlign=top;align=left;dashed=1;strokeWidth=1;arcSize=3;absoluteArcSize=1;spacingTop=1;spacingLeft=32;strokeColor=#7575EB;fillColor=#F0F0FF;fillOpacity=30;fontColor=#5651E0;connectable=0;container=1;source=iriusrisk;ir.type=TRUSTZONE;"
+  - match:
+      archimate_type: Location
+      name_pattern: "(?i)\\b(internet|public|untrusted|external)\\b"
+    iriusrisk:
+      zone_name_property: name
+      style: "ir.ref=f0ba7722-39b6-4c81-8290-a30a248bb8d9;rounded=1;whiteSpace=wrap;recursiveResize=0;html=1;verticalAlign=top;align=left;dashed=1;strokeWidth=1;arcSize=3;absoluteArcSize=1;spacingTop=1;spacingLeft=32;strokeColor=#7575EB;fillColor=#F0F0FF;fillOpacity=30;fontColor=#5651E0;connectable=0;container=1;source=iriusrisk;ir.type=TRUSTZONE;"
+  # Trusted partner zone.
+  - match:
+      archimate_type: Grouping
+      name_pattern: "(?i)\\b(trusted partner|partner)\\b"
+    iriusrisk:
+      zone_name_property: name
+      style: "ir.ref=531315a7-41a2-40ed-ab87-22c3a4c3c7ff;rounded=1;whiteSpace=wrap;recursiveResize=0;html=1;verticalAlign=top;align=left;dashed=1;strokeWidth=1;arcSize=3;absoluteArcSize=1;spacingTop=1;spacingLeft=32;strokeColor=#7575EB;fillColor=#F0F0FF;fillOpacity=30;fontColor=#5651E0;connectable=0;container=1;source=iriusrisk;ir.type=TRUSTZONE;"
+  - match:
+      archimate_type: Location
+      name_pattern: "(?i)\\b(trusted partner|partner)\\b"
+    iriusrisk:
+      zone_name_property: name
+      style: "ir.ref=531315a7-41a2-40ed-ab87-22c3a4c3c7ff;rounded=1;whiteSpace=wrap;recursiveResize=0;html=1;verticalAlign=top;align=left;dashed=1;strokeWidth=1;arcSize=3;absoluteArcSize=1;spacingTop=1;spacingLeft=32;strokeColor=#7575EB;fillColor=#F0F0FF;fillOpacity=30;fontColor=#5651E0;connectable=0;container=1;source=iriusrisk;ir.type=TRUSTZONE;"
+  # Untrusted third-party / SaaS.
+  - match:
+      archimate_type: Grouping
+      name_pattern: "(?i)\\b(third[- ]?party|saas|vendor)\\b"
+    iriusrisk:
+      zone_name_property: name
+      style: "ir.ref=861f1db2-545b-4908-8d00-252b171892ea;rounded=1;whiteSpace=wrap;recursiveResize=0;html=1;verticalAlign=top;align=left;dashed=1;strokeWidth=1;arcSize=3;absoluteArcSize=1;spacingTop=1;spacingLeft=32;strokeColor=#7575EB;fillColor=#F0F0FF;fillOpacity=30;fontColor=#5651E0;connectable=0;container=1;source=iriusrisk;ir.type=TRUSTZONE;"
+  - match:
+      archimate_type: Location
+      name_pattern: "(?i)\\b(third[- ]?party|saas|vendor)\\b"
+    iriusrisk:
+      zone_name_property: name
+      style: "ir.ref=861f1db2-545b-4908-8d00-252b171892ea;rounded=1;whiteSpace=wrap;recursiveResize=0;html=1;verticalAlign=top;align=left;dashed=1;strokeWidth=1;arcSize=3;absoluteArcSize=1;spacingTop=1;spacingLeft=32;strokeColor=#7575EB;fillColor=#F0F0FF;fillOpacity=30;fontColor=#5651E0;connectable=0;container=1;source=iriusrisk;ir.type=TRUSTZONE;"
+  # Default: any other Grouping or Location → Private Secured.
   - match:
       archimate_type: Grouping
     iriusrisk:
       zone_name_property: name
-      style: "shape=mxgraph.iriusrisk.trust_zone;html=1;whiteSpace=wrap;fillColor=#dae8fc;strokeColor=#6c8ebf;verticalAlign=top;fontSize=14;"  # TODO: confirm IriusRisk style
+      style: "ir.ref=2ab4effa-40b7-4cd2-ba81-8247d29a6f2d;rounded=1;whiteSpace=wrap;recursiveResize=0;html=1;verticalAlign=top;align=left;dashed=1;strokeWidth=1;arcSize=3;absoluteArcSize=1;spacingTop=1;spacingLeft=32;strokeColor=#7575EB;fillColor=#F0F0FF;fillOpacity=30;fontColor=#5651E0;connectable=0;container=1;source=iriusrisk;ir.type=TRUSTZONE;"
   - match:
       archimate_type: Location
     iriusrisk:
       zone_name_property: name
-      style: "shape=mxgraph.iriusrisk.trust_zone;html=1;whiteSpace=wrap;fillColor=#d5e8d4;strokeColor=#82b366;verticalAlign=top;fontSize=14;"  # TODO: confirm IriusRisk style
+      style: "ir.ref=2ab4effa-40b7-4cd2-ba81-8247d29a6f2d;rounded=1;whiteSpace=wrap;recursiveResize=0;html=1;verticalAlign=top;align=left;dashed=1;strokeWidth=1;arcSize=3;absoluteArcSize=1;spacingTop=1;spacingLeft=32;strokeColor=#7575EB;fillColor=#F0F0FF;fillOpacity=30;fontColor=#5651E0;connectable=0;container=1;source=iriusrisk;ir.type=TRUSTZONE;"
 
 synthetic_zones:
   unzoned:
     name: "Unzoned"
-    style: "shape=mxgraph.iriusrisk.trust_zone;html=1;whiteSpace=wrap;fillColor=#f5f5f5;strokeColor=#666666;dashed=1;verticalAlign=top;fontSize=14;"  # TODO
+    style: "rounded=1;whiteSpace=wrap;recursiveResize=0;html=1;verticalAlign=top;align=left;dashed=1;strokeWidth=1;arcSize=3;absoluteArcSize=1;spacingTop=1;spacingLeft=32;strokeColor=#999999;fillColor=#F5F5F5;fillOpacity=30;fontColor=#666666;connectable=0;container=1;"
   external:
-    name: "External"
-    style: "shape=mxgraph.iriusrisk.trust_zone;html=1;whiteSpace=wrap;fillColor=#fff2cc;strokeColor=#d6b656;verticalAlign=top;fontSize=14;"  # TODO
+    name: "Internet"
+    style: "ir.ref=f0ba7722-39b6-4c81-8290-a30a248bb8d9;rounded=1;whiteSpace=wrap;recursiveResize=0;html=1;verticalAlign=top;align=left;dashed=1;strokeWidth=1;arcSize=3;absoluteArcSize=1;spacingTop=1;spacingLeft=32;strokeColor=#7575EB;fillColor=#F0F0FF;fillOpacity=30;fontColor=#5651E0;connectable=0;container=1;source=iriusrisk;ir.type=TRUSTZONE;"
 
 component_rules:
+  # ----- Databases (name-pattern dispatch) ---------------------------------
+  - match:
+      archimate_type: ApplicationComponent
+      name_pattern: "(?i)\\b(postgres|postgresql)\\b"
+    iriusrisk:
+      component_type: CD-V2-POSTGRESQL
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-POSTGRESQL;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=1;strokeWidth=1;"
+  - match:
+      archimate_type: ApplicationComponent
+      name_pattern: "(?i)\\b(mysql|mariadb)\\b"
+    iriusrisk:
+      component_type: CD-V2-MYSQL
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-MYSQL;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=1;strokeWidth=1;"
+  - match:
+      archimate_type: ApplicationComponent
+      name_pattern: "(?i)(mssql|sql server|microsoft sql)"
+    iriusrisk:
+      component_type: CD-V2-MICROSOFT-SQL-SERVER
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-MICROSOFT-SQL-SERVER;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=1;strokeWidth=1;"
+  - match:
+      archimate_type: ApplicationComponent
+      name_pattern: "(?i)\\bmongo(db)?\\b"
+    iriusrisk:
+      component_type: CD-V2-MONGODB-NOSQL
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-MONGODB-NOSQL;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=1;strokeWidth=1;"
+  - match:
+      archimate_type: ApplicationComponent
+      name_pattern: "(?i)\\bsqlite\\b"
+    iriusrisk:
+      component_type: CD-V2-SQLITE
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-SQLITE;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=1;strokeWidth=1;"
+  - match:
+      archimate_type: ApplicationComponent
+      name_pattern: "(?i)\\bredis\\b"
+    iriusrisk:
+      component_type: CD-V2-REDIS-SERVER
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-REDIS-SERVER;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=1;strokeWidth=1;"
+
+  # ----- NGINX -------------------------------------------------------------
+  - match:
+      archimate_type: ApplicationComponent
+      name_pattern: "(?i)nginx.*ingress"
+    iriusrisk:
+      component_type: CD-V2-NGINX-INGRESS
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-NGINX-INGRESS;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=1;strokeWidth=1;"
+  - match:
+      archimate_type: ApplicationComponent
+      name_pattern: "(?i)\\bnginx\\b"
+    iriusrisk:
+      component_type: CD-V2-NGINX-SERVER
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-NGINX-SERVER;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=1;strokeWidth=1;"
+
+  # ----- OpenShift / Kubernetes --------------------------------------------
+  - match:
+      archimate_type: ApplicationComponent
+      name_pattern: "(?i)openshift.*gateway"
+    iriusrisk:
+      component_type: CD-V2-OPENSHIFT-GATEWAY-API
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-OPENSHIFT-GATEWAY-API;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=1;strokeWidth=1;"
+  - match:
+      archimate_type: ApplicationComponent
+      name_pattern: "(?i)openshift.*(control[- ]?plane|master)"
+    iriusrisk:
+      component_type: CD-V2-OPENSHIFT-CONTROL-PLANE
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-OPENSHIFT-CONTROL-PLANE;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=1;strokeWidth=1;"
+  - match:
+      archimate_type: ApplicationComponent
+      name_pattern: "(?i)openshift.*pod"
+    iriusrisk:
+      component_type: CD-V2-OPENSHIFT-POD
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-OPENSHIFT-POD;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=1;strokeWidth=1;"
+  - match:
+      archimate_type: ApplicationComponent
+      name_pattern: "(?i)\\b(openshift|kubernetes|k8s)\\b"
+    iriusrisk:
+      component_type: CD-V2-OPENSHIFT-CLUSTER
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-OPENSHIFT-CLUSTER;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=1;strokeWidth=1;"
+
+  # ----- Browser / Web Client (typically external actors' devices) --------
+  - match:
+      archimate_type: ApplicationComponent
+      name_pattern: "(?i)\\b(browser|chrome|firefox|safari|edge)\\b"
+    iriusrisk:
+      component_type: CD-V2-BROWSER
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-BROWSER;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=1;strokeWidth=1;"
+  - match:
+      archimate_type: ApplicationComponent
+      name_pattern: "(?i)\\bweb client\\b"
+    iriusrisk:
+      component_type: CD-V2-WEB-CLIENT
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-WEB-CLIENT;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=1;strokeWidth=1;"
+
+  # ----- Tech-stack property dispatch --------------------------------------
   - match:
       archimate_type: ApplicationComponent
       property:
         name: tech_stack
         equals: web
     iriusrisk:
-      component_type: web_application
-      style: "shape=mxgraph.iriusrisk.web_application;html=1;whiteSpace=wrap;fillColor=#ffffff;strokeColor=#000000;"  # TODO
+      component_type: CD-V2-WEB-UI
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-WEB-UI;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=1;strokeWidth=1;"
   - match:
       archimate_type: ApplicationComponent
       property:
         name: tech_stack
         equals: mobile
     iriusrisk:
-      component_type: mobile_application
-      style: "shape=mxgraph.iriusrisk.mobile_application;html=1;whiteSpace=wrap;fillColor=#ffffff;strokeColor=#000000;"  # TODO
+      component_type: CD-V2-MOBILE-UI
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-MOBILE-UI;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=1;strokeWidth=1;"
+
+  # ----- Default ApplicationComponent fallback -----------------------------
   - match:
       archimate_type: ApplicationComponent
     iriusrisk:
-      component_type: generic_application
-      style: "shape=mxgraph.iriusrisk.generic_application;html=1;whiteSpace=wrap;fillColor=#ffffff;strokeColor=#000000;"  # TODO
+      component_type: CD-V2-WEB-SERVICE
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-WEB-SERVICE;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=1;strokeWidth=1;"
   - match:
       archimate_type: ApplicationService
     iriusrisk:
-      component_type: service
-      style: "shape=mxgraph.iriusrisk.service;html=1;whiteSpace=wrap;fillColor=#ffffff;strokeColor=#000000;"  # TODO
+      component_type: CD-V2-WEB-SERVICE
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-WEB-SERVICE;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=1;strokeWidth=1;"
+
+  # ----- Technology layer: Nodes / Devices stay as host containers ---------
+  # IriusRisk's library has no first-class "Node" component; we render the
+  # host as a generic container so the Application Components nest visually.
   - match:
       archimate_type: Node
     iriusrisk:
-      component_type: host
-      style: "shape=mxgraph.iriusrisk.host;html=1;whiteSpace=wrap;fillColor=#e1d5e7;strokeColor=#9673a6;verticalAlign=top;fontSize=12;"  # TODO
+      component_type: host_container
+      style: "rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#999999;strokeWidth=1;dashed=0;verticalAlign=top;fontSize=12;fontColor=#333333;connectable=0;container=1;collapsible=0;recursiveResize=0;"
       is_container: true
   - match:
       archimate_type: Device
     iriusrisk:
-      component_type: device
-      style: "shape=mxgraph.iriusrisk.device;html=1;whiteSpace=wrap;fillColor=#e1d5e7;strokeColor=#9673a6;verticalAlign=top;fontSize=12;"  # TODO
+      component_type: host_container
+      style: "rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#999999;strokeWidth=1;dashed=0;verticalAlign=top;fontSize=12;fontColor=#333333;connectable=0;container=1;collapsible=0;recursiveResize=0;"
       is_container: true
   - match:
       archimate_type: SystemSoftware
     iriusrisk:
-      component_type: system_software
-      style: "shape=mxgraph.iriusrisk.system_software;html=1;whiteSpace=wrap;fillColor=#ffffff;strokeColor=#000000;"  # TODO
+      component_type: CD-V2-WEB-SERVICE
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-WEB-SERVICE;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=1;strokeWidth=1;"
+
+  # ----- Business actors -> CD-V2-BROWSER (or override per model) ---------
+  # IriusRisk has no first-class "human actor" CD-V2-* shape we've seen yet;
+  # CD-V2-BROWSER is the closest stock representation of an end-user interactor.
   - match:
       archimate_type: BusinessActor
     iriusrisk:
-      component_type: actor
-      style: "shape=mxgraph.iriusrisk.actor;html=1;whiteSpace=wrap;fillColor=#fff2cc;strokeColor=#d6b656;"  # TODO
+      component_type: CD-V2-BROWSER
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-BROWSER;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=1;strokeWidth=1;"
   - match:
       archimate_type: BusinessRole
     iriusrisk:
-      component_type: actor
-      style: "shape=mxgraph.iriusrisk.actor;html=1;whiteSpace=wrap;fillColor=#fff2cc;strokeColor=#d6b656;"  # TODO
+      component_type: CD-V2-BROWSER
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-BROWSER;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=1;strokeWidth=1;"
+
+  # ----- Data: DataObject -> generic data-store placeholder ---------------
+  # If your installation has a CD-V2-* data-store shape, override this rule.
   - match:
       archimate_type: DataObject
     iriusrisk:
-      component_type: data_store
-      style: "shape=mxgraph.iriusrisk.data_store;html=1;whiteSpace=wrap;fillColor=#f8cecc;strokeColor=#b85450;"  # TODO
+      component_type: CD-V2-POSTGRESQL
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-POSTGRESQL;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=1;strokeWidth=1;"
+
+  # ----- Generic fallback for Artifacts ------------------------------------
   - match:
       archimate_type: Artifact
     iriusrisk:
-      component_type: artifact
-      style: "shape=mxgraph.iriusrisk.artifact;html=1;whiteSpace=wrap;fillColor=#ffffff;strokeColor=#000000;"  # TODO
+      component_type: CD-V2-WEB-SERVICE
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-WEB-SERVICE;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=1;strokeWidth=1;"
 
 connection_rules:
+  # IriusRisk data-flow visual: curved gray edge with a thin open arrowhead.
+  # ir.assets / ir.tags are user-added in IriusRisk after import (v1.1 will
+  # template these from per-relationship properties).
   - match:
       archimate_type: Flow
     iriusrisk:
-      style: "edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=classic;"
+      style: "edgeStyle=none;curved=1;html=1;strokeColor=#BFBFBF;strokeWidth=2;endArrow=open;endFill=0;endSize=4;"
       direction: source_to_target
   - match:
       archimate_type: Serving
     iriusrisk:
-      style: "edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=classic;"
+      style: "edgeStyle=none;curved=1;html=1;strokeColor=#BFBFBF;strokeWidth=2;endArrow=open;endFill=0;endSize=4;"
       direction: target_to_source
   - match:
       archimate_type: Access
     iriusrisk:
-      style: "edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;dashed=1;endArrow=open;"
+      style: "edgeStyle=none;curved=1;html=1;strokeColor=#BFBFBF;strokeWidth=2;endArrow=open;endFill=0;endSize=4;dashed=1;"
       direction: by_access_type
   - match:
       archimate_type: UsedBy
     iriusrisk:
-      style: "edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=classic;"
+      style: "edgeStyle=none;curved=1;html=1;strokeColor=#BFBFBF;strokeWidth=2;endArrow=open;endFill=0;endSize=4;"
       direction: target_to_source
   - match:
       archimate_type: Triggering
     iriusrisk:
-      style: "edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=classic;"
+      style: "edgeStyle=none;curved=1;html=1;strokeColor=#BFBFBF;strokeWidth=2;endArrow=open;endFill=0;endSize=4;"
       direction: source_to_target
 
 property_passthrough:
@@ -135,6 +312,10 @@ property_passthrough:
     - patch_authority
     - tech_stack
   connections:
+    # IriusRisk reads ir.assets / ir.tags from the edge style for asset binding
+    # and protocol tagging. These travel via UserObject attributes today; v1.1
+    # will substitute them into the style string so IriusRisk picks them up
+    # automatically on import.
     - protocol
     - port
     - authentication
