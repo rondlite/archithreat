@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.4] - 2026-05-01
+
+### Fixed
+- Wheel build no longer produces duplicate ZIP entries. The `force-include`
+  block overlapped with the `packages` discovery, causing PyPI to reject
+  the upload (PEP 625 archive validation). Default mapping YAML is now
+  bundled via standard package data discovery.
+
 ## [1.0.3] - 2026-05-01
 
 ### Changed

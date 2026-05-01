@@ -1,6 +1,6 @@
 {
   "name": "archithreat-browser",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "private": true,
   "description": "archithreat browser shell — static site running the conversion core entirely in the user's browser via Pyodide.",
   "license": "Apache-2.0",
