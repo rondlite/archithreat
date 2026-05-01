@@ -19,6 +19,9 @@ jobs:
   build-and-publish-wheel:
     name: build & publish wheel
     runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/p/archithreat
     permissions:
       contents: write   # for action-gh-release
       id-token: write   # for PyPI trusted publishing
