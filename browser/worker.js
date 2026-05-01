@@ -53,7 +53,7 @@ async function findWheelUrl() {
   // ./wheels/index.json with the actual filename so this fallback is only
   // hit during local dev when you forgot the index step.
   const candidates = [
-    'archithreat-1.0.1-py3-none-any.whl',
+    'archithreat-1.0.3-py3-none-any.whl',
   ];
   for (const c of candidates) {
     try {

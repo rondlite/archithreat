@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.3] - 2026-05-01
+
+### Changed
+- Version bump to keep PyPI in sync with the GitHub tag (1.0.1 and 1.0.2
+  were used during initial trusted-publisher setup; no PyPI release exists
+  for those tags). 1.0.3 is the first PyPI release.
+
 ## [1.0.1] - 2026-05-01
 
 ### Changed
