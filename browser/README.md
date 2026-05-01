@@ -37,9 +37,15 @@ lives in `scripts/vendor-pyodide.mjs` — bump it deliberately.
 ## Build
 
 ```bash
-npm run build:wheel         # build archithreat-*.whl into dist/wheels/
 npm run build               # bundle JS + copy HTML/CSS + vendored Pyodide → dist/
+npm run build:wheel         # build archithreat-*.whl into dist/wheels/
+printf '{"wheel": "%s"}\n' "$(ls dist/wheels/*.whl | head -1 | xargs -n1 basename)" \
+  > dist/wheels/index.json
 ```
+
+Order matters: `npm run build` wipes `dist/` before recreating it, so run
+`build:wheel` **after** `build`. Then write `wheels/index.json` so the worker
+can find the version-suffixed wheel filename without guessing.
 
 The two scripts are separate because `build:wheel` shells out to Python and
 is unnecessary if you're iterating on JS only. Re-run `build:wheel` whenever
@@ -100,7 +106,7 @@ installed or `dist/` does not exist.
 ```bash
 cd ..
 .venv/bin/python -m playwright install chromium       # one-time
-cd browser && npm run build:wheel && npm run build    # produce dist/
+cd browser && npm run build && npm run build:wheel    # produce dist/ (order matters)
 cd .. && .venv/bin/pytest -m browser tests/browser/   # run the smoke test
 ```
 

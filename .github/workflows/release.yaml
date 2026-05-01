@@ -128,13 +128,20 @@ jobs:
         working-directory: browser
         run: npm run vendor:pyodide
 
+      - name: Build browser bundle
+        working-directory: browser
+        run: npm run build
+
       - name: Build core wheel into browser/dist/wheels/
         working-directory: browser
         run: npm run build:wheel
 
-      - name: Build browser bundle
+      - name: Write wheels/index.json
         working-directory: browser
-        run: npm run build
+        run: |
+          whl=$(ls dist/wheels/*.whl | head -1 | xargs -n1 basename)
+          echo "{\"wheel\": \"${whl}\"}" > dist/wheels/index.json
+          cat dist/wheels/index.json
 
       - name: Upload bundle artifact
         uses: actions/upload-artifact@v4
