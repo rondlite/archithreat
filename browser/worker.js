@@ -49,10 +49,11 @@ async function findWheelUrl() {
       if (j.wheel) return `./wheels/${j.wheel}`;
     }
   } catch (_) { /* ignore */ }
-  // Fallback: the package version is fixed at 0.1.0 for v1 (pyproject).
-  // Try a few common wheel filenames before giving up.
+  // Fallback: try the current pinned package version. CI writes
+  // ./wheels/index.json with the actual filename so this fallback is only
+  // hit during local dev when you forgot the index step.
   const candidates = [
-    'archithreat-0.1.0-py3-none-any.whl',
+    'archithreat-1.0.1-py3-none-any.whl',
   ];
   for (const c of candidates) {
     try {
