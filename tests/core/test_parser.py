@@ -74,6 +74,22 @@ def test_relationship_properties_captured(lemonade_xml: bytes) -> None:
     assert rel.properties.get("protocol") == "HTTPS"
 
 
+def test_accepts_bytearray(minimal_xml: bytes) -> None:
+    """Pyodide passes Uint8Array which Python sees as a buffer-protocol object."""
+    model = parse_bytes(bytearray(minimal_xml))
+    assert "g_dmz" in model.elements
+
+
+def test_accepts_memoryview(minimal_xml: bytes) -> None:
+    model = parse_bytes(memoryview(minimal_xml))
+    assert "g_dmz" in model.elements
+
+
+def test_rejects_non_buffer_input() -> None:
+    with pytest.raises(ParserError, match="bytes-like"):
+        parse_bytes(["not", "bytes"])  # type: ignore[arg-type]
+
+
 def test_unknown_xsi_type_recorded() -> None:
     weird = b"""<?xml version="1.0"?>
 <model xmlns="http://www.opengroup.org/xsd/archimate/3.0/"

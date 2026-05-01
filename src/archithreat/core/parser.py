@@ -184,13 +184,25 @@ def _parse_int(value: str | None, default: int = 0) -> int:
         return default
 
 
-def parse_bytes(data: bytes) -> OpenExchangeModel:
+def parse_bytes(data: bytes | bytearray | memoryview) -> OpenExchangeModel:
     """Parse Open Exchange XML bytes into an OpenExchangeModel.
 
+    Accepts any bytes-like input (bytes, bytearray, memoryview, or any object
+    implementing the buffer protocol — e.g. a Pyodide-wrapped ``Uint8Array``).
     Hardened against XXE: external entities disabled, no network, tree size capped.
     """
     if not data:
         raise ParserError("Empty input")
+    # lxml's ``fromstring`` rejects anything that is not a literal ``bytes`` or
+    # ``str``. Coerce buffer-protocol objects (memoryview, bytearray, JsProxy of
+    # Uint8Array under Pyodide) to ``bytes`` here so callers do not have to.
+    if not isinstance(data, bytes):
+        try:
+            data = bytes(data)
+        except TypeError as exc:
+            raise ParserError(
+                f"parse_bytes requires a bytes-like input; got {type(data).__name__}"
+            ) from exc
     parser = etree.XMLParser(
         resolve_entities=False,
         no_network=True,
