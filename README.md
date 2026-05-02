@@ -52,8 +52,8 @@ docker run --rm -p 8000:8000 ghcr.io/rondlite/archithreat:latest
 
 ## Status
 
-v3.0.1. See [CHANGELOG.md](CHANGELOG.md) and [ROADMAP](docs/limitations.md#future-work).
+v3.1.0. See [CHANGELOG.md](CHANGELOG.md) and [ROADMAP](docs/limitations.md#future-work).
 
 ## License
 
-Apache 2.0 — see [LICENSE](LICENSE).
+Apache 2.0 — see [LICENSE](LICENSE). For third-party / vendored components and their licenses (Pyodide, drawio viewer, HTMX, declared Python deps), see [SBOM.md](SBOM.md).

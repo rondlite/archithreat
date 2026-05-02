@@ -55,6 +55,10 @@ jobs:
         working-directory: browser
         run: npm run vendor:pyodide
 
+      - name: Vendor drawio viewer
+        working-directory: browser
+        run: npm run vendor:drawio
+
       - name: Build browser bundle
         working-directory: browser
         run: npm run build

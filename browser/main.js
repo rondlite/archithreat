@@ -105,18 +105,11 @@ function presentResult(result) {
   const summary = document.getElementById('convert-summary');
   actions.hidden = false;
   summary.textContent = `${replaceExtension(result.sourceName, result.extension)} · ${result.bytes.length} bytes`;
-  // Preview is iriusrisk-only and requires the vendored drawio viewer.
-  const canPreview = result.target === 'iriusrisk' && viewerAvailable();
-  previewBtn.hidden = !canPreview;
-  if (result.target === 'iriusrisk' && !viewerAvailable()) {
-    renderResult(
-      'convert-result',
-      'Preview unavailable: drawio viewer not vendored. Run `npm run vendor:drawio` to enable.',
-      'ok',
-    );
-  } else {
-    document.getElementById('convert-result').textContent = '';
-  }
+  // Preview is iriusrisk-only. Always show the button when applicable; the
+  // click handler reports a clear error if the drawio viewer hasn't loaded
+  // (e.g. vendor missing from dist/, network-blocked, or still deferred).
+  previewBtn.hidden = result.target !== 'iriusrisk';
+  document.getElementById('convert-result').textContent = '';
 }
 
 async function onConvertSubmit(ev) {
@@ -160,12 +153,20 @@ function onDownload() {
 function onPreview() {
   if (!lastResult || lastResult.target !== 'iriusrisk') return;
   if (!viewerAvailable()) {
-    renderResult('convert-result', 'drawio viewer not loaded.', 'error');
+    renderResult(
+      'convert-result',
+      'drawio viewer not loaded. Check that browser/vendor/drawio/viewer-static.min.js exists (run `npm run vendor:drawio`) and that the page rebuild copied it into dist/drawio/. DevTools Network tab will show a 404 if the script failed to load.',
+      'error',
+    );
     return;
   }
   const host = document.getElementById('preview-host');
   host.replaceChildren();
-  const xml = new TextDecoder().decode(lastResult.bytes);
+  // Strip the XML declaration — the viewer's parser handles plain mxfile and
+  // some builds choke on a leading `<?xml ...?>`.
+  const xml = new TextDecoder()
+    .decode(lastResult.bytes)
+    .replace(/^<\?xml[^?]*\?>\s*/, '');
   const div = document.createElement('div');
   div.className = 'mxgraph';
   div.style.maxWidth = '100%';

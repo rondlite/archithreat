@@ -7,6 +7,36 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.1.0] - 2026-05-03
+
+### Added
+- `SBOM.md` declaring third-party / vendored components (Pyodide MPL-2.0,
+  drawio viewer Apache-2.0, HTMX 0BSD) and license-compatibility summary.
+  Linked from README license section.
+- GitHub Pages workflow now vendors the drawio viewer
+  (`npm run vendor:drawio`) before building, so the in-browser Preview
+  button works on first visit to the published site.
+
+### Changed
+- Browser shell Preview button now always shows for `iriusrisk` results
+  and reports a clear, actionable error on click if the drawio viewer
+  hasn't loaded (404, missing vendor, deferred-load race), instead of
+  silently staying hidden. XML declaration stripped from the converted
+  output before injection so the viewer's parser doesn't choke on a
+  leading `<?xml ...?>`.
+- Lemonade demo Groupings renamed to canonical IriusRisk zone names so
+  the example imports as five distinct standard trust zones with no
+  `zone_name_unrecognized` warnings.
+- `iriusrisk` default mapping `zone_rules` extended with name-pattern
+  matches for common deployment-typical Grouping names (DMZ, Internal,
+  Production, Payment, Workplace, etc.) so they bind to a real standard
+  zone instead of the catch-all.
+
+### Fixed
+- mypy: `target_data["style"]` access no longer fails type narrowing
+  after the `isinstance` guard in `DrawioMapping.zone_identity_key`.
+  `mypy --strict` clean.
+
 ## [3.0.1] - 2026-05-02
 
 ### Fixed
