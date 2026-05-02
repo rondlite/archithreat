@@ -39,46 +39,9 @@
             "shape": "trust-boundary-box",
             "size": {
               "height": 170,
-              "width": 330
+              "width": 180
             },
             "zIndex": -50
-          },
-          {
-            "attrs": {
-              "body": {
-                "stroke": "#333333",
-                "strokeDasharray": null,
-                "strokeWidth": 1
-              },
-              "text": {
-                "text": "lonely-host"
-              }
-            },
-            "data": {
-              "description": "",
-              "handlesCardPayment": false,
-              "handlesGoodsOrServices": false,
-              "hasOpenThreats": false,
-              "isTrustBoundary": false,
-              "isWebApplication": false,
-              "name": "lonely-host",
-              "outOfScope": false,
-              "privilegeLevel": "",
-              "reasonOutOfScope": "",
-              "threats": [],
-              "type": "tm.Process"
-            },
-            "id": "ea32451d-5850-538b-a8b0-7808c0cc9e4c",
-            "position": {
-              "x": 70,
-              "y": 100
-            },
-            "shape": "process",
-            "size": {
-              "height": 80,
-              "width": 120
-            },
-            "zIndex": 1
           },
           {
             "attrs": {
@@ -107,7 +70,7 @@
             },
             "id": "6179b54a-e7ee-5961-a2df-f3b79f8daba2",
             "position": {
-              "x": 220,
+              "x": 70,
               "y": 100
             },
             "shape": "process",

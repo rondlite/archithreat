@@ -52,12 +52,18 @@ def test_pet_shop_shapes(pet_shop_xml: bytes) -> None:
     by_shape: dict[str, list[dict]] = {}
     for c in cells:
         by_shape.setdefault(c["shape"], []).append(c)
-    # 2 trust boundary boxes, 3 processes, 2 stores, 1 actor + flows
+    # 2 trust boundary boxes, 4 processes (storefront/orders/auth/postgres),
+    # 2 stores, 1 actor + flows. The 2 Nodes (app-server-1, db-server-1) are
+    # intentionally skipped — TD has no host concept.
     assert len(by_shape["trust-boundary-box"]) == 2
-    assert len(by_shape["process"]) == 3
+    assert len(by_shape["process"]) == 4
     assert len(by_shape["store"]) == 2
     assert len(by_shape["actor"]) == 1
     assert len(by_shape["flow"]) >= 5
+    # Confirm hosts were actually skipped (not silently emitted under another shape)
+    process_names = {p["data"]["name"] for p in by_shape["process"]}
+    assert "app-server-1" not in process_names
+    assert "db-server-1" not in process_names
 
 
 def test_storefront_marked_web_application(pet_shop_xml: bytes) -> None:

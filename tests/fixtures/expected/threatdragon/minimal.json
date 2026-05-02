@@ -39,7 +39,7 @@
             "shape": "trust-boundary-box",
             "size": {
               "height": 170,
-              "width": 330
+              "width": 180
             },
             "zIndex": -50
           },
@@ -71,43 +71,6 @@
             "id": "0f3df9c0-f165-5dcc-8e38-8868ea4135bc",
             "position": {
               "x": 70,
-              "y": 100
-            },
-            "shape": "process",
-            "size": {
-              "height": 80,
-              "width": 120
-            },
-            "zIndex": 1
-          },
-          {
-            "attrs": {
-              "body": {
-                "stroke": "#333333",
-                "strokeDasharray": null,
-                "strokeWidth": 1
-              },
-              "text": {
-                "text": "web-host"
-              }
-            },
-            "data": {
-              "description": "",
-              "handlesCardPayment": false,
-              "handlesGoodsOrServices": false,
-              "hasOpenThreats": false,
-              "isTrustBoundary": false,
-              "isWebApplication": false,
-              "name": "web-host",
-              "outOfScope": false,
-              "privilegeLevel": "",
-              "reasonOutOfScope": "",
-              "threats": [],
-              "type": "tm.Process"
-            },
-            "id": "10aacd50-3e7f-558f-bb99-c17d874d5909",
-            "position": {
-              "x": 220,
               "y": 100
             },
             "shape": "process",

@@ -38,47 +38,10 @@
             },
             "shape": "trust-boundary-box",
             "size": {
-              "height": 280,
+              "height": 170,
               "width": 480
             },
             "zIndex": -50
-          },
-          {
-            "attrs": {
-              "body": {
-                "stroke": "#333333",
-                "strokeDasharray": null,
-                "strokeWidth": 1
-              },
-              "text": {
-                "text": "app-box"
-              }
-            },
-            "data": {
-              "description": "",
-              "handlesCardPayment": false,
-              "handlesGoodsOrServices": false,
-              "hasOpenThreats": false,
-              "isTrustBoundary": false,
-              "isWebApplication": false,
-              "name": "app-box",
-              "outOfScope": false,
-              "privilegeLevel": "",
-              "reasonOutOfScope": "",
-              "threats": [],
-              "type": "tm.Process"
-            },
-            "id": "699f9af6-3b29-5c4b-a4ee-4a6493d363e6",
-            "position": {
-              "x": 70,
-              "y": 100
-            },
-            "shape": "process",
-            "size": {
-              "height": 80,
-              "width": 120
-            },
-            "zIndex": 1
           },
           {
             "attrs": {
@@ -107,7 +70,7 @@
             },
             "id": "2f39679f-7e25-55fd-9237-06d73fe30706",
             "position": {
-              "x": 220,
+              "x": 70,
               "y": 100
             },
             "shape": "process",
@@ -144,7 +107,7 @@
             },
             "id": "5c4d3db1-8dba-5aaa-ad50-2837871fde6a",
             "position": {
-              "x": 370,
+              "x": 220,
               "y": 100
             },
             "shape": "process",
@@ -181,8 +144,8 @@
             },
             "id": "cf1bb076-fec4-517a-8b7b-e3a36a4338b1",
             "position": {
-              "x": 70,
-              "y": 210
+              "x": 370,
+              "y": 100
             },
             "shape": "process",
             "size": {

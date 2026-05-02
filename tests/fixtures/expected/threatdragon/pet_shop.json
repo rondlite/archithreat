@@ -69,7 +69,7 @@
               "name": "Pet Shop Backend",
               "type": "tm.BoundaryBox"
             },
-            "id": "e07a17e4-c858-58f5-a2d6-58e4dd0251a7",
+            "id": "e4bc6951-d715-5809-b403-d653e09bdf89",
             "position": {
               "x": 280,
               "y": 40
@@ -240,6 +240,43 @@
                 "strokeWidth": 1
               },
               "text": {
+                "text": "PostgreSQL"
+              }
+            },
+            "data": {
+              "description": "",
+              "handlesCardPayment": false,
+              "handlesGoodsOrServices": false,
+              "hasOpenThreats": false,
+              "isTrustBoundary": false,
+              "isWebApplication": false,
+              "name": "PostgreSQL",
+              "outOfScope": false,
+              "privilegeLevel": "",
+              "reasonOutOfScope": "",
+              "threats": [],
+              "type": "tm.Process"
+            },
+            "id": "de3cabcb-439b-5ea1-9ce2-c7db7184b67d",
+            "position": {
+              "x": 310,
+              "y": 210
+            },
+            "shape": "process",
+            "size": {
+              "height": 80,
+              "width": 120
+            },
+            "zIndex": 1
+          },
+          {
+            "attrs": {
+              "body": {
+                "stroke": "#333333",
+                "strokeDasharray": null,
+                "strokeWidth": 1
+              },
+              "text": {
                 "text": "Storefront"
               }
             },
@@ -262,7 +299,7 @@
             },
             "id": "236a084a-4afc-5678-870c-350831361a44",
             "position": {
-              "x": 310,
+              "x": 460,
               "y": 210
             },
             "shape": "process",
@@ -308,7 +345,7 @@
             },
             "id": "dc4953f8-02db-53e4-89d4-0dc8aca82f0e",
             "position": {
-              "x": 460,
+              "x": 610,
               "y": 210
             },
             "shape": "store",
@@ -437,85 +474,119 @@
               "hasOpenThreats": false,
               "isEncrypted": false,
               "isPublicNetwork": false,
-              "name": "ra_auth_creds",
+              "name": "rf_orders_pg",
               "outOfScope": false,
-              "protocol": "",
+              "protocol": "PostgreSQL",
               "reasonOutOfScope": "",
               "threats": [],
               "type": "tm.Flow"
             },
-            "id": "770c2bdd-810c-5740-8605-fe9dca5ed066",
-            "shape": "flow",
-            "source": {
-              "cell": "dc4953f8-02db-53e4-89d4-0dc8aca82f0e"
-            },
-            "target": {
-              "cell": "8b845092-a834-5918-8249-363f5c896a0c"
-            },
-            "zIndex": 10
-          },
-          {
-            "attrs": {
-              "line": {
-                "stroke": "#333333",
-                "strokeDasharray": null,
-                "strokeWidth": 1,
-                "targetMarker": {
-                  "name": "block"
-                }
-              }
-            },
-            "connector": "smooth",
-            "data": {
-              "description": "",
-              "hasOpenThreats": false,
-              "isEncrypted": false,
-              "isPublicNetwork": false,
-              "name": "ra_auth_audit",
-              "outOfScope": false,
-              "protocol": "",
-              "reasonOutOfScope": "",
-              "threats": [],
-              "type": "tm.Flow"
-            },
-            "id": "b31eba37-c4dd-5fc6-ad01-a4e82a68e774",
-            "shape": "flow",
-            "source": {
-              "cell": "8b845092-a834-5918-8249-363f5c896a0c"
-            },
-            "target": {
-              "cell": "dd06903c-d719-5055-a1cc-e711df4893d4"
-            },
-            "zIndex": 10
-          },
-          {
-            "attrs": {
-              "line": {
-                "stroke": "#333333",
-                "strokeDasharray": null,
-                "strokeWidth": 1,
-                "targetMarker": {
-                  "name": "block"
-                }
-              }
-            },
-            "connector": "smooth",
-            "data": {
-              "description": "",
-              "hasOpenThreats": false,
-              "isEncrypted": false,
-              "isPublicNetwork": false,
-              "name": "ra_orders_audit",
-              "outOfScope": false,
-              "protocol": "",
-              "reasonOutOfScope": "",
-              "threats": [],
-              "type": "tm.Flow"
-            },
-            "id": "afec85c6-fcf3-5d39-b9f2-5b9ee1ae26fd",
+            "id": "e67bebba-46ab-59d1-b7f7-d06d606ad8ab",
             "shape": "flow",
             "source": {
               "cell": "46752986-84b6-5bce-988e-837616addc44"
+            },
+            "target": {
+              "cell": "de3cabcb-439b-5ea1-9ce2-c7db7184b67d"
+            },
+            "zIndex": 10
+          },
+          {
+            "attrs": {
+              "line": {
+                "stroke": "#333333",
+                "strokeDasharray": null,
+                "strokeWidth": 1,
+                "targetMarker": {
+                  "name": "block"
+                }
+              }
+            },
+            "connector": "smooth",
+            "data": {
+              "description": "",
+              "hasOpenThreats": false,
+              "isEncrypted": false,
+              "isPublicNetwork": false,
+              "name": "rf_auth_pg",
+              "outOfScope": false,
+              "protocol": "PostgreSQL",
+              "reasonOutOfScope": "",
+              "threats": [],
+              "type": "tm.Flow"
+            },
+            "id": "56aff095-1263-57c7-872d-587fb10b9e41",
+            "shape": "flow",
+            "source": {
+              "cell": "8b845092-a834-5918-8249-363f5c896a0c"
+            },
+            "target": {
+              "cell": "de3cabcb-439b-5ea1-9ce2-c7db7184b67d"
+            },
+            "zIndex": 10
+          },
+          {
+            "attrs": {
+              "line": {
+                "stroke": "#333333",
+                "strokeDasharray": null,
+                "strokeWidth": 1,
+                "targetMarker": {
+                  "name": "block"
+                }
+              }
+            },
+            "connector": "smooth",
+            "data": {
+              "description": "",
+              "hasOpenThreats": false,
+              "isEncrypted": false,
+              "isPublicNetwork": false,
+              "name": "ra_pg_creds",
+              "outOfScope": false,
+              "protocol": "",
+              "reasonOutOfScope": "",
+              "threats": [],
+              "type": "tm.Flow"
+            },
+            "id": "f03e78d0-a3d3-5933-b203-b9b039d1194e",
+            "shape": "flow",
+            "source": {
+              "cell": "de3cabcb-439b-5ea1-9ce2-c7db7184b67d"
+            },
+            "target": {
+              "cell": "dc4953f8-02db-53e4-89d4-0dc8aca82f0e"
+            },
+            "zIndex": 10
+          },
+          {
+            "attrs": {
+              "line": {
+                "stroke": "#333333",
+                "strokeDasharray": null,
+                "strokeWidth": 1,
+                "targetMarker": {
+                  "name": "block"
+                }
+              }
+            },
+            "connector": "smooth",
+            "data": {
+              "description": "",
+              "hasOpenThreats": false,
+              "isEncrypted": false,
+              "isPublicNetwork": false,
+              "name": "ra_pg_audit",
+              "outOfScope": false,
+              "protocol": "",
+              "reasonOutOfScope": "",
+              "threats": [],
+              "type": "tm.Flow"
+            },
+            "id": "025ab747-017c-554d-863c-16a7d13b688d",
+            "shape": "flow",
+            "source": {
+              "cell": "de3cabcb-439b-5ea1-9ce2-c7db7184b67d"
             },
             "target": {
               "cell": "dd06903c-d719-5055-a1cc-e711df4893d4"

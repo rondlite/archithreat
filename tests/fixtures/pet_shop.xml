@@ -3,7 +3,7 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        identifier="pet-shop-1">
   <name xml:lang="en">Pet Shop</name>
-  <documentation xml:lang="en">A small pet shop architecture exercising Threat Dragon idioms: processes, stores (with credentials/log markers), an external actor, and trust boundaries.</documentation>
+  <documentation xml:lang="en">A small pet shop architecture compatible with both archithreat targets. IriusRisk sees apps nested inside hosts inside trust zones; Threat Dragon sees apps directly inside trust boundaries (hosts skipped — TD has no host concept).</documentation>
   <propertyDefinitions>
     <propertyDefinition identifier="propdef_tech_stack" type="string">
       <name xml:lang="en">tech_stack</name>
@@ -17,13 +17,23 @@
   </propertyDefinitions>
 
   <elements>
+    <!-- Trust zones -->
     <element identifier="z_internet" xsi:type="Grouping">
       <name xml:lang="en">Internet</name>
     </element>
-    <element identifier="z_app" xsi:type="Grouping">
+    <element identifier="z_backend" xsi:type="Grouping">
       <name xml:lang="en">Pet Shop Backend</name>
     </element>
 
+    <!-- Hosts (IriusRisk uses these as container shapes; TD skips them) -->
+    <element identifier="n_app" xsi:type="Node">
+      <name xml:lang="en">app-server-1</name>
+    </element>
+    <element identifier="n_db" xsi:type="Node">
+      <name xml:lang="en">db-server-1</name>
+    </element>
+
+    <!-- Application components -->
     <element identifier="a_storefront" xsi:type="ApplicationComponent">
       <name xml:lang="en">Storefront</name>
       <properties>
@@ -38,7 +48,11 @@
     <element identifier="a_auth" xsi:type="ApplicationComponent">
       <name xml:lang="en">Authentication Service</name>
     </element>
+    <element identifier="a_postgres" xsi:type="ApplicationComponent">
+      <name xml:lang="en">PostgreSQL</name>
+    </element>
 
+    <!-- Data -->
     <element identifier="d_credentials" xsi:type="DataObject">
       <name xml:lang="en">User Credentials</name>
       <properties>
@@ -51,19 +65,27 @@
       <name xml:lang="en">Audit Log</name>
     </element>
 
+    <!-- External actor -->
     <element identifier="ba_customer" xsi:type="BusinessActor">
       <name xml:lang="en">Customer</name>
     </element>
   </elements>
 
   <relationships>
+    <!-- Containment of hosts and data in zones -->
+    <relationship identifier="rc_app_be" xsi:type="Composition" source="z_backend" target="n_app"/>
+    <relationship identifier="rc_db_be" xsi:type="Composition" source="z_backend" target="n_db"/>
+    <relationship identifier="rc_creds_be" xsi:type="Composition" source="z_backend" target="d_credentials"/>
+    <relationship identifier="rc_audit_be" xsi:type="Composition" source="z_backend" target="d_audit"/>
     <relationship identifier="rc_cust_inet" xsi:type="Composition" source="z_internet" target="ba_customer"/>
-    <relationship identifier="rc_storefront" xsi:type="Composition" source="z_app" target="a_storefront"/>
-    <relationship identifier="rc_orders" xsi:type="Composition" source="z_app" target="a_orders"/>
-    <relationship identifier="rc_auth" xsi:type="Composition" source="z_app" target="a_auth"/>
-    <relationship identifier="rc_creds" xsi:type="Composition" source="z_app" target="d_credentials"/>
-    <relationship identifier="rc_audit" xsi:type="Composition" source="z_app" target="d_audit"/>
 
+    <!-- Realizations: apps onto hosts -->
+    <relationship identifier="rr_storefront" xsi:type="Realization" source="a_storefront" target="n_app"/>
+    <relationship identifier="rr_orders" xsi:type="Realization" source="a_orders" target="n_app"/>
+    <relationship identifier="rr_auth" xsi:type="Realization" source="a_auth" target="n_app"/>
+    <relationship identifier="rr_postgres" xsi:type="Realization" source="a_postgres" target="n_db"/>
+
+    <!-- Flows -->
     <relationship identifier="rf_cust_storefront" xsi:type="Flow" source="ba_customer" target="a_storefront">
       <properties>
         <property propertyDefinitionRef="propdef_protocol">
@@ -85,8 +107,23 @@
         </property>
       </properties>
     </relationship>
-    <relationship identifier="ra_auth_creds" xsi:type="Access" source="a_auth" target="d_credentials" accessType="read"/>
-    <relationship identifier="ra_auth_audit" xsi:type="Access" source="a_auth" target="d_audit" accessType="write"/>
-    <relationship identifier="ra_orders_audit" xsi:type="Access" source="a_orders" target="d_audit" accessType="write"/>
+    <relationship identifier="rf_orders_pg" xsi:type="Flow" source="a_orders" target="a_postgres">
+      <properties>
+        <property propertyDefinitionRef="propdef_protocol">
+          <value xml:lang="en">PostgreSQL</value>
+        </property>
+      </properties>
+    </relationship>
+    <relationship identifier="rf_auth_pg" xsi:type="Flow" source="a_auth" target="a_postgres">
+      <properties>
+        <property propertyDefinitionRef="propdef_protocol">
+          <value xml:lang="en">PostgreSQL</value>
+        </property>
+      </properties>
+    </relationship>
+
+    <!-- Postgres manages the data stores -->
+    <relationship identifier="ra_pg_creds" xsi:type="Access" source="a_postgres" target="d_credentials" accessType="write"/>
+    <relationship identifier="ra_pg_audit" xsi:type="Access" source="a_postgres" target="d_audit" accessType="write"/>
   </relationships>
 </model>

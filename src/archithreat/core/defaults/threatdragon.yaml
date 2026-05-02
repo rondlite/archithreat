@@ -4,12 +4,20 @@
 #   https://github.com/OWASP/threat-dragon/tree/main/ThreatDragonModels
 #
 # Stencil mapping:
-#   - ApplicationComponent (and Node, Device, SystemSoftware, Artifact) → process
-#       (TD has no first-class "host" stencil; hosts collapse to processes)
+#   - ApplicationComponent    → process
+#   - ApplicationService      → process
 #   - DataObject              → store
 #   - BusinessActor / Role    → actor (external entity)
 #   - Grouping / Location     → trust-boundary-box (rectangle, dashed)
 #   - Flow / Serving / Access / UsedBy / Triggering → flow
+#
+#   Technology-layer host elements (Node, Device, SystemSoftware, Artifact)
+#   have no equivalent in TD's STRIDE stencil set — TD has no host concept,
+#   only processes / stores / actors / boundaries / flows. They are therefore
+#   intentionally NOT mapped here; the resolver still hosts ApplicationComponents
+#   onto them (so IriusRisk gets nesting), but the TD emitter skips them with a
+#   warning. ArchiMate models that need TD-only output can drop hosts; models
+#   feeding both targets should keep them — only TD output is affected.
 #
 # Diagrams emit as STRIDE diagramType (TD's most common). LINDDUN / CIA / DIE
 # are configurable per-installation in TD; not yet exposed in archithreat.
@@ -87,27 +95,10 @@ component_rules:
       shape: process
       type_name: tm.Process
 
-  # Technology layer — collapse to process (no host stencil in TD)
-  - match:
-      archimate_type: Node
-    threatdragon:
-      shape: process
-      type_name: tm.Process
-  - match:
-      archimate_type: Device
-    threatdragon:
-      shape: process
-      type_name: tm.Process
-  - match:
-      archimate_type: SystemSoftware
-    threatdragon:
-      shape: process
-      type_name: tm.Process
-  - match:
-      archimate_type: Artifact
-    threatdragon:
-      shape: process
-      type_name: tm.Process
+  # Technology-layer host elements (Node, Device, SystemSoftware, Artifact) are
+  # intentionally not mapped — TD has no host concept. The mapper's
+  # `unmatched_element: skip_with_warning` policy below silently drops them
+  # from TD output, so cross-target models stay clean in TD.
 
   # Business actors → external entity
   - match:

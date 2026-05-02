@@ -77,7 +77,7 @@
             "shape": "trust-boundary-box",
             "size": {
               "height": 170,
-              "width": 330
+              "width": 180
             },
             "zIndex": -50
           },
@@ -143,43 +143,6 @@
             "id": "de1fc435-48c6-5896-a53d-5b03050e1392",
             "position": {
               "x": 310,
-              "y": 100
-            },
-            "shape": "process",
-            "size": {
-              "height": 80,
-              "width": 120
-            },
-            "zIndex": 1
-          },
-          {
-            "attrs": {
-              "body": {
-                "stroke": "#333333",
-                "strokeDasharray": null,
-                "strokeWidth": 1
-              },
-              "text": {
-                "text": "backend-host"
-              }
-            },
-            "data": {
-              "description": "",
-              "handlesCardPayment": false,
-              "handlesGoodsOrServices": false,
-              "hasOpenThreats": false,
-              "isTrustBoundary": false,
-              "isWebApplication": false,
-              "name": "backend-host",
-              "outOfScope": false,
-              "privilegeLevel": "",
-              "reasonOutOfScope": "",
-              "threats": [],
-              "type": "tm.Process"
-            },
-            "id": "1f18ff46-67e7-5cc8-abde-cd9cdb82a315",
-            "position": {
-              "x": 460,
               "y": 100
             },
             "shape": "process",
