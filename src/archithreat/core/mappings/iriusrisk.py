@@ -83,8 +83,10 @@ class DrawioMapping(BaseMapping):
             v = spec.get("style")
             if isinstance(v, str):
                 style = v
-        if style is None and isinstance(target_data.get("style"), str):
-            style = target_data["style"]  # synthetic zones store style at top level
+        if style is None:
+            top = target_data.get("style")
+            if isinstance(top, str):
+                style = top  # synthetic zones store style at top level
         if style is None:
             return None
         m = _IR_REF_RE.search(style)
