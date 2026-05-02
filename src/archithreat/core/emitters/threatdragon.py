@@ -163,19 +163,12 @@ def _layout(zones: list[MappedZone], model: MappedModel) -> list[_ZoneLayout]:
             ZONE_HEADER + rows * COMPONENT_H + (rows + 1) * COMPONENT_GAP,
             COMPONENT_H + ZONE_HEADER + 2 * COMPONENT_GAP,
         )
-        layout = _ZoneLayout(
-            mapped_zone=mz, x=cursor_x, y=ZONE_TOP, w=zone_w, h=zone_h
-        )
+        layout = _ZoneLayout(mapped_zone=mz, x=cursor_x, y=ZONE_TOP, w=zone_w, h=zone_h)
         for i, mc in enumerate(members):
             row = i // cols
             col = i % cols
             cx = cursor_x + COMPONENT_GAP + col * (COMPONENT_W + COMPONENT_GAP)
-            cy = (
-                ZONE_TOP
-                + ZONE_HEADER
-                + COMPONENT_GAP
-                + row * (COMPONENT_H + COMPONENT_GAP)
-            )
+            cy = ZONE_TOP + ZONE_HEADER + COMPONENT_GAP + row * (COMPONENT_H + COMPONENT_GAP)
             layout.placements.append(_Placement(component=mc, x=cx, y=cy))
         layouts.append(layout)
         cursor_x += zone_w + ZONE_GAP
@@ -296,9 +289,7 @@ def _component_data(
                 "isWebApplication": bool(spec.get("is_web_application", False)),
                 "privilegeLevel": str(spec.get("privilege_level", "")),
                 "handlesCardPayment": bool(spec.get("handles_card_payment", False)),
-                "handlesGoodsOrServices": bool(
-                    spec.get("handles_goods_or_services", False)
-                ),
+                "handlesGoodsOrServices": bool(spec.get("handles_goods_or_services", False)),
             }
         )
     elif shape == "store":
@@ -314,9 +305,7 @@ def _component_data(
     elif shape == "actor":
         base.update(
             {
-                "providesAuthentication": bool(
-                    spec.get("provides_authentication", False)
-                ),
+                "providesAuthentication": bool(spec.get("provides_authentication", False)),
             }
         )
     if passthrough:
@@ -404,9 +393,7 @@ def _validate(payload: bytes, raise_cls: type[Exception]) -> None:
             for endpoint in ("source", "target"):
                 ep = c.get(endpoint)
                 if not isinstance(ep, dict) or "cell" not in ep:
-                    raise raise_cls(
-                        f"Flow {cid!r} has malformed {endpoint} endpoint"
-                    )
+                    raise raise_cls(f"Flow {cid!r} has malformed {endpoint} endpoint")
                 if ep["cell"] not in cell_ids:
                     raise raise_cls(
                         f"Flow {cid!r} references unknown {endpoint} cell {ep['cell']!r}"

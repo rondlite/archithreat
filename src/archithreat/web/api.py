@@ -42,6 +42,7 @@ def _resolve_target(value: str | None) -> str:
         )
     return target
 
+
 # Embedded fixture for /readyz self-test. Same content as
 # tests/fixtures/minimal.xml. Embedding inline keeps /readyz hermetic and
 # independent of the test tree at runtime.

@@ -202,9 +202,7 @@ def convert(
     type=click.Path(exists=True, dir_okay=False, path_type=Path),
     default=None,
 )
-def inventory(
-    input_path: Path, fmt: str, target: str, mapping_path: Path | None
-) -> None:
+def inventory(input_path: Path, fmt: str, target: str, mapping_path: Path | None) -> None:
     """Survey the model without producing output."""
     try:
         mapping = (

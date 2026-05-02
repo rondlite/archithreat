@@ -82,9 +82,7 @@ def test_credentials_marked_credentials_store(pet_shop_xml: bytes) -> None:
 def test_audit_log_marked_log(pet_shop_xml: bytes) -> None:
     doc = json.loads(_emit(pet_shop_xml))
     cells = doc["detail"]["diagrams"][0]["cells"]
-    audit = next(
-        c for c in cells if c["shape"] == "store" and c["data"]["name"] == "Audit Log"
-    )
+    audit = next(c for c in cells if c["shape"] == "store" and c["data"]["name"] == "Audit Log")
     assert audit["data"]["isALog"] is True
 
 
@@ -100,9 +98,7 @@ def test_https_flow_marked_encrypted(pet_shop_xml: bytes) -> None:
 def test_actor_default(pet_shop_xml: bytes) -> None:
     doc = json.loads(_emit(pet_shop_xml))
     cells = doc["detail"]["diagrams"][0]["cells"]
-    actor = next(
-        c for c in cells if c["shape"] == "actor" and c["data"]["name"] == "Customer"
-    )
+    actor = next(c for c in cells if c["shape"] == "actor" and c["data"]["name"] == "Customer")
     assert actor["data"]["type"] == "tm.Actor"
     assert actor["data"]["providesAuthentication"] is False
 
@@ -160,9 +156,7 @@ def test_emitter_internal_validation_catches_orphan_flow() -> None:
         _validate(bad, raise_cls=EmitterError)
 
 
-def test_pet_shop_golden(
-    pet_shop_xml: bytes, golden_dir_td: Path, update_goldens: bool
-) -> None:
+def test_pet_shop_golden(pet_shop_xml: bytes, golden_dir_td: Path, update_goldens: bool) -> None:
     out = _emit(pet_shop_xml)
     golden = golden_dir_td / "pet_shop.json"
     if update_goldens or not golden.exists():
@@ -170,7 +164,9 @@ def test_pet_shop_golden(
     assert _normalize(out) == _normalize(golden.read_bytes())
 
 
-@pytest.mark.parametrize("name", ["minimal", "co_hosted", "external_actor", "orphans", "lemonade_shop"])
+@pytest.mark.parametrize(
+    "name", ["minimal", "co_hosted", "external_actor", "orphans", "lemonade_shop"]
+)
 def test_fixture_goldens(
     name: str, fixtures_dir: Path, golden_dir_td: Path, update_goldens: bool
 ) -> None:
