@@ -190,7 +190,7 @@ def _normalize(data: bytes) -> str:
 
 
 def test_default_target_still_drawio() -> None:
-    """End-to-end without target= argument keeps drawio-iriusrisk as default."""
+    """End-to-end without target= argument keeps iriusrisk as default."""
     from archithreat.core.mappings import DEFAULT_TARGET
 
-    assert DEFAULT_TARGET == "drawio-iriusrisk"
+    assert DEFAULT_TARGET == "iriusrisk"

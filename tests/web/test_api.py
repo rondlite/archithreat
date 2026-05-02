@@ -43,7 +43,7 @@ def test_version(client) -> None:
     assert r.status_code == 200
     body = r.json()
     assert body["package"] == __version__
-    assert "drawio-iriusrisk" in body["available_targets"]
+    assert "iriusrisk" in body["available_targets"]
     assert "threatdragon" in body["available_targets"]
 
 
@@ -55,7 +55,7 @@ def test_mapping_default_returns_yaml(client) -> None:
     assert r.status_code == 200
     assert r.headers["content-type"].startswith("text/yaml")
     assert "version:" in r.text
-    assert "drawio-iriusrisk" in r.text
+    assert "iriusrisk" in r.text
 
 
 # ---------- /api/v1/mapping/validate ----------
@@ -150,7 +150,7 @@ def test_convert_rejects_invalid_xml(client) -> None:
 def test_convert_with_invalid_mapping_envelope(client, lemonade_xml_bytes: bytes) -> None:
     files = {
         "model": ("lemonade_shop.xml", lemonade_xml_bytes, "application/xml"),
-        "mapping": ("m.yaml", b"target: drawio-iriusrisk\nversion: 1\n", "text/yaml"),
+        "mapping": ("m.yaml", b"target: iriusrisk\nversion: 1\n", "text/yaml"),
     }
     r = _post(client, "/api/v1/convert", files=files)
     # Missing required schema fields => mapping_invalid envelope.

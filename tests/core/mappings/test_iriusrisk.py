@@ -10,12 +10,12 @@ from archithreat.core.mappings import (
     load_default_mapping,
     load_mapping,
 )
-from archithreat.core.mappings.drawio_iriusrisk import DrawioMapping
+from archithreat.core.mappings.iriusrisk import DrawioMapping
 
 
 def test_target_registered() -> None:
-    assert "drawio-iriusrisk" in MAPPING_SCHEMAS
-    assert MAPPING_SCHEMAS["drawio-iriusrisk"] is DrawioMapping
+    assert "iriusrisk" in MAPPING_SCHEMAS
+    assert MAPPING_SCHEMAS["iriusrisk"] is DrawioMapping
 
 
 def test_default_mapping_is_drawio_subclass() -> None:
@@ -31,7 +31,7 @@ def test_unknown_target_raises() -> None:
 def test_drawio_component_rule_requires_iriusrisk_field() -> None:
     bad = b"""
 version: 1
-target: drawio-iriusrisk
+target: iriusrisk
 zone_rules: []
 synthetic_zones:
   unzoned: {name: U, style: us}

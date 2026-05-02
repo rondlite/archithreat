@@ -76,7 +76,7 @@ dist/
 │   ├── pyodide.asm.wasm
 │   └── …
 └── wheels/
-    └── archithreat-2.0.0-py3-none-any.whl
+    └── archithreat-2.0.1-py3-none-any.whl
 ```
 
 All paths are relative, so the same `dist/` works under any URL prefix
@@ -97,8 +97,9 @@ The dev server is ~70 lines of Node `http`; no extra dependencies.
 Open the page, watch the status panel switch from "Loading runtime…" to
 "Pyodide ready", then exercise:
 
-1. **Convert** — pick `examples/airport_demo.xml`, click **Convert**, check
-   that a `.drawio` file downloads.
+1. **Convert** — pick `examples/pet_shop.xml`, choose a target from the
+   "Output target" dropdown, click **Convert**, check that a `.drawio`
+   (IriusRisk) or `.json` (Threat Dragon) file downloads.
 2. **Inventory** — pick the same file, click **Run inventory**, check that a
    formatted report appears.
 3. **Validate mapping** — click **Load default**, then **Validate** — should

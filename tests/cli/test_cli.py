@@ -20,7 +20,7 @@ def test_show_defaults() -> None:
     runner = CliRunner()
     result = runner.invoke(cli, ["show-defaults"])
     assert result.exit_code == 0
-    assert "drawio-iriusrisk" in result.output
+    assert "iriusrisk" in result.output
 
 
 def test_convert_minimal(tmp_path: Path, fixtures_dir: Path) -> None:

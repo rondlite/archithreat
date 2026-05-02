@@ -1,7 +1,7 @@
 # archithreat — ArchiMate to threat-model converter
 
 **Status:** v1 specification
-**Owner:** Ron (BISO, Amsterdam Airport)
+**Owner:** Ron (BISO)
 **Purpose:** Convert ArchiMate 3.x architecture models into threat-modeling artifacts, preserving logical trust zones, host containment, and connection semantics. v1 ships a single output target — IriusRisk-compatible draw.io — with the codebase structured so future targets (Microsoft Threat Modeling Tool, OWASP Threat Dragon, IriusRisk REST API, etc.) slot in without rework.
 
 ## Distribution surfaces
@@ -30,7 +30,7 @@ Threat-modeling tools that consume architecture diagrams expect specific input f
 
 **Why three distribution surfaces?** A CLI fits the engineering audience naturally but presumes a Python toolchain. The broader audience this tool needs to reach — architects, security analysts, threat modelers — is better served by a web UI. A browser-only static site reaches anyone with a browser without requiring infrastructure or trust in a hosted service; a self-hosted container suits organizations that want a stable internal endpoint for repeat use.
 
-**Why privacy-first by design?** Architecture models for critical infrastructure (airports, utilities, finance) describe operational attack surfaces. Policies and contracts frequently forbid uploading them to third-party services. By processing entirely in the user's own trust zone — in their browser, on their CLI, or in their self-hosted container — `archithreat` meets that constraint structurally.
+**Why privacy-first by design?** Architecture models for critical infrastructure (utilities, finance, health) describe operational attack surfaces. Policies and contracts frequently forbid uploading them to third-party services. By processing entirely in the user's own trust zone — in their browser, on their CLI, or in their self-hosted container — `archithreat` meets that constraint structurally.
 
 **Non-goals for v1:** Physical-layer support, idempotent re-import / sync, support for ArchiMate Junction / derived relationships, Motivation/Strategy/Implementation layers, server-side persistence, user accounts, authentication, multi-tenancy, audit logging, billing, any public hosted service, multiple output targets in the CLI surface (the second emitter slot exists in the code, not in the user-facing options). These are documented as future work or explicit non-goals.
 
@@ -49,7 +49,7 @@ Threat-modeling tools that consume architecture diagrams expect specific input f
 - Emitting parent-child containment for co-hosted Application Components inside Nodes.
 - Emitting Flow / Serving / Access / Used-By relationships as connections with direction preserved.
 - A YAML-based mapping table that externalizes the ArchiMate-to-target mapping.
-- Pluggable emitter architecture: v1 ships exactly one emitter (`drawio-iriusrisk`); the architecture supports additional emitters in v2+.
+- Pluggable emitter architecture: v1 ships exactly one emitter (`iriusrisk`); the architecture supports additional emitters in v2+.
 - An inventory / lint mode that surveys the model without producing output (target-independent).
 - Pure-Python implementation, Pyodide-compatible dependency footprint.
 
@@ -160,7 +160,7 @@ archithreat/
 │   ├── self-hosting.md           # Docker run, env vars, sizing notes (no manifests)
 │   ├── browser.md                # Browser app: capabilities, limits, offline use
 │   ├── privacy.md                # Trust-zone reasoning, what each surface does and doesn't see
-│   ├── targets.md                # Per-target documentation; v1 has one entry (drawio-iriusrisk)
+│   ├── targets.md                # Per-target documentation; v1 has one entry (iriusrisk)
 │   └── adding-a-target.md        # Contributor guide for new emitters (forward-looking)
 ├── src/
 │   └── archithreat/
@@ -176,12 +176,12 @@ archithreat/
 │       │   ├── mappings/
 │       │   │   ├── __init__.py
 │       │   │   ├── base.py                        # shared schema (zones, components, connections, passthrough)
-│       │   │   └── drawio_iriusrisk.py            # target-specific extensions to base schema
+│       │   │   └── iriusrisk.py            # target-specific extensions to base schema
 │       │   ├── emitters/
 │       │   │   ├── __init__.py                    # Emitter protocol; registry
-│       │   │   └── drawio_iriusrisk.py            # the only v1 emitter
+│       │   │   └── iriusrisk.py            # the only v1 emitter
 │       │   └── defaults/
-│       │       └── drawio_iriusrisk.yaml          # default mapping for the v1 target
+│       │       └── iriusrisk.yaml          # default mapping for the v1 target
 │       ├── cli/
 │       │   ├── __init__.py
 │       │   └── main.py
@@ -216,7 +216,7 @@ archithreat/
 │   │   ├── co_hosted.xml
 │   │   ├── orphans.xml
 │   │   └── expected/
-│   │       └── drawio_iriusrisk/
+│   │       └── iriusrisk/
 │   │           └── *.drawio                       # golden outputs scoped per target
 │   ├── core/
 │   │   ├── test_parser.py
@@ -224,9 +224,9 @@ archithreat/
 │   │   ├── test_mapper.py
 │   │   ├── test_inventory.py
 │   │   ├── mappings/
-│   │   │   └── test_drawio_iriusrisk.py
+│   │   │   └── test_iriusrisk.py
 │   │   └── emitters/
-│   │       └── test_drawio_iriusrisk.py
+│   │       └── test_iriusrisk.py
 │   ├── cli/
 │   │   └── test_cli.py
 │   ├── web/
@@ -237,9 +237,8 @@ archithreat/
 │   └── browser/
 │       └── test_smoke.py                          # Playwright: load page, run conversion in-browser
 └── examples/
-    ├── airport_demo.xml
-    ├── airport_demo.drawio
-    └── airport_demo_mapping.yaml
+    ├── lemonade_shop.xml
+    └── pet_shop.xml
 ```
 
 The `core/` layout is the structural commitment to multi-target. `mappings/`, `emitters/`, and `defaults/` are all directories from day one even though each contains exactly one target-specific file. v2 adds `mappings/threatdragon.py`, `emitters/threatdragon.py`, `defaults/threatdragon.yaml` without touching the shells.
@@ -458,7 +457,7 @@ class BaseMapping(BaseModel):
 
 The base schema uses generic types (`ZoneRule`, `ComponentRule`, `ConnectionRule`) that target-specific modules subclass with their own emit-time fields.
 
-**`mappings/drawio_iriusrisk.py`** extends the base schema with draw.io-specific fields:
+**`mappings/iriusrisk.py`** extends the base schema with draw.io-specific fields:
 
 ```python
 class DrawioStyleSpec(BaseModel):
@@ -479,18 +478,18 @@ A v2 target ships its own subclass — e.g., `mappings/threatdragon.py` — with
 **Public API (in `mappings/__init__.py`):**
 
 ```python
-def load_mapping(source: str | bytes | os.PathLike, target: str = "drawio-iriusrisk") -> BaseMapping: ...
-def load_default_mapping(target: str = "drawio-iriusrisk") -> BaseMapping: ...
-def validate_mapping(source: str | bytes | os.PathLike, target: str = "drawio-iriusrisk") -> list[ValidationError]: ...
+def load_mapping(source: str | bytes | os.PathLike, target: str = "iriusrisk") -> BaseMapping: ...
+def load_default_mapping(target: str = "iriusrisk") -> BaseMapping: ...
+def validate_mapping(source: str | bytes | os.PathLike, target: str = "iriusrisk") -> list[ValidationError]: ...
 ```
 
 The `target` argument exists in the API now even though only one value is valid in v1 — it's the seam where v2 hooks in.
 
-**Default mapping YAML (`core/defaults/drawio_iriusrisk.yaml`):**
+**Default mapping YAML (`core/defaults/iriusrisk.yaml`):**
 
 ```yaml
 version: 1
-target: drawio-iriusrisk
+target: iriusrisk
 
 zone_rules:
   - match:
@@ -592,7 +591,7 @@ The emitter is the only stage that knows about a specific output format.
 from typing import Protocol
 
 class Emitter(Protocol):
-    target_id: str          # e.g., "drawio-iriusrisk"
+    target_id: str          # e.g., "iriusrisk"
     output_extension: str   # e.g., "drawio"
     output_media_type: str  # e.g., "application/xml"
 
@@ -611,7 +610,7 @@ def get_emitter(target_id: str) -> Emitter:
 
 The registry is populated at import time. v1 has one entry; v2 adds more without changing this file.
 
-**v1 emitter (`core/emitters/drawio_iriusrisk.py`):**
+**v1 emitter (`core/emitters/iriusrisk.py`):**
 
 Produces a draw.io XML byte string from a `MappedModel`.
 
@@ -781,10 +780,10 @@ GET  /readyz
   200 if core imports succeed and a self-test conversion of an embedded fixture passes; 503 otherwise.
 
 GET  /version
-  JSON with package version, core version, build commit, available targets list (v1: ["drawio-iriusrisk"]).
+  JSON with package version, core version, build commit, available targets list (v1: ["iriusrisk"]).
 ```
 
-The `/api/v1/convert` endpoint does not take a `target` parameter in v1. The default is implicit. v2 adds `target` as an optional field, defaulting to `drawio-iriusrisk` for backward compatibility. OpenAPI / Swagger UI at `/docs`, ReDoc at `/redoc`.
+The `/api/v1/convert` endpoint does not take a `target` parameter in v1. The default is implicit. v2 adds `target` as an optional field, defaulting to `iriusrisk` for backward compatibility. OpenAPI / Swagger UI at `/docs`, ReDoc at `/redoc`.
 
 **HTML UI:** HTMX over Jinja2. Three pages: convert, inventory, validate-mapping. Form submissions are HTMX-driven (`hx-post` + `hx-target`) and replace a result panel inline. A "What this does to your data" panel on every page links to `docs/privacy.md`. Semantic HTML, proper labels, keyboard-navigable, color-blind-safe palette.
 
@@ -948,7 +947,6 @@ Fixture models with corresponding expected outputs under `tests/fixtures/expecte
 Fixtures included in v1:
 
 - `minimal.xml` — one Application Component, one Node, one realization, one Grouping.
-- `kiosk_dmz.xml` — small airport scenario: kiosk app on a kiosk host in a partner-network zone, talking to airline DCS in an external zone.
 - `co_hosted.xml` — three Application Components on one Node.
 - `external_actor.xml` — Business Actor connected across a zone boundary.
 - `orphans.xml` — components without realization, elements outside any zone.
@@ -1007,7 +1005,7 @@ What each surface does and does not see. The trust-zone reasoning behind the des
 
 ### 8.9 docs/targets.md
 
-One subsection per supported target. v1 has exactly one entry: `drawio-iriusrisk`. Documents the target's audience, the threat-modeling tool it feeds, the file format produced, the import procedure on the receiving side, and known caveats. Future targets get their own subsections.
+One subsection per supported target. v1 has exactly one entry: `iriusrisk`. Documents the target's audience, the threat-modeling tool it feeds, the file format produced, the import procedure on the receiving side, and known caveats. Future targets get their own subsections.
 
 ### 8.10 docs/adding-a-target.md
 
@@ -1083,14 +1081,14 @@ The v1 is "done" when:
 4. Browser app loads, runs each of the three flows, and produces results identical to the CLI for the bundled fixtures (Playwright smoke test passes).
 5. Docker container starts, passes `/healthz` and `/readyz`, and serves the same conversions over HTTP API and HTML UI for the bundled fixtures.
 6. `test_no_persistence.py` passes: no disk writes for user content during web requests.
-7. The emitter registry has exactly one entry (`drawio-iriusrisk`); the architecture for adding a second is exercised in unit tests with a stub emitter that registers, runs through the pipeline, and is unregistered between tests.
+7. The emitter registry has exactly one entry (`iriusrisk`); the architecture for adding a second is exercised in unit tests with a stub emitter that registers, runs through the pipeline, and is unregistered between tests.
 8. Test coverage ≥ 90% on core; lower on shells but CI-enforced minimums set in `pyproject.toml`.
 9. `mypy --strict` passes with zero errors.
 10. `ruff check` and `ruff format --check` pass.
 11. Documentation in `docs/` is complete (concepts, mapping, patterns, limitations, self-hosting, browser, privacy, targets, adding-a-target).
 12. CI passes on Python 3.11, 3.12, 3.13.
-13. A non-author can install the CLI, follow the README quickstart, and produce a working conversion of `examples/airport_demo.xml` without help.
-14. A non-author can open the published browser app, upload `examples/airport_demo.xml`, and download a working output without help.
+13. A non-author can install the CLI, follow the README quickstart, and produce a working conversion of `examples/pet_shop.xml` without help.
+14. A non-author can open the published browser app, upload `examples/pet_shop.xml`, and download a working output without help.
 15. A non-author can `docker run` the published image, open the UI, and produce a working conversion without help.
 
 The last three are the real ones. Everything else is in service of them.

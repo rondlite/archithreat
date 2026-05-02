@@ -120,11 +120,11 @@ export function replaceExtension(name, ext) {
 }
 
 /**
- * Read a target dropdown's value, defaulting to drawio-iriusrisk if the
+ * Read a target dropdown's value, defaulting to iriusrisk if the
  * element is missing or unset. The Convert tab uses #target; the mapping
  * editor uses #mapping-target.
  */
-export function getTarget(elementId = 'target', fallback = 'drawio-iriusrisk') {
+export function getTarget(elementId = 'target', fallback = 'iriusrisk') {
   const el = document.getElementById(elementId);
   const value = el && el.value ? el.value.trim() : '';
   return value || fallback;

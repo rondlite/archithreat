@@ -16,7 +16,7 @@ from archithreat.core.emitters import (
     register,
     unregister,
 )
-from archithreat.core.emitters.drawio_iriusrisk import (
+from archithreat.core.emitters.iriusrisk import (
     TARGET_ID,
     DrawioIriusriskEmitter,
 )
@@ -102,7 +102,7 @@ def test_edges_endpoints_resolve(cohosted_xml: bytes) -> None:
 
 def test_emitter_internal_validation_catches_bad_parent() -> None:
     """Force a malformed cell list and verify validator raises EmitterError."""
-    from archithreat.core.emitters.drawio_iriusrisk import _Cell, _serialize, _validate_output
+    from archithreat.core.emitters.iriusrisk import _Cell, _serialize, _validate_output
 
     bad = [
         _Cell(cid="x", parent="nonexistent_parent", style="", label="x"),

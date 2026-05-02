@@ -20,7 +20,7 @@ Other ArchiMate Application-layer elements (`ApplicationService`, `ApplicationFu
 
 ## Trust zones via Grouping and Location
 
-Trust zones in v1 are **logical only**. archithreat treats `Grouping` and `Location` elements as zones. Composition or Aggregation from a zone to an element places that element in that zone. The matching is done in the [resolver](../src/archithreat/core/resolver.py), driven by the [zone rules](../src/archithreat/core/defaults/drawio_iriusrisk.yaml) in the active mapping.
+Trust zones in v1 are **logical only**. archithreat treats `Grouping` and `Location` elements as zones. Composition or Aggregation from a zone to an element places that element in that zone. The matching is done in the [resolver](../src/archithreat/core/resolver.py), driven by the [zone rules](../src/archithreat/core/defaults/iriusrisk.yaml) in the active mapping.
 
 Two synthetic zones exist for elements that escape classification: `unzoned` (an element is in no zone) and `external` (a Business Actor or Role talking to an Application/Technology element from outside). Both surface as warnings; both are configurable via `--unzoned-policy` and via the mapping's `synthetic_zones` block.
 

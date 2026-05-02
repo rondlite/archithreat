@@ -7,7 +7,7 @@ from pathlib import Path
 import pytest
 
 FIXTURES = Path(__file__).parent / "fixtures"
-GOLDEN_DIR = FIXTURES / "expected" / "drawio_iriusrisk"
+GOLDEN_DIR = FIXTURES / "expected" / "iriusrisk"
 GOLDEN_DIR_TD = FIXTURES / "expected" / "threatdragon"
 
 

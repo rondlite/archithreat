@@ -181,7 +181,7 @@ def test_unmatched_element_fail_policy() -> None:
     """Mapper raises when unmatched_element=fail."""
     yaml = b"""
 version: 1
-target: drawio-iriusrisk
+target: iriusrisk
 zone_rules: []
 synthetic_zones:
   unzoned: {name: U, style: us}
@@ -209,7 +209,7 @@ defaults:
 def test_unmatched_relationship_fail_policy() -> None:
     yaml = b"""
 version: 1
-target: drawio-iriusrisk
+target: iriusrisk
 zone_rules: []
 synthetic_zones:
   unzoned: {name: U, style: us}
@@ -242,7 +242,7 @@ defaults:
 def test_silent_unmatched_policies() -> None:
     yaml = b"""
 version: 1
-target: drawio-iriusrisk
+target: iriusrisk
 zone_rules: []
 synthetic_zones:
   unzoned: {name: U, style: us}
@@ -328,7 +328,7 @@ def test_synthetic_zones_required() -> None:
 def test_load_mapping_from_text() -> None:
     text = """
 version: 1
-target: drawio-iriusrisk
+target: iriusrisk
 zone_rules: []
 synthetic_zones:
   unzoned: {name: U, style: us}
@@ -337,7 +337,7 @@ component_rules: []
 connection_rules: []
 """
     m = load_mapping(text)
-    assert m.target == "drawio-iriusrisk"
+    assert m.target == "iriusrisk"
 
 
 def test_load_mapping_invalid_yaml() -> None:

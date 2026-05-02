@@ -140,7 +140,7 @@ def test_browser_shell_convert_smoke() -> None:
 
     # (target dropdown value, expected download extension)
     cases = [
-        ("drawio-iriusrisk", ".drawio"),
+        ("iriusrisk", ".drawio"),
         ("threatdragon", ".json"),
     ]
 

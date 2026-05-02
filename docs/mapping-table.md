@@ -12,11 +12,11 @@ Purpose: schema reference and customization guide for the YAML mapping table tha
 
 ## Schema
 
-The shared schema lives in [`mappings/base.py`](../src/archithreat/core/mappings/base.py). Per-target extensions live in sibling files (today, [`mappings/drawio_iriusrisk.py`](../src/archithreat/core/mappings/drawio_iriusrisk.py)). The default mapping for the v1 target is [`defaults/drawio_iriusrisk.yaml`](../src/archithreat/core/defaults/drawio_iriusrisk.yaml). The structure is:
+The shared schema lives in [`mappings/base.py`](../src/archithreat/core/mappings/base.py). Per-target extensions live in sibling files (today, [`mappings/iriusrisk.py`](../src/archithreat/core/mappings/iriusrisk.py)). The default mapping for the v1 target is [`defaults/iriusrisk.yaml`](../src/archithreat/core/defaults/iriusrisk.yaml). The structure is:
 
 ```yaml
 version: 1
-target: drawio-iriusrisk
+target: iriusrisk
 
 zone_rules:
   - match:

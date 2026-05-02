@@ -34,7 +34,7 @@ each other.
 ## Mapping table contributions
 
 Updates to the bundled IriusRisk mapping (e.g., new shape library version) are
-welcome. Edit `src/archithreat/core/defaults/drawio_iriusrisk.yaml`, regenerate
+welcome. Edit `src/archithreat/core/defaults/iriusrisk.yaml`, regenerate
 goldens with `pytest --update-goldens`, and submit a PR with the rationale.
 
 ## Adding a new emitter target

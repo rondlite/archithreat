@@ -1,8 +1,4 @@
-"""Mapping table loading and validation.
-
-The ``target`` argument exists from v1 even though only ``drawio-iriusrisk`` is
-valid; v2 hooks additional targets in here without changing call sites.
-"""
+"""Mapping table loading and validation."""
 
 from __future__ import annotations
 
@@ -14,16 +10,16 @@ import yaml
 from pydantic import ValidationError as PydanticValidationError
 
 from .base import BaseMapping
-from .drawio_iriusrisk import TARGET_ID as DRAWIO_IRIUSRISK_TARGET
-from .drawio_iriusrisk import DrawioMapping
+from .iriusrisk import TARGET_ID as IRIUSRISK_TARGET
+from .iriusrisk import DrawioMapping
 from .threatdragon import TARGET_ID as THREATDRAGON_TARGET
 from .threatdragon import ThreatDragonMapping
 
-DEFAULT_TARGET = DRAWIO_IRIUSRISK_TARGET
+DEFAULT_TARGET = IRIUSRISK_TARGET
 
 # Registry of target_id -> mapping schema class.
 MAPPING_SCHEMAS: dict[str, type[BaseMapping]] = {
-    DRAWIO_IRIUSRISK_TARGET: DrawioMapping,
+    IRIUSRISK_TARGET: DrawioMapping,
     THREATDRAGON_TARGET: ThreatDragonMapping,
 }
 

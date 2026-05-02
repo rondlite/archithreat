@@ -12,7 +12,7 @@ Purpose: state the trust-zone reasoning behind [archithreat](../src/archithreat/
 
 ## Why this matters
 
-Architecture models for critical infrastructure — airports, utilities, finance, health — describe operational attack surfaces. Policies and contracts frequently forbid uploading them to third-party services. A public hosted converter would either be unusable for the audience that most needs it, or be a target for the most sensitive data the tool processes.
+Architecture models for critical infrastructure — utilities, finance, health — describe operational attack surfaces. Policies and contracts frequently forbid uploading them to third-party services. A public hosted converter would either be unusable for the audience that most needs it, or be a target for the most sensitive data the tool processes.
 
 archithreat avoids both outcomes by shipping software, not a service. Every deployment runs inside a trust zone the user already controls: their laptop (CLI), their browser (browser app), or their internal infrastructure (container). The privacy properties below are structural; they hold by construction, not by promise.
 

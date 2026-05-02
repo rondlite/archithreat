@@ -1,4 +1,4 @@
-# Default mapping for the drawio-iriusrisk target.
+# Default mapping for the iriusrisk target (draw.io / mxGraph for IriusRisk).
 #
 # Style strings, trust-zone UUIDs, and ir.componentDefinition.ref values are
 # all extracted from IriusRisk's public Community shape libraries:
@@ -22,7 +22,7 @@
 # per-relationship properties (protocol, port, encryption, authentication).
 
 version: 1
-target: drawio-iriusrisk
+target: iriusrisk
 
 zone_rules:
   # Internet

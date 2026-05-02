@@ -1,6 +1,6 @@
 # Adding a target
 
-Purpose: forward-looking contributor guide for adding a new emitter to [archithreat](../src/archithreat/__init__.py). v1 ships one emitter (`drawio-iriusrisk`); the architecture is designed so a second target lands as additive files without touching parsing, resolving, or shell code.
+Purpose: forward-looking contributor guide for adding a new emitter to [archithreat](../src/archithreat/__init__.py). v1 ships one emitter (`iriusrisk`); the architecture is designed so a second target lands as additive files without touching parsing, resolving, or shell code.
 
 ## Contents
 
@@ -55,11 +55,11 @@ class ThreatDragonMapping(BaseMapping):
     connection_rules: list[ThreatDragonConnectionRule]
 ```
 
-The structure mirrors [`drawio_iriusrisk.py`](../src/archithreat/core/mappings/drawio_iriusrisk.py); copy that file as your starting point.
+The structure mirrors [`iriusrisk.py`](../src/archithreat/core/mappings/iriusrisk.py); copy that file as your starting point.
 
 ## Step 2: Write the default YAML
 
-Create `src/archithreat/core/defaults/threatdragon.yaml`. The structure is the same as the [drawio-iriusrisk default](../src/archithreat/core/defaults/drawio_iriusrisk.yaml) but the per-target sections (`threatdragon:` blocks here, `iriusrisk:` blocks there) use your subclass's fields.
+Create `src/archithreat/core/defaults/threatdragon.yaml`. The structure is the same as the [iriusrisk default](../src/archithreat/core/defaults/iriusrisk.yaml) but the per-target sections (`threatdragon:` blocks here, `iriusrisk:` blocks there) use your subclass's fields.
 
 Cover at minimum: `ApplicationComponent`, `Node`, `BusinessActor`, `DataObject`, `Grouping`, plus `Flow`, `Serving`, `Access` connection rules. Put the most-specific rules first (first-match-wins).
 
@@ -111,14 +111,14 @@ Edit `core/emitters/__init__.py` to add a side-effect import next to the existin
 
 ```python
 # Side-effect imports: register all v-N+ emitters at package import time.
-from . import drawio_iriusrisk as _drawio_iriusrisk  # noqa: E402, F401
+from . import iriusrisk as _iriusrisk  # noqa: E402, F401
 from . import threatdragon as _threatdragon          # noqa: E402, F401
 
-register(_drawio_iriusrisk.DrawioIriusriskEmitter())
+register(_iriusrisk.DrawioIriusriskEmitter())
 register(_threatdragon.ThreatDragonEmitter())
 ```
 
-`available_targets()` will now return `["drawio-iriusrisk", "threatdragon"]`. The `target` parameter in `mappings.load_default_mapping(target=...)` and `get_emitter(target_id=...)` accepts the new value.
+`available_targets()` will now return `["iriusrisk", "threatdragon"]`. The `target` parameter in `mappings.load_default_mapping(target=...)` and `get_emitter(target_id=...)` accepts the new value.
 
 ## Step 5: Fixtures and goldens
 

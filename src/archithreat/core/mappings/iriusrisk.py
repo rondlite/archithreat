@@ -19,7 +19,7 @@ from .base import (
     ZoneRule,
 )
 
-TARGET_ID = "drawio-iriusrisk"
+TARGET_ID = "iriusrisk"
 
 
 class DrawioStyleSpec(BaseModel):
@@ -65,7 +65,7 @@ class DrawioConnectionRule(ConnectionRule):
 
 
 class DrawioMapping(BaseMapping):
-    target: Literal["drawio-iriusrisk"] = "drawio-iriusrisk"
+    target: Literal["iriusrisk"] = "iriusrisk"
     zone_rules: list[DrawioZoneRule] = Field(default_factory=list)  # type: ignore[assignment]
     synthetic_zones: dict[Literal["unzoned", "external"], DrawioSyntheticZone]  # type: ignore[assignment]
     component_rules: list[DrawioComponentRule] = Field(default_factory=list)  # type: ignore[assignment]

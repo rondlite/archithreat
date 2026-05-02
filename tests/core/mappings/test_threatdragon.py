@@ -52,7 +52,7 @@ connection_rules: []
 def test_td_target_mismatch() -> None:
     yaml_text = b"""
 version: 1
-target: drawio-iriusrisk
+target: iriusrisk
 zone_rules: []
 synthetic_zones:
   unzoned: {name: U}

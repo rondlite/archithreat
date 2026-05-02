@@ -4,7 +4,7 @@
 [![Python](https://img.shields.io/badge/python-3.11%20%7C%203.12%20%7C%203.13-blue)](https://www.python.org/)
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue)](LICENSE)
 
-Convert **ArchiMate 3.x** architecture models into **threat-modeling artifacts**, preserving logical trust zones, host containment, and connection semantics. v1 ships a single output target — **IriusRisk-compatible draw.io** — with the codebase structured so future targets slot in without rework.
+Convert **ArchiMate 3.x** architecture models into **threat-modeling artifacts**, preserving logical trust zones, host containment, and connection semantics. Two output targets ship: **IriusRisk-compatible draw.io** and **OWASP Threat Dragon v2 JSON**. The codebase is structured so further targets slot in without rework.
 
 ## Why
 
@@ -22,12 +22,14 @@ Architecture models for critical infrastructure describe attack surfaces and fre
 
 ```bash
 pip install archithreat[cli]
-archithreat convert input.xml output.drawio
+archithreat convert input.xml output.drawio --target iriusrisk
+archithreat convert input.xml output.json    --target threatdragon
+archithreat targets
 ```
 
 ## Browser app
 
-Open the published GitHub Pages site, drop your `.xml` in, download the `.drawio`. Nothing leaves your browser.
+Open the published GitHub Pages site, drop your `.xml` in, pick a target from the dropdown, download the `.drawio` or `.json`. Nothing leaves your browser.
 
 ## Self-hosted container
 

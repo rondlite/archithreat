@@ -17,7 +17,7 @@ from archithreat.core.resolver import resolve_with_synthetic
 
 def test_default_mapping_loads() -> None:
     m = load_default_mapping()
-    assert m.target == "drawio-iriusrisk"
+    assert m.target == "iriusrisk"
     assert m.zone_rules
     assert m.component_rules
     assert m.connection_rules
@@ -26,7 +26,7 @@ def test_default_mapping_loads() -> None:
 def test_mapping_validation_catches_missing_match() -> None:
     bad = b"""
 version: 1
-target: drawio-iriusrisk
+target: iriusrisk
 zone_rules: []
 component_rules:
   - iriusrisk:
@@ -43,7 +43,7 @@ synthetic_zones:
 def test_mapping_validation_catches_unknown_target() -> None:
     bad = b"""
 version: 1
-target: drawio-iriusrisk
+target: iriusrisk
 component_rules: []
 zone_rules: []
 connection_rules: []
@@ -80,7 +80,7 @@ def test_apply_mapping_attaches_styles(lemonade_xml: bytes) -> None:
 def test_first_match_wins() -> None:
     yaml_text = b"""
 version: 1
-target: drawio-iriusrisk
+target: iriusrisk
 zone_rules:
   - match: {archimate_type: Grouping}
     iriusrisk:

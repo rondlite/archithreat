@@ -9,7 +9,7 @@
 //
 // Message protocol:
 //   in:  { id, method: 'convert'|'inventory'|'validateMapping'|'defaultMapping', payload }
-//        payload.target selects the output target (e.g. 'drawio-iriusrisk',
+//        payload.target selects the output target (e.g. 'iriusrisk',
 //        'threatdragon'); empty/missing falls back to the Python DEFAULT_TARGET.
 //   out: { kind: 'progress'|'ready'|'response'|'error-fatal', ... }
 
@@ -55,7 +55,7 @@ async function findWheelUrl() {
   // ./wheels/index.json with the actual filename so this fallback is only
   // hit during local dev when you forgot the index step.
   const candidates = [
-    'archithreat-2.0.0-py3-none-any.whl',
+    'archithreat-2.0.1-py3-none-any.whl',
   ];
   for (const c of candidates) {
     try {

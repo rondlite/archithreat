@@ -1,8 +1,4 @@
-"""Emitter protocol and registry.
-
-v1 ships exactly one emitter (``drawio-iriusrisk``); the registry exists from
-day one to make additional targets a one-file addition in v2+.
-"""
+"""Emitter protocol and registry."""
 
 from __future__ import annotations
 
@@ -51,10 +47,10 @@ def available_targets() -> list[str]:
 
 
 # Side-effect import: register the bundled emitters at package import time.
-from . import drawio_iriusrisk as _drawio_iriusrisk  # noqa: E402
+from . import iriusrisk as _iriusrisk  # noqa: E402
 from . import threatdragon as _threatdragon  # noqa: E402
 
-register(_drawio_iriusrisk.DrawioIriusriskEmitter())
+register(_iriusrisk.DrawioIriusriskEmitter())
 register(_threatdragon.ThreatDragonEmitter())
 
 

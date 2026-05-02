@@ -63,7 +63,11 @@ def cli(log_level: str) -> None:
     type=click.Choice(_TARGET_CHOICES),
     default=DEFAULT_TARGET,
     show_default=True,
-    help="Output target. Determines emitter + bundled default mapping.",
+    help=(
+        "Output target. Determines emitter + bundled default mapping. "
+        "iriusrisk emits draw.io / mxGraph XML (.drawio) for IriusRisk; "
+        "threatdragon emits OWASP Threat Dragon v2 JSON (.json)."
+    ),
 )
 @click.option(
     "--mapping",

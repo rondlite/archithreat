@@ -16,7 +16,7 @@ from lxml import etree
 
 from ..model import MappedComponent, MappedConnection, MappedModel, MappedZone
 
-TARGET_ID = "drawio-iriusrisk"
+TARGET_ID = "iriusrisk"
 
 ID_OK = re.compile(r"^[a-zA-Z_][a-zA-Z0-9_-]*$")
 

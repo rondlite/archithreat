@@ -4,7 +4,7 @@ Purpose: per-target documentation for the emitters [archithreat](../src/archithr
 
 ## Contents
 
-- [drawio-iriusrisk](#drawio-iriusrisk)
+- [iriusrisk](#iriusrisk)
 - [threatdragon](#threatdragon)
 - [Future targets](#future-targets)
 
@@ -17,7 +17,7 @@ Browser shell: dropdown on the Convert tab and inside the Mapping editor
 
 `archithreat targets` lists every registered target with its file extension and media type.
 
-## drawio-iriusrisk
+## iriusrisk
 
 **Audience:** architects and security analysts who run their EA in ArchiMate (BiZZdesign, Sparx EA, Archi) and their threat modeling in IriusRisk.
 
@@ -25,7 +25,7 @@ Browser shell: dropdown on the Convert tab and inside the Mapping editor
 
 **File format produced:** mxGraph XML (`.drawio`), single-page document, compatible with draw.io desktop, draw.io web, and IriusRisk's embedded editor. Reference: <https://www.drawio.com/doc/faq/save-file-format>.
 
-**Implementation:** [`src/archithreat/core/emitters/drawio_iriusrisk.py`](../src/archithreat/core/emitters/drawio_iriusrisk.py). Default mapping at [`src/archithreat/core/defaults/drawio_iriusrisk.yaml`](../src/archithreat/core/defaults/drawio_iriusrisk.yaml). Component refs and zone UUIDs are extracted from IriusRisk's public Community shape libraries (<https://github.com/iriusrisk/Community/tree/master/ShapeLibraries>).
+**Implementation:** [`src/archithreat/core/emitters/iriusrisk.py`](../src/archithreat/core/emitters/iriusrisk.py). Default mapping at [`src/archithreat/core/defaults/iriusrisk.yaml`](../src/archithreat/core/defaults/iriusrisk.yaml). Component refs and zone UUIDs are extracted from IriusRisk's public Community shape libraries (<https://github.com/iriusrisk/Community/tree/master/ShapeLibraries>).
 
 ### Import procedure
 
@@ -41,7 +41,7 @@ After import, IriusRisk's threat library attaches threats automatically to recog
 
 ### Known caveats
 
-If your installation uses a customised library (e.g. `CD-V2-*` prefixes), copy the bundled default mapping YAML and replace the refs. Validate with `archithreat validate-mapping path/to/your.yaml --target drawio-iriusrisk`.
+If your installation uses a customised library (e.g. `CD-V2-*` prefixes), copy the bundled default mapping YAML and replace the refs. Validate with `archithreat validate-mapping path/to/your.yaml --target iriusrisk`.
 
 Edge `ir.assets` and `ir.tags` (linked DataObject and protocol) live inside the mxCell `style` string. The current emitter does not template those from per-relationship properties; modellers add them in IriusRisk's editor after import. v2.1+ will template them.
 

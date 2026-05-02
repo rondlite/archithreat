@@ -31,8 +31,6 @@ Purpose: an honest list of what [archithreat](../src/archithreat/__init__.py) v1
 
 **Helm charts, Kubernetes manifests, docker-compose.** The container ships; orchestration is the operator's responsibility. Operators who can run a container orchestrator can write 30 lines of manifest; operators who cannot are better served by the browser app.
 
-**A user-facing `--target` flag.** v1 has exactly one target (`drawio-iriusrisk`); the codebase commits to multi-target structurally (registry, per-target directories, `target_id` parameters in core APIs) but the user-facing surfaces stay single-target until v2 ships a second target. Designing the interaction model against a sample size of one would be premature.
-
 ## Future work
 
 The roadmap is the spec's roadmap, not a marketing roadmap. Dates are not commitments.
@@ -44,13 +42,17 @@ The roadmap is the spec's roadmap, not a marketing roadmap. Dates are not commit
 - Per-view conversion (one diagram per ArchiMate view rather than one merged).
 - Service worker for full offline use of the browser app.
 
-### v2 — physical zones, second target, user-facing target selection
+### v2 — second target + user-facing target selection (shipped 2.0.0)
+
+- OWASP Threat Dragon v2 JSON emitter shipped. See [targets.md](targets.md#threatdragon).
+- User-facing target selection landed across all surfaces: `--target` CLI flag (and `archithreat targets`), `target` field on JSON API, target dropdown in the browser shell and HTMX UI.
+
+### v2.x — physical zones (still pending)
 
 - Physical layer parsing (Equipment, Facility, Distribution Network).
-- 2D zoning: composite zone names (`partner-network @ public-landside`) at v2.0; nested zones at v2.1 once IriusRisk threat-library behavior with nested zones is confirmed.
+- 2D zoning: composite zone names (`partner-network @ public-landside`) first; nested zones once IriusRisk threat-library behavior with nested zones is confirmed.
 - Property passthrough for physical-zone-derived attributes.
-- Second emitter ships. Likely OWASP Threat Dragon JSON or Microsoft Threat Modeling Tool `.tm7`, depending on demand.
-- User-facing target selection lands at the same time as the second target: `--target` CLI flag, `target` field in JSON API, target dropdown in the browser app and the web UI.
+- Additional emitters as demand surfaces: Microsoft Threat Modeling Tool `.tm7`, OTM (Open Threat Model).
 
 ### v3 — REST API targets
 

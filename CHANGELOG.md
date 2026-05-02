@@ -7,6 +7,39 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed (BREAKING — target id rename)
+- Target id `drawio-iriusrisk` renamed to `iriusrisk` for consistency with
+  `threatdragon` (single-tool name) and the existing `iriusrisk:` per-target
+  blocks already used in mapping YAML. The CLI `--target iriusrisk` flag,
+  `archithreat targets` output, JSON API `target` field, browser shell
+  dropdown values, and the `target:` field in mapping YAML all use the new
+  id. CLI `--help` now states explicitly that `iriusrisk` emits draw.io /
+  mxGraph XML for IriusRisk.
+- Existing mapping YAML files declaring `target: drawio-iriusrisk` must be
+  updated to `target: iriusrisk`. No automatic backward-compat alias.
+- Internal renames: `src/archithreat/core/emitters/drawio_iriusrisk.py` →
+  `iriusrisk.py`, `core/mappings/drawio_iriusrisk.py` → `iriusrisk.py`,
+  `core/defaults/drawio_iriusrisk.yaml` → `iriusrisk.yaml`,
+  `tests/fixtures/expected/drawio_iriusrisk/` → `expected/iriusrisk/`.
+  Class names (`DrawioIriusriskEmitter`, `DrawioMapping`, `DrawioStyleSpec`,
+  …) keep the `Drawio` prefix — they describe draw.io implementation
+  detail, not the user-facing target id.
+
+## [2.0.1] - 2026-05-02
+
+### Changed
+- Threat Dragon default mapping no longer maps `Node`, `Device`,
+  `SystemSoftware`, or `Artifact` to TD's `process` stencil. TD has no host
+  concept, so emitting hosts as duplicate processes was noise in TD's STRIDE
+  view. The mapper's `unmatched_element: skip_with_warning` policy drops
+  them silently from TD output. IriusRisk output is unaffected — hosts still
+  render as container shapes per spec §6.3.
+- `examples/pet_shop.xml` and `tests/fixtures/pet_shop.xml` rebuilt as a
+  cross-target fixture: apps realize onto hosts (IriusRisk gets nested
+  containment), Postgres serves both data stores, two trust zones. Same
+  fixture produces idiomatic output for both targets — IriusRisk shows
+  three-tier nesting; TD shows flat STRIDE with hosts skipped.
+
 ## [2.0.0] - 2026-05-02
 
 ### Added (BREAKING — new emitter target + user-facing target selection)
