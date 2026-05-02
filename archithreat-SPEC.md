@@ -1033,7 +1033,7 @@ Keep-a-changelog from day one. CONTRIBUTING covers dev environment setup, runnin
 **v2 — physical zones + second target + user-facing target selection:**
 
 - Physical layer parsing (Equipment, Facility, Distribution Network).
-- 2D zoning: composite zone names (`partner-network @ public-landside`) at v2.0; nested zones at v2.1 once IriusRisk threat-library behavior is confirmed.
+- 2D zoning: composite zone names (`partner-network @ public-edge`) at v2.0; nested zones at v2.1 once IriusRisk threat-library behavior is confirmed.
 - Property passthrough for physical-zone-derived attributes.
 - Second emitter ships (likely OWASP Threat Dragon JSON or Microsoft Threat Modeling Tool `.tm7`, depending on demand).
 - User-facing target selection: `--target` CLI flag, `target` field in JSON API, target dropdown in both UIs.

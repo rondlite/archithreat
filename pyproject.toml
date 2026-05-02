@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "archithreat"
-version = "3.0.0"
+version = "3.0.1"
 description = "Convert ArchiMate 3.x architecture models into threat-modeling artifacts (v1: IriusRisk-compatible draw.io)."
 readme = "README.md"
 requires-python = ">=3.11"

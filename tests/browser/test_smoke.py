@@ -161,8 +161,12 @@ def test_browser_shell_convert_smoke() -> None:
 
             for target_value, expected_ext in cases:
                 page.select_option("#target", target_value)
-                with page.expect_download(timeout=60_000) as download_info:
-                    page.click("#btn-convert")
+                page.click("#btn-convert")
+                # Convert reveals the actions row instead of triggering a
+                # download directly; the user clicks Download to save.
+                page.wait_for_selector("#convert-actions:not([hidden])", timeout=60_000)
+                with page.expect_download(timeout=10_000) as download_info:
+                    page.click("#btn-download")
                 download = download_info.value
                 assert download.suggested_filename.endswith(expected_ext), (
                     f"target {target_value!r}: expected suffix {expected_ext}, "

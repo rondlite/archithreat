@@ -107,6 +107,18 @@ class BaseMapping(BaseModel):
             )
         return self
 
+    def zone_identity_key(self, target_data: dict[str, object]) -> str | None:
+        """Return a target-specific identifier for a zone's emit-time identity.
+
+        When two zones (e.g. a real Grouping and the synthetic external) would
+        emit with the same identity in the receiving tool, the mapper folds
+        the synthetic into the real one to avoid duplicate trust zones.
+
+        Default: no dedupe. Subclasses override to extract the relevant ref
+        (for IriusRisk, ``ir.ref=<uuid>`` from the mxCell style string).
+        """
+        return None
+
 
 # ---------- Matching helpers ----------
 

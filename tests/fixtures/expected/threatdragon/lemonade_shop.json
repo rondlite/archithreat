@@ -19,7 +19,7 @@
               "label": {
                 "refX": "15%",
                 "refY": "12",
-                "text": "DMZ",
+                "text": "Internet",
                 "textAnchor": "bottom",
                 "textVerticalAnchor": "top"
               }
@@ -28,10 +28,10 @@
               "description": "",
               "hasOpenThreats": false,
               "isTrustBoundary": true,
-              "name": "DMZ",
+              "name": "Internet",
               "type": "tm.BoundaryBox"
             },
-            "id": "51ab3448-748b-5af0-ace6-01a26e5809d8",
+            "id": "984e14e4-ee8d-54a3-8d9a-9d2c0714a8de",
             "position": {
               "x": 40,
               "y": 40
@@ -39,7 +39,7 @@
             "shape": "trust-boundary-box",
             "size": {
               "height": 170,
-              "width": 180
+              "width": 330
             },
             "zIndex": -50
           },
@@ -57,7 +57,7 @@
               "label": {
                 "refX": "15%",
                 "refY": "12",
-                "text": "External",
+                "text": "Private Secured",
                 "textAnchor": "bottom",
                 "textVerticalAnchor": "top"
               }
@@ -66,50 +66,12 @@
               "description": "",
               "hasOpenThreats": false,
               "isTrustBoundary": true,
-              "name": "External",
-              "type": "tm.BoundaryBox"
-            },
-            "id": "39e54c46-8609-57e4-8bf5-77458f51c807",
-            "position": {
-              "x": 280,
-              "y": 40
-            },
-            "shape": "trust-boundary-box",
-            "size": {
-              "height": 170,
-              "width": 180
-            },
-            "zIndex": -50
-          },
-          {
-            "attrs": {
-              "body": {
-                "fill": "transparent",
-                "fillOpacity": 0,
-                "rx": 10,
-                "ry": 10,
-                "stroke": "#333333",
-                "strokeDasharray": "10 5",
-                "strokeWidth": 3
-              },
-              "label": {
-                "refX": "15%",
-                "refY": "12",
-                "text": "Internal Network",
-                "textAnchor": "bottom",
-                "textVerticalAnchor": "top"
-              }
-            },
-            "data": {
-              "description": "",
-              "hasOpenThreats": false,
-              "isTrustBoundary": true,
-              "name": "Internal Network",
+              "name": "Private Secured",
               "type": "tm.BoundaryBox"
             },
             "id": "b29b84bc-2a20-5e79-8496-83576624859f",
             "position": {
-              "x": 520,
+              "x": 430,
               "y": 40
             },
             "shape": "trust-boundary-box",
@@ -133,7 +95,7 @@
               "label": {
                 "refX": "15%",
                 "refY": "12",
-                "text": "Internet",
+                "text": "Public",
                 "textAnchor": "bottom",
                 "textVerticalAnchor": "top"
               }
@@ -142,12 +104,12 @@
               "description": "",
               "hasOpenThreats": false,
               "isTrustBoundary": true,
-              "name": "Internet",
+              "name": "Public",
               "type": "tm.BoundaryBox"
             },
-            "id": "984e14e4-ee8d-54a3-8d9a-9d2c0714a8de",
+            "id": "51ab3448-748b-5af0-ace6-01a26e5809d8",
             "position": {
-              "x": 1060,
+              "x": 970,
               "y": 40
             },
             "shape": "trust-boundary-box",
@@ -171,7 +133,7 @@
               "label": {
                 "refX": "15%",
                 "refY": "12",
-                "text": "Payment Provider",
+                "text": "Third Party / SaaS",
                 "textAnchor": "bottom",
                 "textVerticalAnchor": "top"
               }
@@ -180,50 +142,50 @@
               "description": "",
               "hasOpenThreats": false,
               "isTrustBoundary": true,
-              "name": "Payment Provider",
-              "type": "tm.BoundaryBox"
-            },
-            "id": "bedec3e5-f299-5223-adfe-be1d70fdd7c8",
-            "position": {
-              "x": 1300,
-              "y": 40
-            },
-            "shape": "trust-boundary-box",
-            "size": {
-              "height": 170,
-              "width": 180
-            },
-            "zIndex": -50
-          },
-          {
-            "attrs": {
-              "body": {
-                "fill": "transparent",
-                "fillOpacity": 0,
-                "rx": 10,
-                "ry": 10,
-                "stroke": "#333333",
-                "strokeDasharray": "10 5",
-                "strokeWidth": 3
-              },
-              "label": {
-                "refX": "15%",
-                "refY": "12",
-                "text": "Shop Floor",
-                "textAnchor": "bottom",
-                "textVerticalAnchor": "top"
-              }
-            },
-            "data": {
-              "description": "",
-              "hasOpenThreats": false,
-              "isTrustBoundary": true,
-              "name": "Shop Floor",
+              "name": "Third Party / SaaS",
               "type": "tm.BoundaryBox"
             },
             "id": "3232c402-287e-522d-81d2-be6b320bedf9",
             "position": {
-              "x": 1540,
+              "x": 1210,
+              "y": 40
+            },
+            "shape": "trust-boundary-box",
+            "size": {
+              "height": 170,
+              "width": 180
+            },
+            "zIndex": -50
+          },
+          {
+            "attrs": {
+              "body": {
+                "fill": "transparent",
+                "fillOpacity": 0,
+                "rx": 10,
+                "ry": 10,
+                "stroke": "#333333",
+                "strokeDasharray": "10 5",
+                "strokeWidth": 3
+              },
+              "label": {
+                "refX": "15%",
+                "refY": "12",
+                "text": "Trusted Partner",
+                "textAnchor": "bottom",
+                "textVerticalAnchor": "top"
+              }
+            },
+            "data": {
+              "description": "",
+              "hasOpenThreats": false,
+              "isTrustBoundary": true,
+              "name": "Trusted Partner",
+              "type": "tm.BoundaryBox"
+            },
+            "id": "bedec3e5-f299-5223-adfe-be1d70fdd7c8",
+            "position": {
+              "x": 1450,
               "y": 40
             },
             "shape": "trust-boundary-box",
@@ -241,32 +203,26 @@
                 "strokeWidth": 1
               },
               "text": {
-                "text": "Storefront"
+                "text": "Customer"
               }
             },
             "data": {
-              "archithreatProperties": {
-                "tech_stack": "web"
-              },
               "description": "",
-              "handlesCardPayment": false,
-              "handlesGoodsOrServices": false,
               "hasOpenThreats": false,
               "isTrustBoundary": false,
-              "isWebApplication": true,
-              "name": "Storefront",
+              "name": "Customer",
               "outOfScope": false,
-              "privilegeLevel": "",
+              "providesAuthentication": false,
               "reasonOutOfScope": "",
               "threats": [],
-              "type": "tm.Process"
+              "type": "tm.Actor"
             },
-            "id": "236a084a-4afc-5678-870c-350831361a44",
+            "id": "b7fca226-a267-58a8-9f14-e2a00d1b1767",
             "position": {
               "x": 70,
               "y": 100
             },
-            "shape": "process",
+            "shape": "actor",
             "size": {
               "height": 80,
               "width": 120
@@ -297,7 +253,7 @@
             },
             "id": "be924e6c-d875-5ce4-aaad-bf05dbb51724",
             "position": {
-              "x": 310,
+              "x": 220,
               "y": 100
             },
             "shape": "actor",
@@ -324,6 +280,9 @@
               }
             },
             "data": {
+              "archithreatProperties": {
+                "data_classification": "internal"
+              },
               "description": "",
               "hasOpenThreats": false,
               "isALog": false,
@@ -340,7 +299,7 @@
             },
             "id": "4305ba0a-81b5-5df6-955c-185836b888ed",
             "position": {
-              "x": 550,
+              "x": 460,
               "y": 100
             },
             "shape": "store",
@@ -377,7 +336,7 @@
             },
             "id": "2d61fb22-8bb8-56b1-a621-667cfc81573d",
             "position": {
-              "x": 700,
+              "x": 610,
               "y": 100
             },
             "shape": "process",
@@ -414,7 +373,7 @@
             },
             "id": "14cb0bd0-c552-5603-becc-4aa11b616787",
             "position": {
-              "x": 850,
+              "x": 760,
               "y": 100
             },
             "shape": "process",
@@ -460,7 +419,7 @@
             },
             "id": "b12168b7-e9e4-5c36-b26c-d154a56dab9c",
             "position": {
-              "x": 550,
+              "x": 460,
               "y": 210
             },
             "shape": "store",
@@ -497,7 +456,7 @@
             },
             "id": "de3cabcb-439b-5ea1-9ce2-c7db7184b67d",
             "position": {
-              "x": 700,
+              "x": 610,
               "y": 210
             },
             "shape": "process",
@@ -515,60 +474,29 @@
                 "strokeWidth": 1
               },
               "text": {
-                "text": "Customer"
+                "text": "Storefront"
               }
             },
             "data": {
-              "description": "",
-              "hasOpenThreats": false,
-              "isTrustBoundary": false,
-              "name": "Customer",
-              "outOfScope": false,
-              "providesAuthentication": false,
-              "reasonOutOfScope": "",
-              "threats": [],
-              "type": "tm.Actor"
-            },
-            "id": "b7fca226-a267-58a8-9f14-e2a00d1b1767",
-            "position": {
-              "x": 1090,
-              "y": 100
-            },
-            "shape": "actor",
-            "size": {
-              "height": 80,
-              "width": 120
-            },
-            "zIndex": 1
-          },
-          {
-            "attrs": {
-              "body": {
-                "stroke": "#333333",
-                "strokeDasharray": null,
-                "strokeWidth": 1
+              "archithreatProperties": {
+                "tech_stack": "web"
               },
-              "text": {
-                "text": "Stripe Gateway"
-              }
-            },
-            "data": {
               "description": "",
               "handlesCardPayment": false,
               "handlesGoodsOrServices": false,
               "hasOpenThreats": false,
               "isTrustBoundary": false,
-              "isWebApplication": false,
-              "name": "Stripe Gateway",
+              "isWebApplication": true,
+              "name": "Storefront",
               "outOfScope": false,
               "privilegeLevel": "",
               "reasonOutOfScope": "",
               "threats": [],
               "type": "tm.Process"
             },
-            "id": "8cd466ae-d019-5032-a213-85bf82f9822c",
+            "id": "236a084a-4afc-5678-870c-350831361a44",
             "position": {
-              "x": 1330,
+              "x": 1000,
               "y": 100
             },
             "shape": "process",
@@ -608,7 +536,44 @@
             },
             "id": "356e7fb6-ca95-5782-847e-1a112bf0c1aa",
             "position": {
-              "x": 1570,
+              "x": 1240,
+              "y": 100
+            },
+            "shape": "process",
+            "size": {
+              "height": 80,
+              "width": 120
+            },
+            "zIndex": 1
+          },
+          {
+            "attrs": {
+              "body": {
+                "stroke": "#333333",
+                "strokeDasharray": null,
+                "strokeWidth": 1
+              },
+              "text": {
+                "text": "Stripe Gateway"
+              }
+            },
+            "data": {
+              "description": "",
+              "handlesCardPayment": false,
+              "handlesGoodsOrServices": false,
+              "hasOpenThreats": false,
+              "isTrustBoundary": false,
+              "isWebApplication": false,
+              "name": "Stripe Gateway",
+              "outOfScope": false,
+              "privilegeLevel": "",
+              "reasonOutOfScope": "",
+              "threats": [],
+              "type": "tm.Process"
+            },
+            "id": "8cd466ae-d019-5032-a213-85bf82f9822c",
+            "position": {
+              "x": 1480,
               "y": 100
             },
             "shape": "process",

@@ -25,6 +25,9 @@ let nextRequestId = 1;
 const pending = new Map();
 let ready = false;
 
+// Last successful conversion, kept for Download / Preview actions.
+let lastResult = null; // { bytes, extension, mediaType, target, sourceName, xmlText? }
+
 function newRequestId() {
   return `req-${nextRequestId++}`;
 }
@@ -82,9 +85,44 @@ function enableActionButtons(enabled) {
 
 // ---------- Convert ----------
 
+function viewerAvailable() {
+  return typeof window !== 'undefined' && typeof window.GraphViewer !== 'undefined';
+}
+
+function resetConvertUi() {
+  document.getElementById('convert-actions').hidden = true;
+  document.getElementById('preview-area').hidden = true;
+  document.getElementById('preview-host').replaceChildren();
+  const result = document.getElementById('convert-result');
+  result.textContent = '';
+  result.classList.remove('is-error', 'is-ok');
+}
+
+function presentResult(result) {
+  lastResult = result;
+  const actions = document.getElementById('convert-actions');
+  const previewBtn = document.getElementById('btn-preview');
+  const summary = document.getElementById('convert-summary');
+  actions.hidden = false;
+  summary.textContent = `${replaceExtension(result.sourceName, result.extension)} · ${result.bytes.length} bytes`;
+  // Preview is iriusrisk-only and requires the vendored drawio viewer.
+  const canPreview = result.target === 'iriusrisk' && viewerAvailable();
+  previewBtn.hidden = !canPreview;
+  if (result.target === 'iriusrisk' && !viewerAvailable()) {
+    renderResult(
+      'convert-result',
+      'Preview unavailable: drawio viewer not vendored. Run `npm run vendor:drawio` to enable.',
+      'ok',
+    );
+  } else {
+    document.getElementById('convert-result').textContent = '';
+  }
+}
+
 async function onConvertSubmit(ev) {
   ev.preventDefault();
   if (!ready) return;
+  resetConvertUi();
   const fileInput = $('#file-convert');
   const mappingText = ($('#mapping-text').value || '').trim();
   const target = getTarget('target');
@@ -102,12 +140,51 @@ async function onConvertSubmit(ev) {
     });
     statusEl.textContent = 'Done.';
     status.set('ready', 'Pyodide ready');
-    triggerDownload(result.bytes, replaceExtension(name, result.extension), result.mediaType);
+    presentResult({ ...result, target, sourceName: name });
   } catch (err) {
     statusEl.textContent = '';
     status.set('error', `Convert failed: ${err.message}`);
     renderResult('convert-result', String(err.message || err), 'error');
   }
+}
+
+function onDownload() {
+  if (!lastResult) return;
+  triggerDownload(
+    lastResult.bytes,
+    replaceExtension(lastResult.sourceName, lastResult.extension),
+    lastResult.mediaType,
+  );
+}
+
+function onPreview() {
+  if (!lastResult || lastResult.target !== 'iriusrisk') return;
+  if (!viewerAvailable()) {
+    renderResult('convert-result', 'drawio viewer not loaded.', 'error');
+    return;
+  }
+  const host = document.getElementById('preview-host');
+  host.replaceChildren();
+  const xml = new TextDecoder().decode(lastResult.bytes);
+  const div = document.createElement('div');
+  div.className = 'mxgraph';
+  div.style.maxWidth = '100%';
+  div.setAttribute(
+    'data-mxgraph',
+    JSON.stringify({
+      xml,
+      highlight: '#0000ff',
+      lightbox: false,
+      nav: true,
+      resize: true,
+      toolbar: 'zoom layers',
+    }),
+  );
+  host.appendChild(div);
+  document.getElementById('preview-area').hidden = false;
+  // GraphViewer.processElements scans .mxgraph children of document.body by
+  // default, so a parent argument is unnecessary.
+  window.GraphViewer.processElements();
 }
 
 // ---------- Inventory ----------
@@ -139,11 +216,18 @@ async function onInventorySubmit(ev) {
 
 // ---------- Validate mapping ----------
 
+function parseDeclaredTarget(yamlText, fallback = 'iriusrisk') {
+  // Lightweight scan for a top-level `target: <id>` line. The Python loader
+  // does the authoritative validation; this just picks the right schema.
+  const m = yamlText.match(/^target:\s*['"]?([a-z0-9_-]+)['"]?\s*$/im);
+  return m ? m[1] : fallback;
+}
+
 async function onValidateSubmit(ev) {
   ev.preventDefault();
   if (!ready) return;
   const text = $('#validate-text').value || '';
-  const target = getTarget('mapping-target');
+  const target = parseDeclaredTarget(text);
   const statusEl = $('#validate-status');
   try {
     statusEl.textContent = 'Validating…';
@@ -217,6 +301,8 @@ function init() {
   document
     .getElementById('btn-validate-load-default')
     .addEventListener('click', () => loadDefaultInto('validate-text').catch((e) => alert(e.message)));
+  document.getElementById('btn-download').addEventListener('click', onDownload);
+  document.getElementById('btn-preview').addEventListener('click', onPreview);
 
   enableActionButtons(false);
   status.set('boot', 'Loading runtime…', 5);

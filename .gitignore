@@ -39,3 +39,6 @@ browser/.cache/
 .env
 .env.*
 !.env.example
+
+# IriusRisk regen cache — installation-private library data, never commit
+scripts/.iriusrisk-components.json

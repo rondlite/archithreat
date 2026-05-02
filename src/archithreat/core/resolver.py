@@ -89,6 +89,25 @@ def _build_zones(
                 )
             )
             continue
+        rule = mapping.zone_rules[rule_idx]
+        # A "fallback" zone rule has no name pattern and no property matcher —
+        # it matches every Grouping/Location with a given archimate_type.
+        # In threat-modeling convention an unidentified zone is treated as the
+        # Internet zone (untrusted). Warn loudly so modelers see the fallback
+        # rather than silently shipping a generic-zone trust boundary.
+        if rule.match.name_pattern is None and rule.match.property is None:
+            warnings.append(
+                ResolverWarning(
+                    code="zone_name_unrecognized",
+                    message=(
+                        f"Composite element {element.name!r} did not match any "
+                        "name-patterned zone rule; falling back to the catch-all "
+                        "(treated as Internet by default). Add a name-patterned "
+                        "rule to your mapping YAML to map it explicitly."
+                    ),
+                    element_id=element.id,
+                )
+            )
         zones[element.id] = Zone(
             id=element.id,
             name=element.name,

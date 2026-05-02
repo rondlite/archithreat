@@ -6,14 +6,17 @@
     <title>archithreat — ArchiMate to threat model, in your browser</title>
     <meta
       name="description"
-      content="Convert ArchiMate 3.x architecture models to IriusRisk-compatible draw.io diagrams entirely in your browser. No upload, no backend."
+      content="Convert ArchiMate 3.x architecture models to IriusRisk-compatible draw.io diagrams or OWASP Threat Dragon JSON entirely in your browser. No upload, no backend."
     />
     <link rel="stylesheet" href="./style.css" />
   </head>
   <body>
     <header class="site-header" role="banner">
       <h1>archithreat</h1>
-      <p class="tagline">ArchiMate 3.x → IriusRisk-compatible draw.io. Runs in your browser.</p>
+      <p class="tagline">
+        ArchiMate 3.x → IriusRisk-compatible draw.io or OWASP Threat Dragon JSON.
+        Runs in your browser.
+      </p>
     </header>
 
     <section class="status-panel" aria-live="polite" aria-atomic="true">
@@ -34,8 +37,9 @@
       <section id="panel-convert" role="tabpanel" aria-labelledby="tab-convert" class="panel is-active">
         <h2>Convert</h2>
         <p class="hint">
-          Pick an ArchiMate Open Exchange XML file. The converter runs in your browser and offers
-          the resulting <code>.drawio</code> as a download.
+          Pick an ArchiMate Open Exchange XML file. The converter runs in your browser. After
+          conversion you can preview the diagram (IriusRisk / draw.io output only) or download
+          the result file.
         </p>
         <form id="form-convert">
           <label for="target" class="file-label">Output target
@@ -84,6 +88,17 @@
             <span id="convert-status" class="muted"></span>
           </div>
         </form>
+
+        <div id="convert-actions" class="row" hidden>
+          <button type="button" id="btn-download" class="primary">Download</button>
+          <button type="button" id="btn-preview" class="secondary" hidden>Preview</button>
+          <span id="convert-summary" class="muted"></span>
+        </div>
+
+        <div id="preview-area" class="preview-area" hidden aria-label="draw.io preview">
+          <div id="preview-host"></div>
+        </div>
+
         <div id="convert-result" class="result-box" aria-live="polite"></div>
       </section>
 
@@ -108,7 +123,7 @@
       <section id="panel-validate" role="tabpanel" aria-labelledby="tab-validate" class="panel" hidden>
         <h2>Validate mapping</h2>
         <p class="hint">
-          Check a mapping YAML against the schema for the v1 target.
+          Check a mapping YAML against its declared target schema. The YAML's <code>target:</code> field picks the schema.
         </p>
         <form id="form-validate">
           <label for="validate-text">Mapping YAML
@@ -143,11 +158,18 @@
 
     <footer class="site-footer">
       <p>
-        archithreat · Apache-2.0 ·
+        archithreat <span id="version">v__ARCHITHREAT_VERSION__</span> ·
+        Apache-2.0 ·
         <a href="https://github.com/rondlite/archithreat">source</a>
+      </p>
+      <p class="credits">
+        Author: Ron W. van Etten
       </p>
     </footer>
 
+    <!-- drawio viewer is optional. Loaded eagerly only when vendored; the
+         Preview button stays hidden if the global GraphViewer is missing. -->
+    <script src="./drawio/viewer-static.min.js" defer onerror="window.__archithreatNoViewer=true"></script>
     <script type="module" src="./main.js"></script>
   </body>
 </html>

@@ -43,7 +43,7 @@ After import, IriusRisk's threat library attaches threats automatically to recog
 
 If your installation uses a customised library (e.g. `CD-V2-*` prefixes), copy the bundled default mapping YAML and replace the refs. Validate with `archithreat validate-mapping path/to/your.yaml --target iriusrisk`.
 
-Edge `ir.assets` and `ir.tags` (linked DataObject and protocol) live inside the mxCell `style` string. The current emitter does not template those from per-relationship properties; modellers add them in IriusRisk's editor after import. v2.1+ will template them.
+Edge `ir.assets` and `ir.tags` (linked DataObject and protocol) live inside the mxCell `style` string. The current emitter does not template those from per-relationship properties; modellers add them in IriusRisk's editor after import. Templating from per-relationship properties is on the roadmap.
 
 ## threatdragon
 

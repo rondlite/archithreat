@@ -8,6 +8,7 @@ copies fields. Per-target schemas are validated by Pydantic at load time.
 from __future__ import annotations
 
 import logging
+from dataclasses import replace
 from typing import Any, Literal
 
 from .mappings.base import (
@@ -43,12 +44,74 @@ def apply_mapping(
     mapped_zones = _map_zones(resolved.zones, mapping)
     mapped_components = _map_components(resolved, mapping)
     mapped_connections = _map_connections(resolved, mapping)
+    mapped_zones, mapped_components = _fold_duplicate_synthetic_zones(
+        mapped_zones, mapped_components, mapping
+    )
     return MappedModel(
         zones=mapped_zones,
         components=mapped_components,
         connections=mapped_connections,
         source_name=source_name,
     )
+
+
+def _fold_duplicate_synthetic_zones(
+    zones: dict[str, MappedZone],
+    components: dict[str, MappedComponent],
+    mapping: BaseMapping,
+) -> tuple[dict[str, MappedZone], dict[str, MappedComponent]]:
+    """Merge synthetic zones into a real zone whose target identity matches.
+
+    Without this, a model that has both a real Internet Grouping and any
+    actor without explicit zone composition would emit two zones with the
+    same target identity (e.g. matching ``ir.ref``), which IriusRisk imports
+    as a collision and silently drops one. We rewrite the components'
+    ``zone_id`` to point at the real zone and remove the now-empty synthetic.
+
+    Selection: prefer a real zone whose **name** matches the synthetic's
+    (e.g. synthetic "Internet" → real Grouping named "Internet"), then fall
+    back to any real zone with the same identity key. Name matching avoids
+    misrouting when several real zones share a fallback key.
+    """
+    real_by_name: dict[str, str] = {}  # lower(name) -> first real zone_id
+    real_by_key: dict[str, str] = {}  # identity_key -> first real zone_id
+    for zid, mz in zones.items():
+        if mz.zone.is_synthetic:
+            continue
+        real_by_name.setdefault(mz.zone.name.lower(), zid)
+        key = mapping.zone_identity_key(mz.target_data)
+        if key:
+            real_by_key.setdefault(key, zid)
+
+    if not real_by_name and not real_by_key:
+        return zones, components
+
+    redirects: dict[str, str] = {}  # synthetic zone_id -> real zone_id
+    for zid, mz in zones.items():
+        if not mz.zone.is_synthetic:
+            continue
+        target = real_by_name.get(mz.zone.name.lower())
+        if target is None:
+            key = mapping.zone_identity_key(mz.target_data)
+            if key:
+                target = real_by_key.get(key)
+        if target is not None:
+            redirects[zid] = target
+
+    if not redirects:
+        return zones, components
+
+    new_components: dict[str, MappedComponent] = {}
+    for cid, mc in components.items():
+        target_zone = redirects.get(mc.component.zone_id)
+        if target_zone is None:
+            new_components[cid] = mc
+            continue
+        comp = replace(mc.component, zone_id=target_zone)
+        new_components[cid] = replace(mc, component=comp)
+
+    new_zones = {zid: mz for zid, mz in zones.items() if zid not in redirects}
+    return new_zones, new_components
 
 
 def _map_zones(zones: dict[str, Zone], mapping: BaseMapping) -> dict[str, MappedZone]:

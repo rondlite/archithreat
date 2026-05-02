@@ -52,7 +52,7 @@ docker run --rm -p 8000:8000 ghcr.io/rondlite/archithreat:latest
 
 ## Status
 
-v1 alpha. See [CHANGELOG.md](CHANGELOG.md) and [ROADMAP](docs/limitations.md#future-work).
+v3.0.1. See [CHANGELOG.md](CHANGELOG.md) and [ROADMAP](docs/limitations.md#future-work).
 
 ## License
 

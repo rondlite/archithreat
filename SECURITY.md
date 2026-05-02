@@ -42,9 +42,9 @@ The parser, resolver, mapper, and emitter are O(n) in element/relationship count
 
 The CLI has no upload limit by design — it is the user's own machine and the user is the operator. Apply OS-level limits (`ulimit`, cgroups) if you run the CLI in a constrained environment.
 
-### Authentication and authorization (out of scope for v1)
+### Authentication and authorization (deliberately out of scope)
 
-The self-hosted container ships **no authentication and no authorization**. Anyone who can reach its bind port can convert files. This is a deliberate v1 scope decision: the container is a stateless converter, not an application platform; building auth into it would force it to also build session handling, password storage, MFA flows, and audit logging — all of which exist as solved problems in operator-controlled infrastructure.
+The self-hosted container ships **no authentication and no authorization**. Anyone who can reach its bind port can convert files. This is a deliberate scope decision: the container is a stateless converter, not an application platform; building auth into it would force it to also build session handling, password storage, MFA flows, and audit logging — all of which exist as solved problems in operator-controlled infrastructure.
 
 **Operators are expected to front the container with their own auth proxy** if they expose it beyond a trusted internal network. nginx with basic auth, oauth2-proxy, an Identity-Aware Proxy, an internal LB with mTLS — any of these are appropriate.
 

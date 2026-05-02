@@ -37,12 +37,19 @@ editor's dropdown should match the schema you intend to author.
 ```bash
 cd browser
 npm install                 # installs esbuild
-npm run vendor:pyodide      # downloads Pyodide 0.26.4 into vendor/pyodide/
+npm run vendor:all          # Pyodide 0.26.4 + drawio viewer 24.7.17
+# or individually:
+#   npm run vendor:pyodide  # → vendor/pyodide/
+#   npm run vendor:drawio   # → vendor/drawio/ (enables the Preview button)
 ```
 
-`vendor/pyodide/` is not committed; the `.gitignore` keeps everything except
-the `.gitkeep` placeholder out of source control. The pinned Pyodide version
-lives in `scripts/vendor-pyodide.mjs` — bump it deliberately.
+`vendor/pyodide/` and `vendor/drawio/` are not committed; the `.gitignore`
+keeps everything except the `.gitkeep` placeholders out of source control.
+Pinned versions live in `scripts/vendor-pyodide.mjs` and
+`scripts/vendor-drawio.mjs` — bump deliberately.
+
+The drawio viewer is **optional**. Without it, the Preview button stays
+hidden and conversion still works — users get the Download path.
 
 ## Build
 

@@ -7,6 +7,75 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.0.1] - 2026-05-02
+
+### Fixed
+- Full `iriusrisk.yaml` component-ref regeneration. The bundled mapping
+  carried refs scraped from the outdated public IriusRisk Community
+  GitHub repo; current Community and Enterprise installations both ship
+  the **CD-V2-*** namespace, so on import IriusRisk treated every cell
+  as a stub component (shape recognized, no library binding, no threats
+  attached). All 118 distinct refs in the YAML — across AWS, Azure, GCP,
+  OCI, Kubernetes, databases, identity, web servers, network, messaging,
+  SaaS, and generic shapes — now resolve to refs that exist in the live
+  installed library. Verified against a live IriusRisk REST API
+  (`/api/v2/components`, 1408 active component definitions catalogued).
+
+### Added
+- `scripts/regen_iriusrisk_defaults.py` — pages the IriusRisk REST API,
+  caches the component catalog locally (gitignored, installation-private),
+  rewrites every `ir.componentDefinition.ref=<x>` and `component_type:`
+  field in `iriusrisk.yaml` to its CD-V2 equivalent, and reports any
+  unmapped refs. Run on library version bumps via
+  `IRIUSRISK_BASE_URL=<url> IRIUSRISK_TOKEN=<token> python
+  scripts/regen_iriusrisk_defaults.py`.
+
+### Changed
+- `iriusrisk` default mapping `zone_rules` extended with name-pattern
+  matches for the most common deployment-typical Grouping names so they
+  bind to the right standard IriusRisk trust zone instead of falling to
+  the catch-all: `dmz|perimeter|edge` → Public; `private[- ]?secured|
+  internal|intranet|backend|backoffice|production|prod|corporate|
+  on[- ]?prem|workplace|office|warehouse|shop[- ]?floor|factory|plant`
+  → Private Secured; `payment|billing|finance|vendor|gateway|provider`
+  → Trusted Partner. Existing canonical patterns (`internet`,
+  `public cloud`, `public`, `third-party|saas|vendor`, `trusted partner`)
+  unchanged. Modelers using these names get correct, distinct trust
+  zones in IriusRisk on import.
+- Lemonade demo Groupings renamed to canonical IriusRisk zone names
+  (`Internet`, `Public`, `Private Secured`, `Trusted Partner`,
+  `Third Party / SaaS`) so the example fixture imports as 5 distinct
+  standard zones with no `zone_name_unrecognized` warnings. Component
+  IDs (`z_dmz`, `z_internal`, `z_payments`, `z_shop`) unchanged for
+  diff stability; only the visible zone labels changed.
+- Default `iriusrisk` mapping fallback for unrecognized `Grouping`/`Location`
+  zones changed from **Private Secured** (`ir.ref=2ab4effa-…`) to **Internet**
+  (`ir.ref=f0ba7722-…`) per threat-modeling convention: an unidentified zone
+  is, by default, untrusted. The resolver now emits a `zone_name_unrecognized`
+  warning whenever the catch-all fires so the fallback is never silent.
+  Existing CLI `--strict` flag fails on the warning. Override by adding a
+  name-patterned rule above the catch-all for your installation's zones.
+
+### Fixed
+- Mapper folds the synthetic `external` zone into a real zone whose name or
+  target-identity key matches (for `iriusrisk`, the `ir.ref` UUID parsed
+  from the zone's mxCell style). Previously, a model containing a real
+  Internet `Grouping` plus any actor without explicit zone composition
+  would emit two trust zones with the same `ir.ref`, which IriusRisk
+  imports as a collision and silently drops one — leaving the actor
+  unzoned. Components routed through the synthetic now land in the real
+  zone instead. Selection prefers a real zone whose **name** matches the
+  synthetic's, then falls back to identity-key matching, so multiple real
+  zones sharing a fallback key don't misroute the synthetic.
+  Generalized via `BaseMapping.zone_identity_key()`; subclasses override
+  (only `iriusrisk` does today).
+- `examples/lemonade_shop.xml` and `tests/fixtures/lemonade_shop.xml`:
+  added explicit `Composition z_internet → ba_kitchen` so Kitchen Staff
+  is in the Internet zone by model intent rather than falling through
+  the synthetic-external dedupe path. Added `data_classification: internal`
+  to Inventory DB so it tints identically to Orders DB on IriusRisk
+  import.
+
 ## [3.0.0] - 2026-05-02
 
 ### Changed (BREAKING — target id rename)

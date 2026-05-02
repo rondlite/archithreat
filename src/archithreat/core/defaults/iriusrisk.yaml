@@ -1,21 +1,28 @@
 # Default mapping for the iriusrisk target (draw.io / mxGraph for IriusRisk).
 #
-# Style strings, trust-zone UUIDs, and ir.componentDefinition.ref values are
-# all extracted from IriusRisk's public Community shape libraries:
-#
-#   https://github.com/iriusrisk/Community/tree/master/ShapeLibraries
+# Component refs and trust-zone UUIDs target the IriusRisk CD-V2-* shape
+# library that ships in current Community and Enterprise installations
+# (regenerated against a live IriusRisk REST API; see
+# scripts/regen_iriusrisk_defaults.py for the pipeline).
 #
 # Coverage:
-#   - 6 trust zones (Internet, Public, Public Cloud, Private Secured,
-#       Trusted Partner, Third Party / SaaS)
-#   - 593 component definitions across 27 libraries (AWS, Azure, GCP, OCI,
-#       Kubernetes, Docker, Server-side, Client-side, Network, Hardware,
-#       SAP, Generic, Functional, Regulatory, IoT, etc.)
+#   - 6 standard trust zones (Internet, Public, Public Cloud, Private
+#       Secured, Trusted Partner, Third Party / SaaS), plus name-pattern
+#       rules for common deployment-typical names (DMZ, Internal, Backend,
+#       Production, Payment, Vendor, Workplace, etc.) so they bind to the
+#       right standard zone instead of falling through to the catch-all.
+#   - 118 component rules covering AWS, Azure, GCP, OCI, Kubernetes,
+#       Docker, databases, identity, web servers, network, messaging,
+#       SaaS, and generic shapes.
 #
-# This mapping uses canonical community refs (e.g. `web-ui`, `postgresql`,
-# `CD-NGINX`). If your IriusRisk installation uses a customised library
-# (e.g. with a `CD-V2-*` prefix), copy this file, replace the refs, and
-# pass `--mapping path/to/your.yaml`.
+# If your IriusRisk installation ships a different library namespace,
+# regenerate this file via:
+#
+#   IRIUSRISK_BASE_URL=<url> IRIUSRISK_TOKEN=<token> \
+#       python scripts/regen_iriusrisk_defaults.py
+#
+# Or copy this file, override the refs by hand, and pass it via
+# `--mapping path/to/your.yaml`.
 #
 # Edges DO NOT carry ir.assets / ir.tags by default — those are user-added
 # in IriusRisk's editor after import. v1.1 will template them from
@@ -90,17 +97,61 @@ zone_rules:
     iriusrisk:
       zone_name_property: name
       style: "ir.ref=531315a7-41a2-40ed-ab87-22c3a4c3c7ff;rounded=1;whiteSpace=wrap;recursiveResize=0;html=1;verticalAlign=top;align=left;dashed=1;strokeWidth=1;arcSize=3;absoluteArcSize=1;spacingTop=1;spacingLeft=32;strokeColor=#7575EB;fillColor=#F0F0FF;fillOpacity=30;fontColor=#5651E0;connectable=0;container=1;source=iriusrisk;ir.type=TRUSTZONE;"
-  # Default — Private Secured (Private Secured (default))
+  # DMZ — perimeter / public-facing edge → Public
   - match:
       archimate_type: Grouping
+      name_pattern: '(?i)\b(dmz|perimeter|edge)\b'
+    iriusrisk:
+      zone_name_property: name
+      style: "ir.ref=6376d53e-6461-412b-8e04-7b3fe2b397de;rounded=1;whiteSpace=wrap;recursiveResize=0;html=1;verticalAlign=top;align=left;dashed=1;strokeWidth=1;arcSize=3;absoluteArcSize=1;spacingTop=1;spacingLeft=32;strokeColor=#7575EB;fillColor=#F0F0FF;fillOpacity=30;fontColor=#5651E0;connectable=0;container=1;source=iriusrisk;ir.type=TRUSTZONE;"
+  - match:
+      archimate_type: Location
+      name_pattern: '(?i)\b(dmz|perimeter|edge)\b'
+    iriusrisk:
+      zone_name_property: name
+      style: "ir.ref=6376d53e-6461-412b-8e04-7b3fe2b397de;rounded=1;whiteSpace=wrap;recursiveResize=0;html=1;verticalAlign=top;align=left;dashed=1;strokeWidth=1;arcSize=3;absoluteArcSize=1;spacingTop=1;spacingLeft=32;strokeColor=#7575EB;fillColor=#F0F0FF;fillOpacity=30;fontColor=#5651E0;connectable=0;container=1;source=iriusrisk;ir.type=TRUSTZONE;"
+  # Internal / backend / production / corporate → Private Secured
+  - match:
+      archimate_type: Grouping
+      name_pattern: '(?i)\b(private[- ]?secured|internal|intranet|backend|back[- ]?office|backoffice|production|prod|corporate|on[- ]?prem|on[- ]?premise|workplace|office|warehouse|shop[- ]?floor|factory|plant)\b'
     iriusrisk:
       zone_name_property: name
       style: "ir.ref=2ab4effa-40b7-4cd2-ba81-8247d29a6f2d;rounded=1;whiteSpace=wrap;recursiveResize=0;html=1;verticalAlign=top;align=left;dashed=1;strokeWidth=1;arcSize=3;absoluteArcSize=1;spacingTop=1;spacingLeft=32;strokeColor=#7575EB;fillColor=#F0F0FF;fillOpacity=30;fontColor=#5651E0;connectable=0;container=1;source=iriusrisk;ir.type=TRUSTZONE;"
   - match:
       archimate_type: Location
+      name_pattern: '(?i)\b(private[- ]?secured|internal|intranet|backend|back[- ]?office|backoffice|production|prod|corporate|on[- ]?prem|on[- ]?premise|workplace|office|warehouse|shop[- ]?floor|factory|plant)\b'
     iriusrisk:
       zone_name_property: name
       style: "ir.ref=2ab4effa-40b7-4cd2-ba81-8247d29a6f2d;rounded=1;whiteSpace=wrap;recursiveResize=0;html=1;verticalAlign=top;align=left;dashed=1;strokeWidth=1;arcSize=3;absoluteArcSize=1;spacingTop=1;spacingLeft=32;strokeColor=#7575EB;fillColor=#F0F0FF;fillOpacity=30;fontColor=#5651E0;connectable=0;container=1;source=iriusrisk;ir.type=TRUSTZONE;"
+  # Payment / billing / finance / external trusted vendor → Trusted Partner
+  - match:
+      archimate_type: Grouping
+      name_pattern: '(?i)\b(payment|billing|finance|vendor|gateway|provider)\b'
+    iriusrisk:
+      zone_name_property: name
+      style: "ir.ref=531315a7-41a2-40ed-ab87-22c3a4c3c7ff;rounded=1;whiteSpace=wrap;recursiveResize=0;html=1;verticalAlign=top;align=left;dashed=1;strokeWidth=1;arcSize=3;absoluteArcSize=1;spacingTop=1;spacingLeft=32;strokeColor=#7575EB;fillColor=#F0F0FF;fillOpacity=30;fontColor=#5651E0;connectable=0;container=1;source=iriusrisk;ir.type=TRUSTZONE;"
+  - match:
+      archimate_type: Location
+      name_pattern: '(?i)\b(payment|billing|finance|vendor|gateway|provider)\b'
+    iriusrisk:
+      zone_name_property: name
+      style: "ir.ref=531315a7-41a2-40ed-ab87-22c3a4c3c7ff;rounded=1;whiteSpace=wrap;recursiveResize=0;html=1;verticalAlign=top;align=left;dashed=1;strokeWidth=1;arcSize=3;absoluteArcSize=1;spacingTop=1;spacingLeft=32;strokeColor=#7575EB;fillColor=#F0F0FF;fillOpacity=30;fontColor=#5651E0;connectable=0;container=1;source=iriusrisk;ir.type=TRUSTZONE;"
+  # Fallback — unidentified zones classify as Internet per threat-modeling
+  # convention (an unknown trust boundary is, by default, untrusted). The
+  # resolver emits a `zone_name_unrecognized` warning whenever this rule
+  # fires so modelers see the fallback rather than silently shipping
+  # mislabeled zones. Override by adding a name-patterned rule above this
+  # one with the `ir.ref` for your installation's library zone.
+  - match:
+      archimate_type: Grouping
+    iriusrisk:
+      zone_name_property: name
+      style: "ir.ref=f0ba7722-39b6-4c81-8290-a30a248bb8d9;rounded=1;whiteSpace=wrap;recursiveResize=0;html=1;verticalAlign=top;align=left;dashed=1;strokeWidth=1;arcSize=3;absoluteArcSize=1;spacingTop=1;spacingLeft=32;strokeColor=#7575EB;fillColor=#F0F0FF;fillOpacity=30;fontColor=#5651E0;connectable=0;container=1;source=iriusrisk;ir.type=TRUSTZONE;"
+  - match:
+      archimate_type: Location
+    iriusrisk:
+      zone_name_property: name
+      style: "ir.ref=f0ba7722-39b6-4c81-8290-a30a248bb8d9;rounded=1;whiteSpace=wrap;recursiveResize=0;html=1;verticalAlign=top;align=left;dashed=1;strokeWidth=1;arcSize=3;absoluteArcSize=1;spacingTop=1;spacingLeft=32;strokeColor=#7575EB;fillColor=#F0F0FF;fillOpacity=30;fontColor=#5651E0;connectable=0;container=1;source=iriusrisk;ir.type=TRUSTZONE;"
 
 synthetic_zones:
   unzoned:
@@ -118,8 +169,8 @@ component_rules:
         name: tech_stack
         equals: web
     iriusrisk:
-      component_type: web-ui
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=web-ui;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-WEB-UI
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-WEB-UI;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # tech_stack=mobile → Mobile
   - match:
       archimate_type: ApplicationComponent
@@ -127,967 +178,967 @@ component_rules:
         name: tech_stack
         equals: mobile
     iriusrisk:
-      component_type: mobile-device-client
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=mobile-device-client;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-MOBILE-DEVICE-CLIENT
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-MOBILE-DEVICE-CLIENT;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # AWS S3
   - match:
       archimate_type: ApplicationComponent
       name_pattern: '(?i)\baws\b.*\b(s3|simple storage)\b'
     iriusrisk:
-      component_type: s3
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=s3;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-AWS-S3
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-AWS-S3;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # AWS EC2
   - match:
       archimate_type: ApplicationComponent
       name_pattern: '(?i)\baws\b.*\bec2\b'
     iriusrisk:
-      component_type: ec2
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=ec2;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-AWS-EC2
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-AWS-EC2;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # AWS Lambda
   - match:
       archimate_type: ApplicationComponent
       name_pattern: '(?i)\baws\b.*\blambda\b'
     iriusrisk:
-      component_type: aws-lambda-function
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=aws-lambda-function;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-AWS-LAMBDA
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-AWS-LAMBDA;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # AWS RDS
   - match:
       archimate_type: ApplicationComponent
       name_pattern: '(?i)\baws\b.*\brds\b'
     iriusrisk:
-      component_type: rds
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=rds;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-AWS-RDS
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-AWS-RDS;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # AWS DynamoDB
   - match:
       archimate_type: ApplicationComponent
       name_pattern: '(?i)\baws\b.*\bdynamodb\b'
     iriusrisk:
-      component_type: dynamodb
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=dynamodb;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-AWS-DYNAMODB
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-AWS-DYNAMODB;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # AWS CloudFront
   - match:
       archimate_type: ApplicationComponent
       name_pattern: '(?i)\baws\b.*\bcloudfront\b'
     iriusrisk:
-      component_type: cf-cloudfront
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=cf-cloudfront;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-AWS-CLOUDFRONT
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-AWS-CLOUDFRONT;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # AWS API Gateway
   - match:
       archimate_type: ApplicationComponent
       name_pattern: '(?i)\baws\b.*\bapi gateway\b'
     iriusrisk:
-      component_type: api-gateway
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=api-gateway;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-API-GATEWAY
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-API-GATEWAY;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # AWS Cognito
   - match:
       archimate_type: ApplicationComponent
       name_pattern: '(?i)\baws\b.*\bcognito\b'
     iriusrisk:
-      component_type: cognito
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=cognito;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-AWS-COGNITO
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-AWS-COGNITO;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # AWS SQS
   - match:
       archimate_type: ApplicationComponent
       name_pattern: '(?i)\baws\b.*\bsqs\b'
     iriusrisk:
-      component_type: sqs-simple-queue-service
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=sqs-simple-queue-service;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-AWS-SQS
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-AWS-SQS;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # AWS SNS
   - match:
       archimate_type: ApplicationComponent
       name_pattern: '(?i)\baws\b.*\bsns\b'
     iriusrisk:
-      component_type: sns
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=sns;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-AWS-SNS-SIMPLE-NOTIFICATION-SERVICE
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-AWS-SNS-SIMPLE-NOTIFICATION-SERVICE;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # AWS CloudWatch
   - match:
       archimate_type: ApplicationComponent
       name_pattern: '(?i)\baws\b.*\bcloudwatch\b'
     iriusrisk:
-      component_type: cloudwatch
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=cloudwatch;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-AWS-CLOUDWATCH
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-AWS-CLOUDWATCH;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # AWS IAM
   - match:
       archimate_type: ApplicationComponent
       name_pattern: '(?i)\baws\b.*\biam\b'
     iriusrisk:
-      component_type: CD-AWS-IAM
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-AWS-IAM;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-AWS-IAM-IDENTITY-AND-ACCESS-MANAGEMENT
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-AWS-IAM-IDENTITY-AND-ACCESS-MANAGEMENT;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # AWS Kinesis
   - match:
       archimate_type: ApplicationComponent
       name_pattern: '(?i)\baws\b.*\bkinesis\b'
     iriusrisk:
-      component_type: kinesis-data-streams
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=kinesis-data-streams;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-AWS-KINESIS-DATA-STREAMS
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-AWS-KINESIS-DATA-STREAMS;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # AWS ECS
   - match:
       archimate_type: ApplicationComponent
       name_pattern: '(?i)\baws\b.*\b(ecs|elastic container)\b'
     iriusrisk:
-      component_type: elastic-container-service
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=elastic-container-service;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-AWS-ECS
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-AWS-ECS;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # AWS EKS
   - match:
       archimate_type: ApplicationComponent
       name_pattern: '(?i)\baws\b.*\beks\b'
     iriusrisk:
-      component_type: elastic-container-kubernetes
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=elastic-container-kubernetes;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-AWS-EKS-ELASTIC-KUBERNETES-SERVICE
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-AWS-EKS-ELASTIC-KUBERNETES-SERVICE;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # AWS Fargate
   - match:
       archimate_type: ApplicationComponent
       name_pattern: '(?i)\baws\b.*\bfargate\b'
     iriusrisk:
-      component_type: fargate
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=fargate;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-AWS-FARGATE
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-AWS-FARGATE;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # AWS ElastiCache
   - match:
       archimate_type: ApplicationComponent
       name_pattern: '(?i)\baws\b.*\b(elasticache|cache for redis)\b'
     iriusrisk:
-      component_type: CD-ELASTICACHE-FOR-REDIS
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-ELASTICACHE-FOR-REDIS;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-AWS-ELASTICACHE-FOR-REDIS
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-AWS-ELASTICACHE-FOR-REDIS;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # AWS MSK
   - match:
       archimate_type: ApplicationComponent
       name_pattern: '(?i)\baws\b.*\b(msk|kafka)\b'
     iriusrisk:
-      component_type: CD-MSK
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-MSK;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-AWS-MSK-MANAGED-STREAMING-FOR-APACHE-KAFKA
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-AWS-MSK-MANAGED-STREAMING-FOR-APACHE-KAFKA;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # Azure Blob Storage
   - match:
       archimate_type: ApplicationComponent
       name_pattern: '(?i)\bazure\b.*\bblob\b'
     iriusrisk:
-      component_type: CD-MICROSOFT-AZURE-BLOB-STORAGE
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-MICROSOFT-AZURE-BLOB-STORAGE;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-AZURE-BLOB-STORAGE
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-AZURE-BLOB-STORAGE;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # Azure Cosmos DB
   - match:
       archimate_type: ApplicationComponent
       name_pattern: '(?i)\bazure\b.*\bcosmos\b'
     iriusrisk:
-      component_type: microsoft-azure-cosmos-db
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=microsoft-azure-cosmos-db;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-AZURE-COSMOS-DB
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-AZURE-COSMOS-DB;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # Azure Functions
   - match:
       archimate_type: ApplicationComponent
       name_pattern: '(?i)\bazure\b.*\bfunctions?\b'
     iriusrisk:
-      component_type: microsoft-azure-functions
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=microsoft-azure-functions;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-AZURE-FUNCTIONS
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-AZURE-FUNCTIONS;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # Azure Key Vault
   - match:
       archimate_type: ApplicationComponent
       name_pattern: '(?i)\bazure\b.*\bkey vault\b'
     iriusrisk:
-      component_type: microsoft-azure-key-vault
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=microsoft-azure-key-vault;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-AZURE-KEY-VAULT
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-AZURE-KEY-VAULT;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # Azure SQL
   - match:
       archimate_type: ApplicationComponent
       name_pattern: '(?i)\bazure\b.*\bsql\b'
     iriusrisk:
-      component_type: azure-sql
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=azure-sql;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-AZURE-SQL
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-AZURE-SQL;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # Azure AD
   - match:
       archimate_type: ApplicationComponent
       name_pattern: '(?i)\bazure\b.*\b(active directory|aad)\b'
     iriusrisk:
-      component_type: microsoft-azure-active-directory
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=microsoft-azure-active-directory;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-MICROSOFT-ENTRA-ID
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-MICROSOFT-ENTRA-ID;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # Azure AKS
   - match:
       archimate_type: ApplicationComponent
       name_pattern: '(?i)\bazure\b.*\b(aks|kubernetes)\b'
     iriusrisk:
-      component_type: microsoft-azure-kubernetes-service
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=microsoft-azure-kubernetes-service;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-AZURE-KUBERNETES-SERVICE-AKS
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-AZURE-KUBERNETES-SERVICE-AKS;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # Azure Cache for Redis
   - match:
       archimate_type: ApplicationComponent
       name_pattern: '(?i)\bazure\b.*\bredis\b'
     iriusrisk:
-      component_type: CD-MICROSOFT-AZURE-CACHE-REDIS
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-MICROSOFT-AZURE-CACHE-REDIS;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-AZURE-CACHE-FOR-REDIS
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-AZURE-CACHE-FOR-REDIS;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # Azure VM
   - match:
       archimate_type: ApplicationComponent
       name_pattern: '(?i)\bazure\b.*\b(vm|virtual machine)\b'
     iriusrisk:
-      component_type: CD-MICROSOFT-AZURE-VM-SCALE-SET
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-MICROSOFT-AZURE-VM-SCALE-SET;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-AZURE-VIRTUAL-MACHINE-SCALE-SETS
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-AZURE-VIRTUAL-MACHINE-SCALE-SETS;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # GCP Compute Engine
   - match:
       archimate_type: ApplicationComponent
       name_pattern: '(?i)\b(gcp|google cloud)\b.*\bcompute\b'
     iriusrisk:
-      component_type: CD-GOOGLE-CLOUD-COMPUTE-ENGINE
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-GOOGLE-CLOUD-COMPUTE-ENGINE;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-GCP-COMPUTE-ENGINE
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-GCP-COMPUTE-ENGINE;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # GCP Cloud Storage
   - match:
       archimate_type: ApplicationComponent
       name_pattern: '(?i)\b(gcp|google cloud)\b.*\b(storage|gcs)\b'
     iriusrisk:
-      component_type: cloud-storage
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=cloud-storage;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-CLOUD-STORAGE
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-CLOUD-STORAGE;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # GCP BigQuery
   - match:
       archimate_type: ApplicationComponent
       name_pattern: '(?i)\b(gcp|google cloud)\b.*\bbigquery\b'
     iriusrisk:
-      component_type: google-bigquery
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=google-bigquery;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-GCP-BIGQUERY
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-GCP-BIGQUERY;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # GCP GKE
   - match:
       archimate_type: ApplicationComponent
       name_pattern: '(?i)\b(gcp|google cloud)\b.*\b(gke|kubernetes)\b'
     iriusrisk:
-      component_type: google-kubernetes
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=google-kubernetes;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-GCP-KUBERNETES
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-GCP-KUBERNETES;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # GCP Functions
   - match:
       archimate_type: ApplicationComponent
       name_pattern: '(?i)\b(gcp|google cloud)\b.*\bfunctions?\b'
     iriusrisk:
-      component_type: CD-GOOGLE-CLOUD-FUNCTIONS
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-GOOGLE-CLOUD-FUNCTIONS;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-GCP-FUNCTIONS
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-GCP-FUNCTIONS;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # GCP Memorystore Redis
   - match:
       archimate_type: ApplicationComponent
       name_pattern: '(?i)\b(gcp|google cloud)\b.*\bredis\b'
     iriusrisk:
-      component_type: CD-GOOGLE-CLOUD-MEMORYSTORE-REDIS
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-GOOGLE-CLOUD-MEMORYSTORE-REDIS;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-GCP-MEMORYSTORE-FOR-REDIS
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-GCP-MEMORYSTORE-FOR-REDIS;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # GCP Pub/Sub
   - match:
       archimate_type: ApplicationComponent
       name_pattern: '(?i)\b(gcp|google cloud)\b.*\bpub.?sub\b'
     iriusrisk:
-      component_type: CD-GOOGLE-CLOUD-PUB-SUB
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-GOOGLE-CLOUD-PUB-SUB;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-GCP-PUB-SUB
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-GCP-PUB-SUB;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # GCP IAM
   - match:
       archimate_type: ApplicationComponent
       name_pattern: '(?i)\b(gcp|google cloud)\b.*\biam\b'
     iriusrisk:
-      component_type: CD-GOOGLE-CLOUD-IAM
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-GOOGLE-CLOUD-IAM;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-GCP-IAM-IDENTITY-AND-ACCESS-MANAGEMENT
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-GCP-IAM-IDENTITY-AND-ACCESS-MANAGEMENT;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # PostgreSQL
   - match:
       archimate_type: ApplicationComponent
       name_pattern: '(?i)\b(postgres|postgresql)\b'
     iriusrisk:
-      component_type: postgresql
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=postgresql;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-POSTGRESQL
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-POSTGRESQL;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # MariaDB
   - match:
       archimate_type: ApplicationComponent
       name_pattern: '(?i)\bmariadb\b'
     iriusrisk:
-      component_type: CD-MARIADB
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-MARIADB;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-MARIADB
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-MARIADB;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # MySQL
   - match:
       archimate_type: ApplicationComponent
       name_pattern: '(?i)\bmysql\b'
     iriusrisk:
-      component_type: mysql
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=mysql;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-MYSQL
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-MYSQL;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # Microsoft SQL Server
   - match:
       archimate_type: ApplicationComponent
       name_pattern: '(?i)(mssql|microsoft sql|sql server)'
     iriusrisk:
-      component_type: microsoft-sql-server
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=microsoft-sql-server;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-MICROSOFT-SQL-SERVER
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-MICROSOFT-SQL-SERVER;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # MongoDB
   - match:
       archimate_type: ApplicationComponent
       name_pattern: '(?i)\bmongo(db)?\b'
     iriusrisk:
-      component_type: mongodb-nosql
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=mongodb-nosql;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-MONGODB-NOSQL
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-MONGODB-NOSQL;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # SQLite
   - match:
       archimate_type: ApplicationComponent
       name_pattern: '(?i)\bsqlite\b'
     iriusrisk:
-      component_type: sqlite
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=sqlite;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-SQLITE
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-SQLITE;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # Redis
   - match:
       archimate_type: ApplicationComponent
       name_pattern: '(?i)\b(redis|cache server)\b'
     iriusrisk:
-      component_type: redis-server
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=redis-server;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-REDIS-SERVER
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-REDIS-SERVER;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # Oracle DB
   - match:
       archimate_type: ApplicationComponent
       name_pattern: '(?i)\boracle( db)?\b'
     iriusrisk:
-      component_type: oracle-db
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=oracle-db;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-ORACLE-DB
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-ORACLE-DB;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # Cassandra
   - match:
       archimate_type: ApplicationComponent
       name_pattern: '(?i)\bcassandra\b'
     iriusrisk:
-      component_type: cassandra-nosql
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=cassandra-nosql;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-CASSANDRA-NOSQL
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-CASSANDRA-NOSQL;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # CouchDB
   - match:
       archimate_type: ApplicationComponent
       name_pattern: '(?i)\bcouchdb\b'
     iriusrisk:
-      component_type: CD-COUCHDB
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-COUCHDB;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-COUCHDB
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-COUCHDB;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # IBM Db2
   - match:
       archimate_type: ApplicationComponent
       name_pattern: '(?i)\b(ibm db2|db2)\b'
     iriusrisk:
-      component_type: CD-IBM-DB2
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-IBM-DB2;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-IBM-DB2
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-IBM-DB2;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # Neo4J
   - match:
       archimate_type: ApplicationComponent
       name_pattern: '(?i)\bneo4j\b'
     iriusrisk:
-      component_type: CD-NEO4J
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-NEO4J;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-NEO4J
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-NEO4J;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # Hazelcast
   - match:
       archimate_type: ApplicationComponent
       name_pattern: '(?i)\bhazelcast\b'
     iriusrisk:
-      component_type: CD-HAZELCAST
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-HAZELCAST;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-HAZELCAST
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-HAZELCAST;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # Informix
   - match:
       archimate_type: ApplicationComponent
       name_pattern: '(?i)\binformix\b'
     iriusrisk:
-      component_type: informix
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=informix;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-INFORMIX
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-INFORMIX;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # Riak
   - match:
       archimate_type: ApplicationComponent
       name_pattern: '(?i)\briak\b'
     iriusrisk:
-      component_type: riak-nosql
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=riak-nosql;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-RIAK-NOSQL
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-RIAK-NOSQL;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # Active Directory
   - match:
       archimate_type: ApplicationComponent
       name_pattern: '(?i)\bactive directory\b'
     iriusrisk:
-      component_type: active-directory
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=active-directory;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-ACTIVE-DIRECTORY
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-ACTIVE-DIRECTORY;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # LDAP
   - match:
       archimate_type: ApplicationComponent
       name_pattern: '(?i)\bldap\b'
     iriusrisk:
-      component_type: ldap-directory
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=ldap-directory;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-LDAP-DIRECTORY
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-LDAP-DIRECTORY;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # Kerberos
   - match:
       archimate_type: ApplicationComponent
       name_pattern: '(?i)\bkerberos\b'
     iriusrisk:
-      component_type: CD-KERBEROS-AS
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-KERBEROS-AS;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-KERBEROS-AUTHENTICATION-SERVER
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-KERBEROS-AUTHENTICATION-SERVER;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # OAuth2 AS
   - match:
       archimate_type: ApplicationComponent
       name_pattern: '(?i)oauth2.*authorization'
     iriusrisk:
-      component_type: oauth2-authorization-server
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=oauth2-authorization-server;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-OAUTH2-AUTHORIZATION-SERVER
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-OAUTH2-AUTHORIZATION-SERVER;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # OAuth2 RS
   - match:
       archimate_type: ApplicationComponent
       name_pattern: '(?i)oauth2.*resource'
     iriusrisk:
-      component_type: oauth2-resource-server
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=oauth2-resource-server;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-OAUTH2-RESOURCE-SERVER
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-OAUTH2-RESOURCE-SERVER;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # OAuth2 client
   - match:
       archimate_type: ApplicationComponent
       name_pattern: '(?i)oauth2.*client'
     iriusrisk:
-      component_type: oauth2-client-application
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=oauth2-client-application;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-OAUTH2-CLIENT-APPLICATION
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-OAUTH2-CLIENT-APPLICATION;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # OIDC IdP
   - match:
       archimate_type: ApplicationComponent
       name_pattern: '(?i)\boidc.*provider\b'
     iriusrisk:
-      component_type: oidc-provider
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=oidc-provider;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-OAUTH2-AUTHORIZATION-SERVER
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-OAUTH2-AUTHORIZATION-SERVER;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # OIDC RP
   - match:
       archimate_type: ApplicationComponent
       name_pattern: '(?i)\boidc.*relying party\b'
     iriusrisk:
-      component_type: oidc-relying-party
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=oidc-relying-party;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-OAUTH2-CLIENT-APPLICATION
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-OAUTH2-CLIENT-APPLICATION;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # SAML IdP
   - match:
       archimate_type: ApplicationComponent
       name_pattern: '(?i)\bsaml.*identity provider\b'
     iriusrisk:
-      component_type: saml-identity-provider
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=saml-identity-provider;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-SAML-IDENTITY-PROVIDER
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-SAML-IDENTITY-PROVIDER;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # SAML SP
   - match:
       archimate_type: ApplicationComponent
       name_pattern: '(?i)\bsaml.*service provider\b'
     iriusrisk:
-      component_type: saml-service-provider
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=saml-service-provider;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-SAML-SERVICE-PROVIDER
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-SAML-SERVICE-PROVIDER;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # NGINX (ingress)
   - match:
       archimate_type: ApplicationComponent
       name_pattern: '(?i)nginx.*ingress'
     iriusrisk:
-      component_type: CD-NGINX
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-NGINX;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-NGINX-SERVER
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-NGINX-SERVER;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # NGINX
   - match:
       archimate_type: ApplicationComponent
       name_pattern: '(?i)\bnginx\b'
     iriusrisk:
-      component_type: CD-NGINX
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-NGINX;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-NGINX-SERVER
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-NGINX-SERVER;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # Apache Tomcat
   - match:
       archimate_type: ApplicationComponent
       name_pattern: '(?i)\bapache.*tomcat\b'
     iriusrisk:
-      component_type: CD-APACHE-TOMCAT
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-APACHE-TOMCAT;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-APACHE-TOMCAT
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-APACHE-TOMCAT;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # Apache HTTP
   - match:
       archimate_type: ApplicationComponent
       name_pattern: '(?i)\b(apache|httpd)\b'
     iriusrisk:
-      component_type: CD-APACHE-HTTP-SERVER
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-APACHE-HTTP-SERVER;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-APACHE-HTTP-SERVER
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-APACHE-HTTP-SERVER;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # Microsoft IIS
   - match:
       archimate_type: ApplicationComponent
       name_pattern: '(?i)\b(iis|microsoft iis)\b'
     iriusrisk:
-      component_type: CD-MICROSOFT-IIS
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-MICROSOFT-IIS;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-MICROSOFT-IIS-SERVER
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-MICROSOFT-IIS-SERVER;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # FTP Server
   - match:
       archimate_type: ApplicationComponent
       name_pattern: '(?i)\bftp server\b'
     iriusrisk:
-      component_type: CD-FTP-SERVER
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-FTP-SERVER;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-FTP-SERVER
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-FTP-SERVER;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # SSH Server
   - match:
       archimate_type: ApplicationComponent
       name_pattern: '(?i)\bssh server\b'
     iriusrisk:
-      component_type: CD-SSH-SERVER
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-SSH-SERVER;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-SSH-SERVER
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-SSH-SERVER;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # WebSphere
   - match:
       archimate_type: ApplicationComponent
       name_pattern: '(?i)\bibm websphere\b'
     iriusrisk:
-      component_type: CD-IBM-WEBSPHERE-LIBERTY
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-IBM-WEBSPHERE-LIBERTY;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-IBM-WEBSPHERE-LIBERTY
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-IBM-WEBSPHERE-LIBERTY;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # GraphQL
   - match:
       archimate_type: ApplicationComponent
       name_pattern: '(?i)\bgraphql\b'
     iriusrisk:
-      component_type: graphql-web-service
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=graphql-web-service;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-GRAPHQL-WEB-SERVICE
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-GRAPHQL-WEB-SERVICE;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # REST
   - match:
       archimate_type: ApplicationComponent
       name_pattern: '(?i)\b(rest|restful)\b'
     iriusrisk:
-      component_type: rest-full-web-service
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=rest-full-web-service;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-RESTFUL-WEB-SERVICE
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-RESTFUL-WEB-SERVICE;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # SOAP
   - match:
       archimate_type: ApplicationComponent
       name_pattern: '(?i)\bsoap\b'
     iriusrisk:
-      component_type: soap-web-service
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=soap-web-service;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-SOAP-WEB-SERVICE
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-SOAP-WEB-SERVICE;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # Load Balancer
   - match:
       archimate_type: ApplicationComponent
       name_pattern: '(?i)\b(load balancer|lb|alb|nlb)\b'
     iriusrisk:
-      component_type: CD-LOAD-BALANCER
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-LOAD-BALANCER;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-LOAD-BALANCER
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-LOAD-BALANCER;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # Firewall
   - match:
       archimate_type: ApplicationComponent
       name_pattern: '(?i)\bfirewall\b'
     iriusrisk:
-      component_type: CD-FIREWALL
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-FIREWALL;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-FIREWALL
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-FIREWALL;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # Proxy
   - match:
       archimate_type: ApplicationComponent
       name_pattern: '(?i)\b(reverse proxy|proxy)\b'
     iriusrisk:
-      component_type: CD-PROXY-SERVER
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-PROXY-SERVER;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-PROXY-SERVER
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-PROXY-SERVER;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # Router
   - match:
       archimate_type: ApplicationComponent
       name_pattern: '(?i)\brouter\b'
     iriusrisk:
-      component_type: CD-ROUTER
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-ROUTER;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-ROUTER
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-ROUTER;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # DNS
   - match:
       archimate_type: ApplicationComponent
       name_pattern: '(?i)\bdns\b'
     iriusrisk:
-      component_type: CD-DNS
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-DNS;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-DNS-DOMAIN-NAME-SYSTEM
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-DNS-DOMAIN-NAME-SYSTEM;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # VPN
   - match:
       archimate_type: ApplicationComponent
       name_pattern: '(?i)\bvpn\b'
     iriusrisk:
-      component_type: CD-VPN
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-VPN;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-AWS-CLIENT-VPN
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-AWS-CLIENT-VPN;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # CDN
   - match:
       archimate_type: ApplicationComponent
       name_pattern: '(?i)\b(cdn|content delivery)\b'
     iriusrisk:
-      component_type: CD-CONTENT-DELIVERY-NETWORK
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-CONTENT-DELIVERY-NETWORK;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-CDN-CONTENT-DELIVERY-NETWORK
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-CDN-CONTENT-DELIVERY-NETWORK;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # ISP
   - match:
       archimate_type: ApplicationComponent
       name_pattern: '(?i)\bisp\b'
     iriusrisk:
-      component_type: CD-ISP
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-ISP;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-ISP-INTERNET-SERVICE-PROVIDER
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-ISP-INTERNET-SERVICE-PROVIDER;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # Docker Registry
   - match:
       archimate_type: ApplicationComponent
       name_pattern: '(?i)docker.*registry'
     iriusrisk:
-      component_type: CD-DOCKER-REGISTRY
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-DOCKER-REGISTRY;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-DOCKER-REGISTRY
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-DOCKER-REGISTRY;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # Docker Client
   - match:
       archimate_type: ApplicationComponent
       name_pattern: '(?i)docker.*client'
     iriusrisk:
-      component_type: CD-DOCKER-CLIENT
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-DOCKER-CLIENT;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-DOCKER-CLIENT
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-DOCKER-CLIENT;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # Docker host
   - match:
       archimate_type: ApplicationComponent
       name_pattern: '(?i)docker.*host'
     iriusrisk:
-      component_type: docker-linux-host
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=docker-linux-host;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-DOCKER-LINUX-HOST
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-DOCKER-LINUX-HOST;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # Docker container
   - match:
       archimate_type: ApplicationComponent
       name_pattern: '(?i)docker.*container'
     iriusrisk:
-      component_type: docker-container
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=docker-container;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-DOCKER-CONTAINER
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-DOCKER-CONTAINER;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # Docker
   - match:
       archimate_type: ApplicationComponent
       name_pattern: '(?i)\bdocker\b'
     iriusrisk:
-      component_type: docker-container
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=docker-container;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-DOCKER-CONTAINER
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-DOCKER-CONTAINER;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # K8s control plane
   - match:
       archimate_type: ApplicationComponent
       name_pattern: '(?i)kubernetes.*control'
     iriusrisk:
-      component_type: kubernetes-control-plane
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=kubernetes-control-plane;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-KUBERNETES-CONTROL-PLANE
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-KUBERNETES-CONTROL-PLANE;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # K8s pod
   - match:
       archimate_type: ApplicationComponent
       name_pattern: '(?i)kubernetes.*pod'
     iriusrisk:
-      component_type: kubernetes-pod
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=kubernetes-pod;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-KUBERNETES-POD
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-KUBERNETES-POD;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # K8s node
   - match:
       archimate_type: ApplicationComponent
       name_pattern: '(?i)kubernetes.*node'
     iriusrisk:
-      component_type: kubernetes-node
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=kubernetes-node;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-KUBERNETES-POD
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-KUBERNETES-POD;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # K8s cluster
   - match:
       archimate_type: ApplicationComponent
       name_pattern: '(?i)\b(kubernetes|k8s)\b'
     iriusrisk:
-      component_type: kubernetes-cluster
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=kubernetes-cluster;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-KUBERNETES-CLUSTER
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-KUBERNETES-CLUSTER;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # Kafka
   - match:
       archimate_type: ApplicationComponent
       name_pattern: '(?i)apache kafka|\bkafka\b'
     iriusrisk:
-      component_type: apache-kafka
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=apache-kafka;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-APACHE-KAFKA
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-APACHE-KAFKA;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # MQTT Broker
   - match:
       archimate_type: ApplicationComponent
       name_pattern: '(?i)mqtt.*broker'
     iriusrisk:
-      component_type: mqtt-broker
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=mqtt-broker;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-MQTT-BROKER
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-MQTT-BROKER;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # MQTT Client
   - match:
       archimate_type: ApplicationComponent
       name_pattern: '(?i)mqtt.*client'
     iriusrisk:
-      component_type: mqtt-client
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=mqtt-client;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-MQTT-CLIENT
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-MQTT-CLIENT;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # WordPress
   - match:
       archimate_type: ApplicationComponent
       name_pattern: '(?i)\bwordpress\b'
     iriusrisk:
-      component_type: CD-WORDPRESS
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-WORDPRESS;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-WORDPRESS
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-WORDPRESS;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # Drupal
   - match:
       archimate_type: ApplicationComponent
       name_pattern: '(?i)\bdrupal\b'
     iriusrisk:
-      component_type: CD-DRUPAL
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-DRUPAL;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-DRUPAL
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-DRUPAL;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # Joomla
   - match:
       archimate_type: ApplicationComponent
       name_pattern: '(?i)\bjoomla\b'
     iriusrisk:
-      component_type: CD-JOOMLA
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-JOOMLA;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-JOOMLA
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-JOOMLA;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # CMS
   - match:
       archimate_type: ApplicationComponent
       name_pattern: '(?i)\bcms\b'
     iriusrisk:
-      component_type: CD-CMS
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-CMS;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-CMS-CONTENT-MANAGEMENT-SYSTEM
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-CMS-CONTENT-MANAGEMENT-SYSTEM;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # CRM
   - match:
       archimate_type: ApplicationComponent
       name_pattern: '(?i)\bcrm\b'
     iriusrisk:
-      component_type: CD-CUSTOMER-RELATIONSHIP-MANAGEMENT
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-CUSTOMER-RELATIONSHIP-MANAGEMENT;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-CRM-CUSTOMER-RELATIONSHIP-MANAGEMENT
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-CRM-CUSTOMER-RELATIONSHIP-MANAGEMENT;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # ERP
   - match:
       archimate_type: ApplicationComponent
       name_pattern: '(?i)\berp\b'
     iriusrisk:
-      component_type: CD-ENTERPRISE-RESOURCE-PLANNING
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-ENTERPRISE-RESOURCE-PLANNING;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-ERP-ENTERPRISE-RESOURCE-PLANNING
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-ERP-ENTERPRISE-RESOURCE-PLANNING;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # SIEM
   - match:
       archimate_type: ApplicationComponent
       name_pattern: '(?i)\bsiem\b'
     iriusrisk:
-      component_type: CD-SIEM
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-SIEM;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-SIEM-SECURITY-INFORMATION-AND-EVENT-MANAGEMENT
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-SIEM-SECURITY-INFORMATION-AND-EVENT-MANAGEMENT;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # IDS
   - match:
       archimate_type: ApplicationComponent
       name_pattern: '(?i)\bids\b'
     iriusrisk:
-      component_type: CD-INTRUSION-DETECTION-SYSTEM
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-INTRUSION-DETECTION-SYSTEM;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-IDS-INTRUSION-DETECTION-SYSTEM
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-IDS-INTRUSION-DETECTION-SYSTEM;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # IPS
   - match:
       archimate_type: ApplicationComponent
       name_pattern: '(?i)\bips\b'
     iriusrisk:
-      component_type: CD-INTRUSION-PREVENTION-SYSTEM
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-INTRUSION-PREVENTION-SYSTEM;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-IPS-INTRUSION-PREVENTION-SYSTEM
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-IPS-INTRUSION-PREVENTION-SYSTEM;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # EDR
   - match:
       archimate_type: ApplicationComponent
       name_pattern: '(?i)\bedr\b'
     iriusrisk:
-      component_type: CD-EDR
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-EDR;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-EDR-ENDPOINT-DETECTION-AND-RESPONSE
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-EDR-ENDPOINT-DETECTION-AND-RESPONSE;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # XDR
   - match:
       archimate_type: ApplicationComponent
       name_pattern: '(?i)\bxdr\b'
     iriusrisk:
-      component_type: CD-XDR
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-XDR;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-XDR-EXTENDED-DETECTION-AND-RESPONSE
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-XDR-EXTENDED-DETECTION-AND-RESPONSE;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # DLP
   - match:
       archimate_type: ApplicationComponent
       name_pattern: '(?i)\bdlp\b'
     iriusrisk:
-      component_type: CD-DLP
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-DLP;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-DLP-DATA-LOSS-PREVENTION
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-DLP-DATA-LOSS-PREVENTION;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # Antivirus
   - match:
       archimate_type: ApplicationComponent
       name_pattern: '(?i)\bantivirus\b'
     iriusrisk:
-      component_type: CD-ANTIVIRUS
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-ANTIVIRUS;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-ANTIVIRUS
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-ANTIVIRUS;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # Payment Gateway
   - match:
       archimate_type: ApplicationComponent
       name_pattern: '(?i)payment gateway|stripe|braintree|adyen'
     iriusrisk:
-      component_type: CD-PAYMENT-GW
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-PAYMENT-GW;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-PAYMENT-GATEWAY
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-PAYMENT-GATEWAY;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # Payment System
   - match:
       archimate_type: ApplicationComponent
       name_pattern: '(?i)payment system'
     iriusrisk:
-      component_type: CD-PAYMENT-SYSTEM
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-PAYMENT-SYSTEM;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-PAYMENT-SYSTEM
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-PAYMENT-SYSTEM;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # Browser
   - match:
       archimate_type: ApplicationComponent
       name_pattern: '(?i)\b(browser|chrome|firefox|safari|edge)\b'
     iriusrisk:
-      component_type: CD-BROWSER
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-BROWSER;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-BROWSER
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-BROWSER;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # Web Client
   - match:
       archimate_type: ApplicationComponent
       name_pattern: '(?i)\bweb client\b'
     iriusrisk:
-      component_type: web-client
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=web-client;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-WEB-CLIENT
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-WEB-CLIENT;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # Web UI
   - match:
       archimate_type: ApplicationComponent
       name_pattern: '(?i)\bweb ui\b'
     iriusrisk:
-      component_type: web-ui
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=web-ui;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-WEB-UI
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-WEB-UI;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # Android
   - match:
       archimate_type: ApplicationComponent
       name_pattern: '(?i)\bandroid\b'
     iriusrisk:
-      component_type: android-device-client
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=android-device-client;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-ANDROID-DEVICE-CLIENT
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-ANDROID-DEVICE-CLIENT;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # iOS
   - match:
       archimate_type: ApplicationComponent
       name_pattern: '(?i)\bios\b'
     iriusrisk:
-      component_type: ios-device-client
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=ios-device-client;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-IOS-DEVICE-CLIENT
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-IOS-DEVICE-CLIENT;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # Mobile
   - match:
       archimate_type: ApplicationComponent
       name_pattern: '(?i)\bmobile\b'
     iriusrisk:
-      component_type: mobile-device-client
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=mobile-device-client;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-MOBILE-DEVICE-CLIENT
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-MOBILE-DEVICE-CLIENT;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # IoT
   - match:
       archimate_type: ApplicationComponent
       name_pattern: '(?i)\biot\b'
     iriusrisk:
-      component_type: iot-application
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=iot-application;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-IOT-APPLICATION
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-IOT-APPLICATION;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # API Endpoint
   - match:
       archimate_type: ApplicationComponent
       name_pattern: '(?i)api endpoint'
     iriusrisk:
-      component_type: CD-API-ENDPOINT
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-API-ENDPOINT;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-API-ENDPOINT
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-API-ENDPOINT;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # API Gateway (generic)
   - match:
       archimate_type: ApplicationComponent
       name_pattern: '(?i)api gateway'
     iriusrisk:
-      component_type: api-gateway-microservice
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=api-gateway-microservice;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-API-GATEWAY
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-API-GATEWAY;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # Microservice
   - match:
       archimate_type: ApplicationComponent
       name_pattern: '(?i)\b(microservice|micro-service)\b'
     iriusrisk:
-      component_type: microservice
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=microservice;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-MICROSERVICE
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-MICROSERVICE;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # Service Mesh
   - match:
       archimate_type: ApplicationComponent
       name_pattern: '(?i)\bservice mesh\b'
     iriusrisk:
-      component_type: service-mesh
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=service-mesh;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-SERVICE-MESH
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-SERVICE-MESH;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # ApplicationComponent default fallback — Web Service (default)
   - match:
       archimate_type: ApplicationComponent
     iriusrisk:
-      component_type: web-service
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=web-service;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-WEB-SERVICE
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-WEB-SERVICE;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # ApplicationService
   - match:
       archimate_type: ApplicationService
     iriusrisk:
-      component_type: web-service
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=web-service;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-WEB-SERVICE
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-WEB-SERVICE;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # Node
   - match:
       archimate_type: Node
     iriusrisk:
-      component_type: host_container
+      component_type: CD-V2-DOCKER-CONTAINER
       style: "rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#999999;strokeWidth=1;dashed=0;verticalAlign=top;fontSize=12;fontColor=#333333;connectable=0;container=1;collapsible=0;recursiveResize=0;"
       is_container: true
   # Device
   - match:
       archimate_type: Device
     iriusrisk:
-      component_type: host_container
+      component_type: CD-V2-DOCKER-CONTAINER
       style: "rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#999999;strokeWidth=1;dashed=0;verticalAlign=top;fontSize=12;fontColor=#333333;connectable=0;container=1;collapsible=0;recursiveResize=0;"
       is_container: true
   # SystemSoftware
   - match:
       archimate_type: SystemSoftware
     iriusrisk:
-      component_type: web-service
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=web-service;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-WEB-SERVICE
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-WEB-SERVICE;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # Artifact
   - match:
       archimate_type: Artifact
     iriusrisk:
-      component_type: web-service
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=web-service;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-WEB-SERVICE
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-WEB-SERVICE;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # BusinessActor → Browser (closest stock shape)
   - match:
       archimate_type: BusinessActor
     iriusrisk:
-      component_type: CD-BROWSER
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-BROWSER;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-BROWSER
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-BROWSER;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # BusinessRole → Browser (closest stock shape)
   - match:
       archimate_type: BusinessRole
     iriusrisk:
-      component_type: CD-BROWSER
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-BROWSER;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-BROWSER
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-BROWSER;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # DataObject — name match → postgresql
   - match:
       archimate_type: DataObject
       name_pattern: '(?i)\b(postgres|postgresql)\b'
     iriusrisk:
-      component_type: postgresql
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=postgresql;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-POSTGRESQL
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-POSTGRESQL;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # DataObject — name match → CD-MARIADB
   - match:
       archimate_type: DataObject
       name_pattern: '(?i)\bmariadb\b'
     iriusrisk:
-      component_type: CD-MARIADB
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-MARIADB;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-MARIADB
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-MARIADB;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # DataObject — name match → mysql
   - match:
       archimate_type: DataObject
       name_pattern: '(?i)\bmysql\b'
     iriusrisk:
-      component_type: mysql
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=mysql;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-MYSQL
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-MYSQL;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # DataObject — name match → microsoft-sql-server
   - match:
       archimate_type: DataObject
       name_pattern: '(?i)(mssql|microsoft sql|sql server)'
     iriusrisk:
-      component_type: microsoft-sql-server
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=microsoft-sql-server;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-MICROSOFT-SQL-SERVER
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-MICROSOFT-SQL-SERVER;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # DataObject — name match → mongodb-nosql
   - match:
       archimate_type: DataObject
       name_pattern: '(?i)\bmongo(db)?\b'
     iriusrisk:
-      component_type: mongodb-nosql
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=mongodb-nosql;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-MONGODB-NOSQL
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-MONGODB-NOSQL;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # DataObject — name match → sqlite
   - match:
       archimate_type: DataObject
       name_pattern: '(?i)\bsqlite\b'
     iriusrisk:
-      component_type: sqlite
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=sqlite;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-SQLITE
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-SQLITE;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # DataObject — name match → redis-server
   - match:
       archimate_type: DataObject
       name_pattern: '(?i)\bredis\b'
     iriusrisk:
-      component_type: redis-server
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=redis-server;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-REDIS-SERVER
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-REDIS-SERVER;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # DataObject — name match → oracle-db
   - match:
       archimate_type: DataObject
       name_pattern: '(?i)\boracle( db)?\b'
     iriusrisk:
-      component_type: oracle-db
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=oracle-db;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-ORACLE-DB
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-ORACLE-DB;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # DataObject — name match → cassandra-nosql
   - match:
       archimate_type: DataObject
       name_pattern: '(?i)\bcassandra\b'
     iriusrisk:
-      component_type: cassandra-nosql
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=cassandra-nosql;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-CASSANDRA-NOSQL
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-CASSANDRA-NOSQL;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # DataObject — name match → ldap-directory
   - match:
       archimate_type: DataObject
       name_pattern: '(?i)\b(ldap|directory)\b'
     iriusrisk:
-      component_type: ldap-directory
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=ldap-directory;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-LDAP-DIRECTORY
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-LDAP-DIRECTORY;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # DataObject — name match → file-system
   - match:
       archimate_type: DataObject
       name_pattern: '(?i)\b(file system|filesystem|files?)\b'
     iriusrisk:
-      component_type: file-system
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=file-system;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-FILE-SYSTEM
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-FILE-SYSTEM;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # DataObject — name match → cloud-storage
   - match:
       archimate_type: DataObject
       name_pattern: '(?i)\b(blob|object storage|s3)\b'
     iriusrisk:
-      component_type: cloud-storage
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=cloud-storage;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-CLOUD-STORAGE
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-CLOUD-STORAGE;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
   # DataObject default fallback — generic database shape
   - match:
       archimate_type: DataObject
     iriusrisk:
-      component_type: other-database
-      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=other-database;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
+      component_type: CD-V2-OTHER-DATABASE
+      style: "rounded=1;whiteSpace=wrap;html=1;align=center;imageAlign=center;imageWidth=82;imageHeight=82;arcSize=90;absoluteArcSize=1;strokeColor=#20C9E3;fillColor=#E3FCFC;fontColor=#0084AD;fontSize=12;source=iriusrisk;ir.type=COMPONENT;ir.componentDefinition.ref=CD-V2-OTHER-DATABASE;verticalLabelPosition=bottom;verticalAlign=top;ir.synchronized=0;strokeWidth=1;"
 
 connection_rules:
   # IriusRisk data-flow visual: curved gray edge, thin open arrowhead.

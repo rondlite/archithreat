@@ -7,6 +7,7 @@ verification (see SPEC §10.1).
 
 from __future__ import annotations
 
+import re
 from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field
@@ -18,6 +19,8 @@ from .base import (
     SyntheticZone,
     ZoneRule,
 )
+
+_IR_REF_RE = re.compile(r"(?:^|;)ir\.ref=([^;]+)")
 
 TARGET_ID = "iriusrisk"
 
@@ -70,3 +73,19 @@ class DrawioMapping(BaseMapping):
     synthetic_zones: dict[Literal["unzoned", "external"], DrawioSyntheticZone]  # type: ignore[assignment]
     component_rules: list[DrawioComponentRule] = Field(default_factory=list)  # type: ignore[assignment]
     connection_rules: list[DrawioConnectionRule] = Field(default_factory=list)  # type: ignore[assignment]
+
+    def zone_identity_key(self, target_data: dict[str, object]) -> str | None:
+        """IriusRisk identifies trust zones by their ``ir.ref`` UUID embedded in
+        the mxCell style. Two zones with the same ref collide on import."""
+        spec = target_data.get("iriusrisk")
+        style: str | None = None
+        if isinstance(spec, dict):
+            v = spec.get("style")
+            if isinstance(v, str):
+                style = v
+        if style is None and isinstance(target_data.get("style"), str):
+            style = target_data["style"]  # synthetic zones store style at top level
+        if style is None:
+            return None
+        m = _IR_REF_RE.search(style)
+        return m.group(1) if m else None

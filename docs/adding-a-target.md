@@ -1,6 +1,6 @@
 # Adding a target
 
-Purpose: forward-looking contributor guide for adding a new emitter to [archithreat](../src/archithreat/__init__.py). v1 ships one emitter (`iriusrisk`); the architecture is designed so a second target lands as additive files without touching parsing, resolving, or shell code.
+Purpose: contributor guide for adding a new emitter to [archithreat](../src/archithreat/__init__.py). Two emitters ship today (`iriusrisk`, `threatdragon`); the architecture is designed so further targets land as additive files without touching parsing, resolving, or shell code.
 
 ## Contents
 
@@ -134,4 +134,4 @@ Add a subsection to [`docs/targets.md`](targets.md) covering: audience, threat-m
 
 If your target needs operator-facing nuance (network access, auth, etc.), update [`docs/self-hosting.md`](self-hosting.md) accordingly.
 
-When v2 ships the user-facing `--target` flag (CLI), `target` field (JSON API), and target dropdown (UIs), your emitter becomes selectable everywhere without further work — the registry is the single source of truth.
+The user-facing `--target` flag (CLI), `target` field (JSON API), and target dropdown (UIs) read directly from the registry, so your emitter becomes selectable everywhere as soon as it registers — the registry is the single source of truth.

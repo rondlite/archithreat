@@ -12,7 +12,7 @@ Purpose: schema reference and customization guide for the YAML mapping table tha
 
 ## Schema
 
-The shared schema lives in [`mappings/base.py`](../src/archithreat/core/mappings/base.py). Per-target extensions live in sibling files (today, [`mappings/iriusrisk.py`](../src/archithreat/core/mappings/iriusrisk.py)). The default mapping for the v1 target is [`defaults/iriusrisk.yaml`](../src/archithreat/core/defaults/iriusrisk.yaml). The structure is:
+The shared schema lives in [`mappings/base.py`](../src/archithreat/core/mappings/base.py). Per-target extensions live in sibling files ([`mappings/iriusrisk.py`](../src/archithreat/core/mappings/iriusrisk.py), [`mappings/threatdragon.py`](../src/archithreat/core/mappings/threatdragon.py)). Default mappings ship at [`defaults/iriusrisk.yaml`](../src/archithreat/core/defaults/iriusrisk.yaml) and [`defaults/threatdragon.yaml`](../src/archithreat/core/defaults/threatdragon.yaml). The structure is:
 
 ```yaml
 version: 1

@@ -2,3 +2,5 @@ node_modules/
 dist/
 vendor/pyodide/*
 !vendor/pyodide/.gitkeep
+vendor/drawio/*
+!vendor/drawio/.gitkeep

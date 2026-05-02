@@ -125,6 +125,6 @@ You can also change behavior with `--unzoned-policy fail` if you want CI to refu
 
 ### Junctions used as logic
 
-**Symptom:** the model uses ArchiMate `Junction` elements (or-junction, and-junction) to express conditional relationship semantics. **Warning code:** `junction_skipped`. v1 does not interpret junctions; the parser sees them, the resolver logs and excludes them, and any relationships that route through them are dropped along the way.
+**Symptom:** the model uses ArchiMate `Junction` elements (or-junction, and-junction) to express conditional relationship semantics. **Warning code:** `junction_skipped`. archithreat does not currently interpret junctions; the parser sees them, the resolver logs and excludes them, and any relationships that route through them are dropped along the way.
 
 **Fix:** flatten the junction. If A → junction → B, C, D was meant to express "A flows to B and C and D," replace it with three direct relationships `A → B`, `A → C`, `A → D`. The expressivity loss matters at the EA layer, but threat models analyse direct edges and would lose the junction semantics on import anyway.

@@ -30,7 +30,7 @@
       </properties>
     </element>
     <element identifier="z_dmz" xsi:type="Grouping">
-      <name xml:lang="en">DMZ</name>
+      <name xml:lang="en">Public</name>
       <properties>
         <property propertyDefinitionRef="propdef_zone_type">
           <value xml:lang="en">logical</value>
@@ -38,7 +38,7 @@
       </properties>
     </element>
     <element identifier="z_internal" xsi:type="Grouping">
-      <name xml:lang="en">Internal Network</name>
+      <name xml:lang="en">Private Secured</name>
       <properties>
         <property propertyDefinitionRef="propdef_zone_type">
           <value xml:lang="en">logical</value>
@@ -46,7 +46,7 @@
       </properties>
     </element>
     <element identifier="z_payments" xsi:type="Grouping">
-      <name xml:lang="en">Payment Provider</name>
+      <name xml:lang="en">Trusted Partner</name>
       <properties>
         <property propertyDefinitionRef="propdef_zone_type">
           <value xml:lang="en">logical</value>
@@ -54,7 +54,7 @@
       </properties>
     </element>
     <element identifier="z_shop" xsi:type="Grouping">
-      <name xml:lang="en">Shop Floor</name>
+      <name xml:lang="en">Third Party / SaaS</name>
       <properties>
         <property propertyDefinitionRef="propdef_zone_type">
           <value xml:lang="en">logical</value>
@@ -120,6 +120,11 @@
     </element>
     <element identifier="d_inventory" xsi:type="DataObject">
       <name xml:lang="en">Inventory DB</name>
+      <properties>
+        <property propertyDefinitionRef="propdef_data_classification">
+          <value xml:lang="en">internal</value>
+        </property>
+      </properties>
     </element>
 
     <!-- Actors -->
@@ -139,6 +144,7 @@
     <relationship identifier="rc_tablet_shop" xsi:type="Composition" source="z_shop" target="n_tablet"/>
     <relationship identifier="rc_paygw_pay" xsi:type="Composition" source="z_payments" target="n_paygw"/>
     <relationship identifier="rc_cust_inet" xsi:type="Composition" source="z_internet" target="ba_customer"/>
+    <relationship identifier="rc_kitchen_inet" xsi:type="Composition" source="z_internet" target="ba_kitchen"/>
     <!-- DataObjects live in the Internal Network zone -->
     <relationship identifier="rc_orders_int" xsi:type="Composition" source="z_internal" target="d_orders"/>
     <relationship identifier="rc_inventory_int" xsi:type="Composition" source="z_internal" target="d_inventory"/>

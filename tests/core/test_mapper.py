@@ -74,7 +74,7 @@ def test_apply_mapping_attaches_styles(lemonade_xml: bytes) -> None:
     spec = storefront.target_data.get("iriusrisk")
     assert isinstance(spec, dict)
     # storefront has tech_stack=web, so it should hit the Web UI rule first
-    assert spec["component_type"] == "web-ui"
+    assert spec["component_type"] == "CD-V2-WEB-UI"
 
 
 def test_first_match_wins() -> None:
@@ -114,3 +114,24 @@ def test_property_passthrough_in_components(lemonade_xml: bytes) -> None:
     pt = storefront.target_data.get("passthrough_properties")
     assert isinstance(pt, dict)
     assert pt.get("tech_stack") == "web"
+
+
+def test_synthetic_external_folds_into_matching_real_zone(lemonade_xml: bytes) -> None:
+    """When an actor falls to the synthetic external zone but a real zone
+    already maps to the same target identity (IriusRisk ``ir.ref``), the
+    actor should land in the real zone and the synthetic should not appear
+    in the mapped output. Otherwise the receiving tool sees two trust zones
+    with the same id and silently drops one."""
+    # Drop the explicit Composition that puts ba_kitchen in z_internet so the
+    # resolver routes it via the synthetic external zone.
+    xml = lemonade_xml.decode("utf-8").replace(
+        '    <relationship identifier="rc_kitchen_inet" xsi:type="Composition" '
+        'source="z_internet" target="ba_kitchen"/>\n',
+        "",
+    )
+    mapping = load_default_mapping()
+    resolved = resolve_with_synthetic(parse_bytes(xml.encode()), mapping)
+    mapped = apply_mapping(resolved, mapping)
+    # Synthetic external removed; ba_kitchen redirected to the real Internet zone.
+    assert "__external__" not in mapped.zones
+    assert mapped.components["ba_kitchen"].component.zone_id == "z_internet"

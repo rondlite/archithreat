@@ -14,7 +14,7 @@ Purpose: capabilities, limits, and self-hosting guidance for [archithreat](../sr
 
 The browser app exposes the same three core flows as the CLI:
 
-- **Convert** — upload an ArchiMate XML file, download the target's output (a `.drawio` file in v1).
+- **Convert** — upload an ArchiMate XML file, pick a target (`iriusrisk` → `.drawio`, `threatdragon` → `.json`), preview the diagram inline (iriusrisk only, drawio viewer is vendored locally) or download the output.
 - **Inventory** — upload an ArchiMate XML file, see a structured report of element counts, realization coverage, zone coverage, co-hosting analysis, and warnings.
 - **Validate mapping** — paste or load a YAML mapping into the editor, validate it against the schema, see structured errors.
 
@@ -34,7 +34,7 @@ Inventory is cheaper than Convert because it terminates after the resolver stage
 
 Everything is vendored. Pyodide and the core wheel ship in the `dist/` bundle. Once the page has loaded, no network requests are made — for user content, for runtime dependencies, or for telemetry. The page works fully offline after first load.
 
-A v1.1 service worker would make the page also load offline; today, you need network connectivity for the first visit, then it works offline.
+A service worker for full first-visit offline use is on the roadmap; today, you need network connectivity for the first visit, then it works offline.
 
 ## Hosting the bundle yourself
 

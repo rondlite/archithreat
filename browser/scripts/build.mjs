@@ -4,7 +4,7 @@
 // Usage: node scripts/build.mjs
 
 import { build } from 'esbuild';
-import { cp, mkdir, readdir, rm, stat } from 'node:fs/promises';
+import { cp, mkdir, readdir, readFile, rm, stat, writeFile } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -18,8 +18,17 @@ async function main() {
   await mkdir(dist, { recursive: true });
   await mkdir(join(dist, 'wheels'), { recursive: true });
 
-  // Static files: HTML + CSS — copy verbatim.
-  await cp(join(root, 'index.html'), join(dist, 'index.html'));
+  // index.html: substitute __ARCHITHREAT_VERSION__ with version from
+  // pyproject.toml so the footer shows the same version as the wheel.
+  const pyproject = await readFile(join(root, '..', 'pyproject.toml'), 'utf8');
+  const versionMatch = pyproject.match(/^version\s*=\s*"([^"]+)"/m);
+  if (!versionMatch) throw new Error('could not find version in pyproject.toml');
+  const version = versionMatch[1];
+  const html = await readFile(join(root, 'index.html'), 'utf8');
+  await writeFile(
+    join(dist, 'index.html'),
+    html.replace(/__ARCHITHREAT_VERSION__/g, version),
+  );
   await cp(join(root, 'style.css'), join(dist, 'style.css'));
 
   // Bundle main thread JS.
@@ -61,6 +70,22 @@ async function main() {
     }
   } else {
     console.warn('vendor/pyodide does not exist — run `npm run vendor:pyodide`');
+  }
+
+  // Copy vendored drawio viewer if present. Build still succeeds without
+  // it — the Preview button stays hidden when the viewer is unavailable.
+  const drawioSrc = join(root, 'vendor', 'drawio');
+  const drawioDst = join(dist, 'drawio');
+  if (existsSync(drawioSrc)) {
+    const entries = (await readdir(drawioSrc)).filter((e) => e !== '.gitkeep');
+    if (entries.length > 0) {
+      await cp(drawioSrc, drawioDst, { recursive: true });
+      console.log(`copied vendored drawio viewer (${entries.length} entries)`);
+    } else {
+      console.warn('vendor/drawio is empty — run `npm run vendor:drawio` to enable Preview');
+    }
+  } else {
+    console.warn('vendor/drawio does not exist — run `npm run vendor:drawio` to enable Preview');
   }
 
   // Note about the wheel: build:wheel is a separate script so this script

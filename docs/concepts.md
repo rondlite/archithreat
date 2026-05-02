@@ -16,15 +16,15 @@ The unit of analysis in a threat model is "a thing with its own attack surface."
 
 This matches two realities at once. First, threat-modeling tools (IriusRisk, Threat Dragon, MS TMT) reason about software components and the hosts they run on; they do not reason about EA constructs like ApplicationCollaboration. Second, this is how modelers structure their BiZZdesign / Sparx EA models in practice: an Application Component is the thing the security review is about; the Node is where it lives.
 
-Other ArchiMate Application-layer elements (`ApplicationService`, `ApplicationFunction`, `ApplicationInterface`) are recognized but emit only when explicitly mapped. v1 keeps the surface narrow on purpose: each additional element type that becomes a component is a new threat-modeling abstraction that needs its own catalogue entry.
+Other ArchiMate Application-layer elements (`ApplicationService`, `ApplicationFunction`, `ApplicationInterface`) are recognized but emit only when explicitly mapped. archithreat keeps the surface narrow on purpose: each additional element type that becomes a component is a new threat-modeling abstraction that needs its own catalogue entry.
 
 ## Trust zones via Grouping and Location
 
-Trust zones in v1 are **logical only**. archithreat treats `Grouping` and `Location` elements as zones. Composition or Aggregation from a zone to an element places that element in that zone. The matching is done in the [resolver](../src/archithreat/core/resolver.py), driven by the [zone rules](../src/archithreat/core/defaults/iriusrisk.yaml) in the active mapping.
+Trust zones today are **logical only**. archithreat treats `Grouping` and `Location` elements as zones. Composition or Aggregation from a zone to an element places that element in that zone. The matching is done in the [resolver](../src/archithreat/core/resolver.py), driven by the [zone rules](../src/archithreat/core/defaults/iriusrisk.yaml) in the active mapping.
 
-Two synthetic zones exist for elements that escape classification: `unzoned` (an element is in no zone) and `external` (a Business Actor or Role talking to an Application/Technology element from outside). Both surface as warnings; both are configurable via `--unzoned-policy` and via the mapping's `synthetic_zones` block.
+Two synthetic zones exist for elements that escape classification: `unzoned` (an element is in no zone) and `external` (a Business Actor or Role talking to an Application/Technology element from outside). Both surface as warnings; both are configurable via `--unzoned-policy` and via the mapping's `synthetic_zones` block. The synthetic external zone is also folded into a real zone with the same target identity (e.g. matching `ir.ref` UUID) so a model with both a real Internet `Grouping` and an unzoned actor doesn't emit two trust zones with the same id.
 
-Physical zoning (the ArchiMate Physical layer plus 2D physical/logical composites) is deferred to v2. The parser does not discard physical-layer information; the resolver simply skips it in v1.
+Physical zoning (the ArchiMate Physical layer plus 2D physical/logical composites) is roadmap work. The parser does not discard physical-layer information; the resolver currently skips it.
 
 ## Realization as containment
 
@@ -33,7 +33,7 @@ Physical zoning (the ArchiMate Physical layer plus 2D physical/logical composite
 Anchor example, [tests/fixtures/lemonade_shop.xml](../tests/fixtures/lemonade_shop.xml):
 
 ```xml
-<element identifier="z_dmz" xsi:type="Grouping"><name>DMZ</name></element>
+<element identifier="z_dmz" xsi:type="Grouping"><name>Public</name></element>
 <element identifier="n_webserver" xsi:type="Node"><name>web-server-1</name></element>
 <element identifier="a_storefront" xsi:type="ApplicationComponent"><name>Storefront</name></element>
 
@@ -44,7 +44,7 @@ Anchor example, [tests/fixtures/lemonade_shop.xml](../tests/fixtures/lemonade_sh
 Resulting draw.io structure (one zone cell containing one host cell containing one component cell):
 
 ```
-mxCell id="z_dmz"          parent="1"          (zone "DMZ")
+mxCell id="z_dmz"          parent="1"          (zone "Public")
   mxCell id="n_webserver"  parent="z_dmz"      (host "web-server-1", is_container=true)
     mxCell id="a_storefront" parent="n_webserver" (component "Storefront")
 ```
@@ -66,4 +66,4 @@ Business Actors and Business Roles connected (via Flow, Serving, Triggering, etc
 
 External actors are entry points. They are the surface of the threat model that users, partner systems, and untrusted networks touch. Modeling them as zone-placed Business Actors gives the downstream tool the signal it needs to attach untrusted-input threats automatically.
 
-The other Business-layer elements (`BusinessProcess`, `BusinessFunction`, `BusinessInteraction`) are silently ignored by v1; they are organizational abstractions, not attack surfaces.
+The other Business-layer elements (`BusinessProcess`, `BusinessFunction`, `BusinessInteraction`) are silently ignored; they are organizational abstractions, not attack surfaces.
