@@ -144,12 +144,12 @@ def build_zone_rules(zones: list[dict]) -> str:
         style = ZONE_STYLE_TEMPLATE.format(ref=ref)
         out.append(f"  # {name} (referenceId: {z.get('referenceId', '')!r}, trustRating: {z.get('trustRating', '')})")
         for archimate_type in ("Grouping", "Location"):
-            out.append(f"  - match:")
+            out.append("  - match:")
             out.append(f"      archimate_type: {archimate_type}")
             out.append(f"      name_pattern: '{pattern}'")
-            out.append(f"    iriusrisk:")
-            out.append(f"      zone_name_property: name")
-            out.append(f"      style: \"{style}\"")
+            out.append("    iriusrisk:")
+            out.append("      zone_name_property: name")
+            out.append(f'      style: "{style}"')
     out.append("")
     return "\n".join(out)
 
