@@ -1,6 +1,6 @@
 # Limitations
 
-Purpose: an honest list of what [archithreat](../src/archithreat/__init__.py) (currently 3.1.0) does not do, why it does not do it, and when it might.
+Purpose: an honest list of what [archithreat](../src/archithreat/__init__.py) (currently 3.2.0) does not do, why it does not do it, and when it might.
 
 ## Contents
 

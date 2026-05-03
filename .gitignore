@@ -40,5 +40,6 @@ browser/.cache/
 .env.*
 !.env.example
 
-# IriusRisk regen cache — installation-private library data, never commit
+# IriusRisk regen / sync caches — installation-private data, never commit
 scripts/.iriusrisk-components.json
+scripts/.iriusrisk-trust-zones.json

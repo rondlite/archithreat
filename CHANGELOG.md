@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.2.0] - 2026-05-03
+
+### Added
+- `scripts/sync_iriusrisk_zones.py` — companion to the component-ref
+  regen pipeline. Pulls trust zones from `/api/v2/trust-zones` and either
+  prints a `zone_rules` YAML block to stdout (`--print`) or clones the
+  bundled `iriusrisk.yaml` into a per-installation override file
+  (`--apply OUTPUT.local.yaml`) with API-derived zones in place of the
+  defaults. The `.local.yaml` suffix is enforced so the output is
+  auto-gitignored — tenant trust-zone data is never accidentally
+  committed. Cache at `scripts/.iriusrisk-trust-zones.json` is also
+  gitignored.
+
 ## [3.1.0] - 2026-05-03
 
 ### Added

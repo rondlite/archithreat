@@ -1,6 +1,6 @@
 # Software Bill of Materials
 
-archithreat 3.1.0 — third-party components, versions, sources, and licenses.
+archithreat 3.2.0 — third-party components, versions, sources, and licenses.
 
 This SBOM covers what archithreat **ships and vendors**. Runtime Python and
 Node dependencies pulled by `pip install` / `npm install` are not vendored;
@@ -12,7 +12,7 @@ licenses` / `npm ls --license`.
 | Field | Value |
 |---|---|
 | Name | archithreat |
-| Version | 3.1.0 |
+| Version | 3.2.0 |
 | License | Apache-2.0 — see [LICENSE](LICENSE) |
 | Source | <https://github.com/rondlite/archithreat> |
 
